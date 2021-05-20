@@ -1,66 +1,84 @@
 package com.example.bbetterapp.Models;
 
 public class Events {
-    int EVENT_ID;
-    String USER_ID, EVENT_TYPE, EVENT_CONTENT, EVENT_DATE_TIME;
-    boolean CHECKED;
+    int eventId;
+    String userId, eventTitle, eventDetails, eventDate;
+    int eventType;
+    boolean eventChecked;
+    String eventCreatedAt;
 
-    public Events(int EVENT_ID, String USER_ID, String EVENT_TYPE, String EVENT_CONTENT, String EVENT_DATE_TIME, boolean CHECKED) {
-        this.EVENT_ID = EVENT_ID;
-        this.USER_ID = USER_ID;
-        this.EVENT_TYPE = EVENT_TYPE;
-        this.EVENT_CONTENT = EVENT_CONTENT;
-        this.EVENT_DATE_TIME = EVENT_DATE_TIME;
-        this.CHECKED = CHECKED;
+    public Events(int eventId, String userId, String eventTitle, String eventDetails, String eventDate, int eventType, boolean eventChecked, String eventCreatedAt) {
+        this.eventId = eventId;
+        this.userId = userId;
+        this.eventTitle = eventTitle;
+        this.eventDetails = eventDetails;
+        this.eventDate = eventDate;
+        this.eventType = eventType;
+        this.eventChecked = eventChecked;
+        this.eventCreatedAt = eventCreatedAt;
     }
 
-    public Events() {}
-
-    public int getEVENT_ID() {
-        return EVENT_ID;
+    public String getEventCreatedAt() {
+        return eventCreatedAt;
     }
 
-    public void setEVENT_ID(int EVENT_ID) {
-        this.EVENT_ID = EVENT_ID;
+    public void setEventCreatedAt(String eventCreatedAt) {
+        this.eventCreatedAt = eventCreatedAt;
     }
 
-    public String getUSER_ID() {
-        return USER_ID;
+    public int getEventId() {
+        return eventId;
     }
 
-    public void setUSER_ID(String USER_ID) {
-        this.USER_ID = USER_ID;
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
     }
 
-    public String getEVENT_TYPE() {
-        return EVENT_TYPE;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setEVENT_TYPE(String EVENT_TYPE) {
-        this.EVENT_TYPE = EVENT_TYPE;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getEVENT_CONTENT() {
-        return EVENT_CONTENT;
+    public String getEventTitle() {
+        return eventTitle;
     }
 
-    public void setEVENT_CONTENT(String EVENT_CONTENT) {
-        this.EVENT_CONTENT = EVENT_CONTENT;
+    public void setEventTitle(String eventTitle) {
+        this.eventTitle = eventTitle;
     }
 
-    public String getEVENT_DATE_TIME() {
-        return EVENT_DATE_TIME;
+    public String getEventDetails() {
+        return eventDetails;
     }
 
-    public void setEVENT_DATE_TIME(String EVENT_DATE_TIME) {
-        this.EVENT_DATE_TIME = EVENT_DATE_TIME;
+    public void setEventDetails(String eventDetails) {
+        this.eventDetails = eventDetails;
     }
 
-    public boolean isCHECKED() {
-        return CHECKED;
+    public String getEventDate() {
+        return eventDate;
     }
 
-    public void setCHECKED(boolean CHECKED) {
-        this.CHECKED = CHECKED;
+    public void setEventDate(String eventDate) {
+        this.eventDate = eventDate;
+    }
+
+    public int getEventType() {
+        return eventType;
+    }
+
+    public void setEventType(int eventType) {
+        this.eventType = eventType;
+    }
+
+    public boolean isEventChecked() {
+        return eventChecked;
+    }
+
+    public void setEventChecked(boolean eventChecked) {
+        this.eventChecked = eventChecked;
     }
 }

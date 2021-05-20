@@ -1,75 +1,66 @@
 package com.example.bbetterapp.Models;
 
 public class Session {
-    int SESSION_ID;
-    String USER_ID, SESSION_LENGTH, SESSION_DATE, SESSION_TIME, SESSION_POINTS;
-    boolean SESSION_FINISHED;
 
-    public Session() {}
+    String sessionId, userId;
+    int sessionLength, sessionPoints;
+    boolean sessionFinished;
+    String sessionCreatedAt;
 
-    public Session(int SESSION_ID, String USER_ID, String SESSION_LENGTH, String SESSION_DATE, String SESSION_TIME, String SESSION_POINTS, boolean SESSION_FINISHED) {
-        this.SESSION_ID = SESSION_ID;
-        this.USER_ID = USER_ID;
-        this.SESSION_LENGTH = SESSION_LENGTH;
-        this.SESSION_DATE = SESSION_DATE;
-        this.SESSION_TIME = SESSION_TIME;
-        this.SESSION_POINTS = SESSION_POINTS;
-        this.SESSION_FINISHED = SESSION_FINISHED;
+    public Session(String sessionId, String userId, int sessionLength, int sessionPoints, boolean sessionFinished, String sessionCreatedAt) {
+        this.sessionId = sessionId;
+        this.userId = userId;
+        this.sessionLength = sessionLength;
+        this.sessionPoints = sessionPoints;
+        this.sessionFinished = sessionFinished;
+        this.sessionCreatedAt = sessionCreatedAt;
     }
 
-    public int getSESSION_ID() {
-        return SESSION_ID;
+    public String getSessionId() {
+        return sessionId;
     }
 
-    public void setSESSION_ID(int SESSION_ID) {
-        this.SESSION_ID = SESSION_ID;
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
     }
 
-    public String getUSER_ID() {
-        return USER_ID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUSER_ID(String USER_ID) {
-        this.USER_ID = USER_ID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getSESSION_LENGTH() {
-        return SESSION_LENGTH;
+    public int getSessionLength() {
+        return sessionLength;
     }
 
-    public void setSESSION_LENGTH(String SESSION_LENGTH) {
-        this.SESSION_LENGTH = SESSION_LENGTH;
+    public void setSessionLength(int sessionLength) {
+        this.sessionLength = sessionLength;
     }
 
-    public String getSESSION_DATE() {
-        return SESSION_DATE;
+    public int getSessionPoints() {
+        return sessionPoints;
     }
 
-    public void setSESSION_DATE(String SESSION_DATE) {
-        this.SESSION_DATE = SESSION_DATE;
+    public void setSessionPoints(int sessionPoints) {
+        this.sessionPoints = sessionPoints;
     }
 
-    public String getSESSION_TIME() {
-        return SESSION_TIME;
+    public boolean isSessionFinished() {
+        return sessionFinished;
     }
 
-    public void setSESSION_TIME(String SESSION_TIME) {
-        this.SESSION_TIME = SESSION_TIME;
+    public void setSessionFinished(boolean sessionFinished) {
+        this.sessionFinished = sessionFinished;
     }
 
-    public String getSESSION_POINTS() {
-        return SESSION_POINTS;
+    public String getSessionCreatedAt() {
+        return sessionCreatedAt;
     }
 
-    public void setSESSION_POINTS(String SESSION_POINTS) {
-        this.SESSION_POINTS = SESSION_POINTS;
-    }
-
-    public boolean isSESSION_FINISHED() {
-        return SESSION_FINISHED;
-    }
-
-    public void setSESSION_FINISHED(boolean SESSION_FINISHED) {
-        this.SESSION_FINISHED = SESSION_FINISHED;
+    public void setSessionCreatedAt(String sessionCreatedAt) {
+        this.sessionCreatedAt = sessionCreatedAt;
     }
 }

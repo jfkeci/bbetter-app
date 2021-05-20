@@ -1,56 +1,72 @@
 package com.example.bbetterapp.Models;
 
 public class Notes {
-    int NOTE_ID;
-    String USER_ID, NOTE_TITLE, NOTE_CONTENT, NOTE_DATE_TIME;
+    String noteId, userId, noteTitle, noteContent, noteCreatedAt, noteUpdatedAt;
+    Boolean noteArchived;
 
-    public Notes() { }
-
-    public Notes(int NOTE_ID, String USER_ID, String NOTE_TITLE, String NOTE_CONTENT, String NOTE_DATE_TIME) {
-        this.NOTE_ID = NOTE_ID;
-        this.USER_ID = USER_ID;
-        this.NOTE_TITLE = NOTE_TITLE;
-        this.NOTE_CONTENT = NOTE_CONTENT;
-        this.NOTE_DATE_TIME = NOTE_DATE_TIME;
+    public Notes(String noteId, String userId, String noteTitle, String noteContent, String noteCreatedAt, String noteUpdatedAt, Boolean noteArchived) {
+        this.noteId = noteId;
+        this.userId = userId;
+        this.noteTitle = noteTitle;
+        this.noteContent = noteContent;
+        this.noteCreatedAt = noteCreatedAt;
+        this.noteUpdatedAt = noteUpdatedAt;
+        this.noteArchived = noteArchived;
     }
 
-    public int getNOTE_ID() {
-        return NOTE_ID;
+    public String getNoteId() {
+        return noteId;
     }
 
-    public void setNOTE_ID(int NOTE_ID) {
-        this.NOTE_ID = NOTE_ID;
+    public void setNoteId(String noteId) {
+        this.noteId = noteId;
     }
 
-    public String getUSER_ID() {
-        return USER_ID;
+    public String getUserId() {
+        return userId;
     }
 
-    public void setUSER_ID(String USER_ID) {
-        this.USER_ID = USER_ID;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getNOTE_TITLE() {
-        return NOTE_TITLE;
+    public String getNoteTitle() {
+        return noteTitle;
     }
 
-    public void setNOTE_TITLE(String NOTE_TITLE) {
-        this.NOTE_TITLE = NOTE_TITLE;
+    public void setNoteTitle(String noteTitle) {
+        this.noteTitle = noteTitle;
     }
 
-    public String getNOTE_CONTENT() {
-        return NOTE_CONTENT;
+    public String getNoteContent() {
+        return noteContent;
     }
 
-    public void setNOTE_CONTENT(String NOTE_CONTENT) {
-        this.NOTE_CONTENT = NOTE_CONTENT;
+    public void setNoteContent(String noteContent) {
+        this.noteContent = noteContent;
     }
 
-    public String getNOTE_DATE_TIME() {
-        return NOTE_DATE_TIME;
+    public String getNoteCreatedAt() {
+        return noteCreatedAt;
     }
 
-    public void setNOTE_DATE_TIME(String NOTE_DATE_TIME) {
-        this.NOTE_DATE_TIME = NOTE_DATE_TIME;
+    public void setNoteCreatedAt(String noteCreatedAt) {
+        this.noteCreatedAt = noteCreatedAt;
+    }
+
+    public String getNoteUpdatedAt() {
+        return noteUpdatedAt;
+    }
+
+    public void setNoteUpdatedAt(String noteUpdatedAt) {
+        this.noteUpdatedAt = noteUpdatedAt;
+    }
+
+    public Boolean getNoteArchived() {
+        return noteArchived;
+    }
+
+    public void setNoteArchived(Boolean noteArchived) {
+        this.noteArchived = noteArchived;
     }
 }
