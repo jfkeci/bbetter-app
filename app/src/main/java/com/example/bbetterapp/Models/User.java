@@ -6,8 +6,26 @@ public class User {
     private String lastName;
     private String username;
     private String email;
+    private String password;
     private String gender;
     private int age;
+    private String userNotesUrl;
+    private String userEventsUrl;
+    private String userSessionsUrl;
+
+    public User(String userId, String firstName, String lastName, String username, String email, String password, String gender, int age, String userNotesUrl, String userEventsUrl, String userSessionsUrl) {
+        this.userId = userId;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.gender = gender;
+        this.age = age;
+        this.userNotesUrl = userNotesUrl;
+        this.userEventsUrl = userEventsUrl;
+        this.userSessionsUrl = userSessionsUrl;
+    }
 
     public String getUserId() {
         return userId;
@@ -30,7 +48,7 @@ public class User {
     }
 
     public void setLastName(String lastName) {
-        lastName = lastName;
+        this.lastName = lastName;
     }
 
     public String getUsername() {
@@ -49,6 +67,14 @@ public class User {
         this.email = email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public String getGender() {
         return gender;
     }
@@ -63,5 +89,29 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public String getUserNotesUrl() {
+        return userNotesUrl;
+    }
+
+    public void setUserNotesUrl(String userNotesUrl) {
+        this.userNotesUrl = userNotesUrl;
+    }
+
+    public String getUserEventsUrl() {
+        return userEventsUrl;
+    }
+
+    public void setUserEventsUrl(String userEventsUrl) {
+        this.userEventsUrl = userEventsUrl;
+    }
+
+    public String getUserSessionsUrl() {
+        return userSessionsUrl;
+    }
+
+    public void setUserSessionsUrl(String userSessionsUrl) {
+        this.userSessionsUrl = userSessionsUrl;
     }
 }
