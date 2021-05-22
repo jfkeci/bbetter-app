@@ -26,7 +26,7 @@ public interface ApiInterface {
     Call<String> loginUser(@Path("email") String email, @Path("password") String password);
 
     //USERS: SAVE
-    @POST("users")
+    @POST("users/new")
     Call<User> createUser(@Body User user);
 
     //USERS: PUT

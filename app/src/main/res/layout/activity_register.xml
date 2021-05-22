@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="35dp"
         android:textColor="@color/white"/>
     <TextView
         android:id="@+id/twSloganRegister"
@@ -34,6 +34,86 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         android:textColor="@color/white"/>
+    <EditText
+        android:id="@+id/etFirstNameRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="First name"
+        android:inputType="textEmailAddress"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/twSloganRegister"
+        android:background="@drawable/custom_edit_text"/>
+    <EditText
+        android:id="@+id/etLastNameRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="Last name"
+        android:inputType="textEmailAddress"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etFirstNameRegister"
+        android:background="@drawable/custom_edit_text"/>
+    <EditText
+        android:id="@+id/etGenderRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="Gender"
+        android:inputType="textEmailAddress"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etLastNameRegister"
+        android:background="@drawable/custom_edit_text"/>
+    <EditText
+        android:id="@+id/etAgeRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="Age"
+        android:inputType="textEmailAddress"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etGenderRegister"
+        android:background="@drawable/custom_edit_text"/>
+    <EditText
+        android:id="@+id/etUsernameRegister"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="@string/username"
+        android:inputType="textEmailAddress"
+        android:textSize="24sp"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etAgeRegister"
+        android:background="@drawable/custom_edit_text"/>
     <EditText
         android:id="@+id/etEmailRegister"
         android:layout_width="match_parent"
@@ -59,46 +139,23 @@
         android:layout_marginRight="15dp"
         android:ems="10"
         android:hint="@string/password"
-        android:inputType="textPassword"
+        android:inputType="textEmailAddress"
         android:textSize="24sp"
         android:textColor="@color/black"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etEmailRegister"
         android:background="@drawable/custom_edit_text"/>
-    <EditText
-        android:id="@+id/etUsernameRegister"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:ems="10"
-        android:hint="@string/username"
-        android:inputType="text"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/twSloganRegister"
-        android:background="@drawable/custom_edit_text"/>
 
-<!--    <EditText-->
-<!--        android:id="@+id/twFirstName"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_marginTop="60dp"-->
-<!--        android:layout_marginLeft="15dp"-->
-<!--        android:layout_marginRight="15dp"-->
-<!--        android:ems="10"-->
-<!--        android:hint="@string/username"-->
-<!--        android:inputType="text"-->
-<!--        android:textSize="24sp"-->
-<!--        android:textColor="@color/black"-->
-<!--        app:layout_constraintLeft_toLeftOf="parent"-->
-<!--        app:layout_constraintRight_toRightOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@id/twSloganRegister"-->
-<!--        android:background="@drawable/custom_edit_text"/>-->
+    <TextView
+        android:id="@+id/twResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/etPasswordRegister"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
 
     <Button
         android:id="@+id/btnRegister"

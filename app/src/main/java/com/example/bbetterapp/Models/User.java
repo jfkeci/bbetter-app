@@ -4,7 +4,7 @@ public class User {
     private String userId;
     private String firstName;
     private String lastName;
-    private String username;
+    private String userName;
     private String email;
     private String password;
     private String gender;
@@ -13,11 +13,11 @@ public class User {
     private String userEventsUrl;
     private String userSessionsUrl;
 
-    public User(String userId, String firstName, String lastName, String username, String email, String password, String gender, int age, String userNotesUrl, String userEventsUrl, String userSessionsUrl) {
+    public User(String userId, String firstName, String lastName, String userName, String email, String password, String gender, int age, String userNotesUrl, String userEventsUrl, String userSessionsUrl) {
         this.userId = userId;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = username;
+        this.userName = userName;
         this.email = email;
         this.password = password;
         this.gender = gender;
@@ -26,6 +26,8 @@ public class User {
         this.userEventsUrl = userEventsUrl;
         this.userSessionsUrl = userSessionsUrl;
     }
+
+    public User(){}
 
     public String getUserId() {
         return userId;
@@ -51,12 +53,12 @@ public class User {
         this.lastName = lastName;
     }
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getEmail() {
