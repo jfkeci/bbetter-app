@@ -18,10 +18,12 @@ public class MainActivity extends AppCompatActivity{
 
         startButton = findViewById(R.id.startButton);
 
+        startActivity(new Intent(getApplicationContext(), FragmentHolderActivity.class));
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
+
             }
         });
     }

@@ -32,7 +32,7 @@ public class Utils {
         builder.show();
     }
     public static void makeMyLog(String title, String message){
-        Log.d("" + title, ", message: " + message);
+        Log.d("" + title, "" + message);
     }
 
     public static boolean isEmpty(EditText etText) {

@@ -46,7 +46,7 @@ public class RegisterActivity extends AppCompatActivity{
         etAge.setText("22");
         etUsername.setText("jfkeci");
         etEmail.setText("jfkeci111@gmail.com");
-        etPassword.setText("test123");
+        etPassword.setText("test1234");
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,60 +56,48 @@ public class RegisterActivity extends AppCompatActivity{
         });
     }
 
-    public void registerUser(){
+    private void registerUser(){
         User user = new User();
 
         boolean fieldsFilled = true;
 
         if(Utils.isEmpty(etFirstName)){
-            etFirstName.requestFocus();
-            Utils.makeMyToast("First name field required", getApplicationContext());
-            fieldsFilled = false;
+            fieldsFilled = etValidation(etFirstName, "First name field required");;
         }else{
             user.setFirstName(etFirstName.getText().toString());
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etLastName)){
-            etLastName.requestFocus();
-            Utils.makeMyToast("Last name field required", getApplicationContext());
-            fieldsFilled = false;
+            fieldsFilled = etValidation(etLastName, "Last name field required");
         }else{
             user.setLastName(etLastName.getText().toString());
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etGender)){
-            etGender.requestFocus();
-            Utils.makeMyToast("Gender field required", getApplicationContext());
-            fieldsFilled = false;
+            fieldsFilled = etValidation(etGender, "Gender field required");
         }else{
             user.setGender(etGender.getText().toString());
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etAge)){
-            etAge.requestFocus();
-            Utils.makeMyToast("Age field required", getApplicationContext());
-            fieldsFilled = false;
+            fieldsFilled = etValidation(etAge, "Age field required");
         }else{
             user.setAge(Integer.parseInt(etAge.getText().toString()));
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etUsername)){
-            etUsername.requestFocus();
-            Utils.makeMyToast("Username field required", getApplicationContext());
-            fieldsFilled = false;
+            fieldsFilled = etValidation(etUsername, "Username field required");
         }else{
             user.setUserName(etUsername.getText().toString());
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etEmail)){
-            etEmail.requestFocus();
-            Utils.makeMyToast("Email field required", getApplicationContext());
-            fieldsFilled = false;
+            fieldsFilled = etValidation(etEmail, "Email field required");
         }else{
             user.setEmail(etEmail.getText().toString());
             fieldsFilled = true;
@@ -117,85 +105,100 @@ public class RegisterActivity extends AppCompatActivity{
 
         if((etPassword.getText().toString().length()) < 8){
             if(Utils.isEmpty(etPassword)){
-                etPassword.requestFocus();
-                Utils.makeMyToast("Password field required", getApplicationContext());
-                fieldsFilled = false;
+                fieldsFilled = etValidation(etPassword, "Password field required");
             }else{
-                etPassword.requestFocus();
-                Utils.makeMyToast("Password should have at least 8 characters", getApplicationContext());
-                fieldsFilled = false;
+                fieldsFilled = etValidation(etPassword, "Password should have at least 8 characters");
             }
-
-        }else{
+        }else if((etPassword.getText().toString().length()) >= 8){
             user.setPassword(etPassword.getText().toString());
             fieldsFilled = true;
         }
 
-
         if(fieldsFilled){
-            if(validateNewUser(user) == 1){
-                Utils.makeMyToast("User with this email already exists", getApplicationContext());
+            int validate = validateNewUser(user);
+            if(validate == 1){
+                etValidation(etEmail, "User with this email already exists");
             }
-            else if(validateNewUser(user) == 2){
-                Utils.makeMyToast("Username taken, try another one", getApplicationContext());
+            else if(validate == 2){
+                etValidation(etUsername, "Username taken, try another one");
             }
-            else if(validateNewUser(user) == 3){
+            else if(validate == 3){
                 Call<User> saveUserCall = ApiClient.getInstance().getApi().createUser(user);
 
                 saveUserCall.enqueue(new Callback<User>() {
                     @Override
                     public void onResponse(Call<User> call, Response<User> response) {
                         if(!response.isSuccessful()){
-                            Utils.makeMyToast("code: " + response.code(), getApplicationContext());
+                            Utils.makeMyLog("Save user call was not successful: ", ""+response.code());
                             return;
                         }
                     }
 
                     @Override
                     public void onFailure(Call<User> call, Throwable t) {
-                        Utils.makeMyToast("" + t.getMessage(), getApplicationContext());
+                        Utils.makeMyLog("Save user onFailure message: ", t.getMessage());
                     }
                 });
             }
         }
     }
 
-    public int validateNewUser(User newUser){
+    private int validateNewUser(User newUser){
         final int[] state = new int[1];
 
+        boolean usernameExists = false;
+        boolean emailExists = false;
+
+        state [0] = 3;
+
         Call<List<User>> call = ApiClient.getInstance().getApi().getUsers();
+
+        
+
+        try {
+
+
+        }
+        catch (Exception ex){
+
+        }
 
         call.enqueue(new Callback<List<User>>() {
             @Override
             public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if(!response.isSuccessful()){
-                    Utils.makeMyToast("code: " + response.code(), getApplicationContext());
+                    Utils.makeMyLog("List of user response was not successful: ", ""+response.code());
                     return;
                 }
 
                 List<User> users = response.body();
 
                 for(User user : users){
+                    Utils.makeMyLog("username: ", ""+user.getUserName());
+                    Utils.makeMyLog("user email: ", ""+user.getEmail());
                     if(user.getEmail().equals(newUser.getEmail())){
-                        state[0] = 1;
-                    }else if(user.getUserName().equals(newUser.getUserName())){
                         state[0] = 2;
-                    }else{
-                        state[0] = 3;
+                        Utils.makeMyLog("state of email in tehe request: ", ""+state[0]);
+
+                    }else if(user.getUserName().equals(newUser.getUserName())){
+                        state[0] = 1;
+                        Utils.makeMyLog("state of username in the request: ", ""+state[0]);
                     }
-                    Utils.makeMyLog("myuser: username: ", ""+user.getUserName());
-                    Utils.makeMyLog("myuser: first name: ", ""+user.getFirstName());
-                    Utils.makeMyLog("myuser: last name: ", ""+user.getLastName());
                 }
             }
             @Override
             public void onFailure(Call<List<User>> call, Throwable t) {
-                Utils.makeMyToast(""+ t.getMessage(), getApplicationContext());
+                Utils.makeMyLog("List users, onFailure message: ", ""+ t.getMessage());
             }
         });
-        int option = state[0];
+        Utils.makeMyLog("state before return: ", ""+state[0]);
+        return state[0];
+    }
 
-        return option;
+    private boolean etValidation(EditText editText, String message){
+        editText.requestFocus();
+        Utils.makeMyToast(""+message, getApplicationContext());
+        return false;
     }
 
 }

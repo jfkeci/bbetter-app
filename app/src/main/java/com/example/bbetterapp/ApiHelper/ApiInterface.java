@@ -18,11 +18,11 @@ public interface ApiInterface {
 
     /* ----------------------------------------USERS----------------------------------------*/
     //USERS: GET
-    @GET("/users/all")
+    @GET("users/all")
     Call<List<User>> getUsers();
 
     //USERS: LOGIN
-    @GET("/users/login/{email}/{password}")
+    @GET("users/login/{email}/{password}")
     Call<String> loginUser(@Path("email") String email, @Path("password") String password);
 
     //USERS: SAVE
@@ -43,16 +43,16 @@ public interface ApiInterface {
 
     /* ----------------------------------------NOTES----------------------------------------*/
     //NOTES: GET
-    @GET("/notes/all")
+    @GET("notes/all")
     Call<List<User>> getNotes();
 
     /* ----------------------------------------SESSIONS----------------------------------------*/
     //SESSIONS: GET
-    @GET("/sessions/all")
+    @GET("sessions/all")
     Call<List<User>> getSessions();
 
     /* ----------------------------------------EVENTS----------------------------------------*/
     //EVENTS: GET
-    @GET("/events/all")
+    @GET("events/all")
     Call<List<User>> getEvents();
 }
