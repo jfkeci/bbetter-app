@@ -40,12 +40,12 @@ public class RegisterActivity extends AppCompatActivity{
         etEmail = findViewById(R.id.etEmailRegister);
         etPassword = findViewById(R.id.etPasswordRegister);
 
-        etFirstName.setText("Jakov");
-        etLastName.setText("Sabolicek");
+        etFirstName.setText("Ivano");
+        etLastName.setText("Ivanovic");
         etGender.setText("m");
         etAge.setText("22");
-        etUsername.setText("jfkeci");
-        etEmail.setText("jfkeci111@gmail.com");
+        etUsername.setText("iivanovic");
+        etEmail.setText("iivanovic@mail.com");
         etPassword.setText("test1234");
 
         btnRegister.setOnClickListener(new View.OnClickListener() {
@@ -115,31 +115,35 @@ public class RegisterActivity extends AppCompatActivity{
         }
 
         if(fieldsFilled){
-            int validate = validateNewUser(user);
+            /*int validate = validateNewUser(user);
             if(validate == 1){
                 etValidation(etEmail, "User with this email already exists");
             }
             else if(validate == 2){
                 etValidation(etUsername, "Username taken, try another one");
             }
-            else if(validate == 3){
-                Call<User> saveUserCall = ApiClient.getInstance().getApi().createUser(user);
+            else if(validate == 3){*/
 
-                saveUserCall.enqueue(new Callback<User>() {
-                    @Override
-                    public void onResponse(Call<User> call, Response<User> response) {
-                        if(!response.isSuccessful()){
-                            Utils.makeMyLog("Save user call was not successful: ", ""+response.code());
-                            return;
-                        }
-                    }
+            /*TODO: validate if username or email already exists*/
+           Call<User> saveUserCall = ApiClient.getInstance().getApi().createUser(user);
 
-                    @Override
-                    public void onFailure(Call<User> call, Throwable t) {
-                        Utils.makeMyLog("Save user onFailure message: ", t.getMessage());
-                    }
-                });
-            }
+           saveUserCall.enqueue(new Callback<User>() {
+               @Override
+               public void onResponse(Call<User> call, Response<User> response) {
+                   if(!response.isSuccessful()){
+                       Utils.makeMyLog("Save user call was not successful: ", ""+response.code());
+                       Utils.makeMyToast("Registered successfully", getApplicationContext());
+                       return;
+                   }
+                   startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+               }
+
+               @Override
+               public void onFailure(Call<User> call, Throwable t) {
+                   Utils.makeMyLog("Save user onFailure message: ", t.getMessage());
+               }
+           });
+            /*}*/
         }
     }
 
@@ -152,16 +156,6 @@ public class RegisterActivity extends AppCompatActivity{
         state [0] = 3;
 
         Call<List<User>> call = ApiClient.getInstance().getApi().getUsers();
-
-        
-
-        try {
-
-
-        }
-        catch (Exception ex){
-
-        }
 
         call.enqueue(new Callback<List<User>>() {
             @Override

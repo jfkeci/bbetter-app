@@ -23,7 +23,7 @@ public interface ApiInterface {
 
     //USERS: LOGIN
     @GET("users/login/{email}/{password}")
-    Call<String> loginUser(@Path("email") String email, @Path("password") String password);
+    Call<User> loginUser(@Path("email") String email, @Path("password") String password);
 
     //USERS: SAVE
     @POST("users/new")

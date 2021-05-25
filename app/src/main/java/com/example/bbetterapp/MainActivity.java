@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity{
 
         startButton = findViewById(R.id.startButton);
 
-        startActivity(new Intent(getApplicationContext(), FragmentHolderActivity.class));
+        startActivity(new Intent(getApplicationContext(), RegisterActivity.class));
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
