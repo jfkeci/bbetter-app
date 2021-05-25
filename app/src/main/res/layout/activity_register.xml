@@ -146,17 +146,6 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/etEmailRegister"
         android:background="@drawable/custom_edit_text"/>
-
-    <TextView
-        android:id="@+id/twResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/etPasswordRegister"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
-
-
     <Button
         android:id="@+id/btnRegister"
         android:layout_width="match_parent"

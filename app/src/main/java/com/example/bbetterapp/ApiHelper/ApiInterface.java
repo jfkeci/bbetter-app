@@ -55,8 +55,4 @@ public interface ApiInterface {
     //EVENTS: GET
     @GET("/events/all")
     Call<List<User>> getEvents();
-
-
-
-
 }
