@@ -1,4 +1,4 @@
 package com.example.bbetterapp.Adapters;
 
-public class NotesRecycleViewAdapter {
+public class SessionsRecyclerAdapter {
 }
