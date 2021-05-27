@@ -2,6 +2,7 @@ package com.example.bbetterapp.Db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -12,20 +13,20 @@ import com.example.bbetterapp.Models.User;
 public class MyDbHelper extends SQLiteOpenHelper {
 
     //database name
-    public static final String DATABASE_NAME = "bbetter.db";
+    private static final String DATABASE_NAME = "bbetter.db";
 
     //table user
-    public static final String TABLE_USER = "USER_TABLE";
-    public static final String  COL11 = "USER_ID";
-    public static final String  COL12 = "FIRST_NAME";
-    public static final String  COL13 = "LAST_NAME";
-    public static final String  COL14 = "USERNAME";
-    public static final String  COL15 = "EMAIL";
-    public static final String  COL16 = "GENDER";
-    public static final String  COL17 = "AGE";
-    public static final String  COL18 = "USER_NOTES_URL";
-    public static final String  COL19 = "USER_EVENTS_URL";
-    public static final String  COL110 = "USER_SESSIONS_URL";
+    private static final String TABLE_USER = "USER_TABLE";
+    private static final String  COL11 = "userId";
+    private static final String  COL12 = "firstName";
+    private static final String  COL13 = "lastName";
+    private static final String  COL14 = "userName";
+    private static final String  COL15 = "email";
+    private static final String  COL16 = "gender";
+    private static final String  COL17 = "age";
+    private static final String  COL18 = "userNotesUrl";
+    private static final String  COL19 = "userEventsUrl";
+    private static final String  COL110 = "userSessionsUrl";
 
     public MyDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -33,16 +34,18 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL("create table " + TABLE_USER + "(" + "USER_ID TEXT PRIMARY KEY, " +
-                "FIRST_NAME TEXT)" +
-                "LAST_NAME TEXT)" +
-                "USERNAME TEXT)" +
-                "EMAIL TEXT)" +
-                "GENDER TEXT)" +
-                "AGE NUMBER)" +
-                "USER_NOTES_URL TEXT)" +
-                "USER_EVENTS_URL TEXT)" +
-                "USER_SESSIONS_URL TEXT)");
+
+        db.execSQL("create table " + TABLE_USER +
+                " ("+COL11+" TEXT PRIMARY KEY, " +
+                COL12+" TEXT, " +
+                COL13+" TEXT, " +
+                COL14+" TEXT, " +
+                COL15+" TEXT, " +
+                COL16+" TEXT, " +
+                COL17+" INTEGER, " +
+                COL18+" TEXT, " +
+                COL19+" TEXT, " +
+                COL110+" TEXT);");
 
     }
     @Override
@@ -76,4 +79,17 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean userIsSet(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USER, null);
+        int count = 0;
+        while(res.moveToNext()){
+            count=1;
+        }
+        if(count==1){
+            return true;
+        }else{
+            return false;
+        }
+    }
 }

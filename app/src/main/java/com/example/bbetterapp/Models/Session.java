@@ -2,13 +2,13 @@ package com.example.bbetterapp.Models;
 
 public class Session {
 
-    String sessionId, userId;
+    String _id, userId;
     int sessionLength, sessionPoints;
     boolean sessionFinished;
     String sessionCreatedAt;
 
-    public Session(String sessionId, String userId, int sessionLength, int sessionPoints, boolean sessionFinished, String sessionCreatedAt) {
-        this.sessionId = sessionId;
+    public Session(String _id, String userId, int sessionLength, int sessionPoints, boolean sessionFinished, String sessionCreatedAt) {
+        this._id = _id;
         this.userId = userId;
         this.sessionLength = sessionLength;
         this.sessionPoints = sessionPoints;
@@ -17,11 +17,11 @@ public class Session {
     }
 
     public String getSessionId() {
-        return sessionId;
+        return _id;
     }
 
-    public void setSessionId(String sessionId) {
-        this.sessionId = sessionId;
+    public void setSessionId(String _id) {
+        this._id = _id;
     }
 
     public String getUserId() {

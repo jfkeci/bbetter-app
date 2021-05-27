@@ -42,5 +42,10 @@ public class Utils {
             return true;
         }
     }
+    public static boolean etValidation(EditText editText, String message, Context context){
+        editText.requestFocus();
+        Utils.makeMyToast(""+message, context);
+        return false;
+    }
 
 }

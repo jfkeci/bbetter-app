@@ -1,11 +1,11 @@
 package com.example.bbetterapp.Models;
 
 public class Notes {
-    String noteId, userId, noteTitle, noteContent, noteCreatedAt, noteUpdatedAt;
+    String _id, userId, noteTitle, noteContent, noteCreatedAt, noteUpdatedAt;
     Boolean noteArchived;
 
-    public Notes(String noteId, String userId, String noteTitle, String noteContent, String noteCreatedAt, String noteUpdatedAt, Boolean noteArchived) {
-        this.noteId = noteId;
+    public Notes(String _id, String userId, String noteTitle, String noteContent, String noteCreatedAt, String noteUpdatedAt, Boolean noteArchived) {
+        this._id = _id;
         this.userId = userId;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
@@ -15,11 +15,11 @@ public class Notes {
     }
 
     public String getNoteId() {
-        return noteId;
+        return _id;
     }
 
-    public void setNoteId(String noteId) {
-        this.noteId = noteId;
+    public void setNoteId(String _id) {
+        this._id = _id;
     }
 
     public String getUserId() {

@@ -10,7 +10,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.bbetterapp.ApiHelper.ApiClient;
+import com.example.bbetterapp.Db.MyDbHelper;
 import com.example.bbetterapp.Models.User;
+
+import java.util.List;
 
 import okhttp3.internal.Util;
 import retrofit2.Call;
@@ -19,9 +22,11 @@ import retrofit2.Response;
 
 public class LoginActivity extends AppCompatActivity {
 
-    TextView twRegister;
-    EditText etEmail, etPassword;
-    Button btnLogin;
+    private TextView twRegister;
+    private EditText etEmail, etPassword;
+    private Button btnLogin;
+
+    private static MyDbHelper myDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +36,9 @@ public class LoginActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPassword = findViewById(R.id.etPassword);
         btnLogin = findViewById(R.id.btnLogin);
+        twRegister = findViewById(R.id.twRegister);
+
+        myDbHelper = new MyDbHelper(getApplicationContext());
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,29 +56,50 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void loginUser(){
-        String email = etEmail.getText().toString().trim();
-        String password = etPassword.getText().toString().trim();
 
-        Call<User> call = ApiClient.getInstance().getApi().loginUser(email, password);
+        boolean fieldsFilled = true;
 
-        call.enqueue(new Callback<User>() {
+        final String password[] = new String[1];
+        final String email[] = new String[1];
+
+        if(Utils.isEmpty(etEmail)){
+            fieldsFilled = Utils.etValidation(etEmail, "Email field required", getApplicationContext());
+        }else{
+            email[0] = etEmail.getText().toString();
+            fieldsFilled = true;
+        }
+
+        if((etPassword.getText().toString().length()) < 8){
+            if(Utils.isEmpty(etPassword)){
+                fieldsFilled = Utils.etValidation(etPassword, "Password field required", getApplicationContext());
+            }else{
+                fieldsFilled = Utils.etValidation(etPassword, "Password should have at least 8 characters", getApplicationContext());
+            }
+        }else if((etPassword.getText().toString().length()) >= 8){
+            password[0] = etPassword.getText().toString();
+            fieldsFilled = true;
+        }
+
+        Call<List<User>> call = ApiClient.getInstance().getApi().loginUser(email[0], password[0]);
+
+        call.enqueue(new Callback<List<User>>() {
             @Override
-            public void onResponse(Call<User> call, Response<User> response) {
+            public void onResponse(Call<List<User>> call, Response<List<User>> response) {
                 if(!response.isSuccessful()){
                     Utils.makeMyToast("code: " +response.code(), getApplicationContext());
                     return;
                 }
-                User user = response.body();
-                Utils.makeMyLog("username: ", ""+ user.getUserName());
-                Utils.makeMyLog("firstname: ", ""+ user.getFirstName());
-                Utils.makeMyLog("lastname: ", ""+ user.getLastName());
-                if(user.getEmail().equals(email)){
+
+                List<User> users = response.body();
+
+                if(users.get(0).getEmail().equals(email[0]) && users.get(0).getPassword().equals(password[0])){
+                    myDbHelper.setCurrentUser(users.get(0));
                     startActivity(new Intent(getApplicationContext(), FragmentHolderActivity.class));
                 }
             }
 
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<List<User>> call, Throwable t) {
                 Utils.makeMyLog("message: ", ""+t.getMessage());
             }
         });

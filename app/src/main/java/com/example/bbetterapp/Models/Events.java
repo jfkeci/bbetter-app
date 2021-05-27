@@ -1,14 +1,14 @@
 package com.example.bbetterapp.Models;
 
 public class Events {
-    int eventId;
+    int _id;
     String userId, eventTitle, eventDetails, eventDate;
     int eventType;
     boolean eventChecked;
     String eventCreatedAt;
 
-    public Events(int eventId, String userId, String eventTitle, String eventDetails, String eventDate, int eventType, boolean eventChecked, String eventCreatedAt) {
-        this.eventId = eventId;
+    public Events(int _id, String userId, String eventTitle, String eventDetails, String eventDate, int eventType, boolean eventChecked, String eventCreatedAt) {
+        this._id = _id;
         this.userId = userId;
         this.eventTitle = eventTitle;
         this.eventDetails = eventDetails;
@@ -18,20 +18,12 @@ public class Events {
         this.eventCreatedAt = eventCreatedAt;
     }
 
-    public String getEventCreatedAt() {
-        return eventCreatedAt;
+    public int get_id() {
+        return _id;
     }
 
-    public void setEventCreatedAt(String eventCreatedAt) {
-        this.eventCreatedAt = eventCreatedAt;
-    }
-
-    public int getEventId() {
-        return eventId;
-    }
-
-    public void setEventId(int eventId) {
-        this.eventId = eventId;
+    public void set_id(int _id) {
+        this._id = _id;
     }
 
     public String getUserId() {
@@ -80,5 +72,13 @@ public class Events {
 
     public void setEventChecked(boolean eventChecked) {
         this.eventChecked = eventChecked;
+    }
+
+    public String getEventCreatedAt() {
+        return eventCreatedAt;
+    }
+
+    public void setEventCreatedAt(String eventCreatedAt) {
+        this.eventCreatedAt = eventCreatedAt;
     }
 }

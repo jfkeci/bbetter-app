@@ -1,5 +1,8 @@
 package com.example.bbetterapp.ApiHelper;
 
+import com.example.bbetterapp.Models.Events;
+import com.example.bbetterapp.Models.Notes;
+import com.example.bbetterapp.Models.Session;
 import com.example.bbetterapp.Models.User;
 
 import java.util.List;
@@ -23,7 +26,7 @@ public interface ApiInterface {
 
     //USERS: LOGIN
     @GET("users/login/{email}/{password}")
-    Call<User> loginUser(@Path("email") String email, @Path("password") String password);
+    Call<List<User>> loginUser(@Path("email") String email, @Path("password") String password);
 
     //USERS: SAVE
     @POST("users/new")
@@ -44,15 +47,15 @@ public interface ApiInterface {
     /* ----------------------------------------NOTES----------------------------------------*/
     //NOTES: GET
     @GET("notes/all")
-    Call<List<User>> getNotes();
+    Call<List<Notes>> getNotes();
 
     /* ----------------------------------------SESSIONS----------------------------------------*/
     //SESSIONS: GET
     @GET("sessions/all")
-    Call<List<User>> getSessions();
+    Call<List<Session>> getSessions();
 
     /* ----------------------------------------EVENTS----------------------------------------*/
     //EVENTS: GET
     @GET("events/all")
-    Call<List<User>> getEvents();
+    Call<List<Events>> getEvents();
 }

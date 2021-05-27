@@ -1,7 +1,7 @@
 package com.example.bbetterapp.Models;
 
 public class User {
-    private String userId;
+    private String _id;
     private String firstName;
     private String lastName;
     private String userName;
@@ -14,7 +14,7 @@ public class User {
     private String userSessionsUrl;
 
     public User(String userId, String firstName, String lastName, String userName, String email, String password, String gender, int age, String userNotesUrl, String userEventsUrl, String userSessionsUrl) {
-        this.userId = userId;
+        this._id = userId;
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -30,11 +30,11 @@ public class User {
     public User(){}
 
     public String getUserId() {
-        return userId;
+        return _id;
     }
 
     public void setUserId(String userId) {
-        this.userId = userId;
+        this._id = userId;
     }
 
     public String getFirstName() {

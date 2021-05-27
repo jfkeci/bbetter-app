@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Models.User;
 
+import java.io.IOException;
 import java.util.List;
 
 import okhttp3.internal.Util;
@@ -62,42 +63,42 @@ public class RegisterActivity extends AppCompatActivity{
         boolean fieldsFilled = true;
 
         if(Utils.isEmpty(etFirstName)){
-            fieldsFilled = etValidation(etFirstName, "First name field required");;
+            fieldsFilled = Utils.etValidation(etFirstName, "First name field required", getApplicationContext());
         }else{
             user.setFirstName(etFirstName.getText().toString());
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etLastName)){
-            fieldsFilled = etValidation(etLastName, "Last name field required");
+            fieldsFilled = Utils.etValidation(etLastName, "Last name field required", getApplicationContext());
         }else{
             user.setLastName(etLastName.getText().toString());
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etGender)){
-            fieldsFilled = etValidation(etGender, "Gender field required");
+            fieldsFilled = Utils.etValidation(etGender, "Gender field required", getApplicationContext());
         }else{
             user.setGender(etGender.getText().toString());
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etAge)){
-            fieldsFilled = etValidation(etAge, "Age field required");
+            fieldsFilled = Utils.etValidation(etAge, "Age field required", getApplicationContext());
         }else{
             user.setAge(Integer.parseInt(etAge.getText().toString()));
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etUsername)){
-            fieldsFilled = etValidation(etUsername, "Username field required");
+            fieldsFilled = Utils.etValidation(etUsername, "Username field required", getApplicationContext());
         }else{
             user.setUserName(etUsername.getText().toString());
             fieldsFilled = true;
         }
 
         if(Utils.isEmpty(etEmail)){
-            fieldsFilled = etValidation(etEmail, "Email field required");
+            fieldsFilled = Utils.etValidation(etEmail, "Email field required", getApplicationContext());
         }else{
             user.setEmail(etEmail.getText().toString());
             fieldsFilled = true;
@@ -105,9 +106,9 @@ public class RegisterActivity extends AppCompatActivity{
 
         if((etPassword.getText().toString().length()) < 8){
             if(Utils.isEmpty(etPassword)){
-                fieldsFilled = etValidation(etPassword, "Password field required");
+                fieldsFilled = Utils.etValidation(etPassword, "Password field required", getApplicationContext());
             }else{
-                fieldsFilled = etValidation(etPassword, "Password should have at least 8 characters");
+                fieldsFilled = Utils.etValidation(etPassword, "Password should have at least 8 characters", getApplicationContext());
             }
         }else if((etPassword.getText().toString().length()) >= 8){
             user.setPassword(etPassword.getText().toString());
@@ -133,8 +134,10 @@ public class RegisterActivity extends AppCompatActivity{
                    if(!response.isSuccessful()){
                        Utils.makeMyLog("Save user call was not successful: ", ""+response.code());
                        Utils.makeMyToast("Registered successfully", getApplicationContext());
-                       return;
+                       startActivity(new Intent(getApplicationContext(), LoginActivity.class));
+                       /*return;*/
                    }
+                   Utils.makeMyToast("Registered successfully", getApplicationContext());
                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
                }
 
@@ -149,9 +152,6 @@ public class RegisterActivity extends AppCompatActivity{
 
     private int validateNewUser(User newUser){
         final int[] state = new int[1];
-
-        boolean usernameExists = false;
-        boolean emailExists = false;
 
         state [0] = 3;
 
@@ -185,14 +185,11 @@ public class RegisterActivity extends AppCompatActivity{
                 Utils.makeMyLog("List users, onFailure message: ", ""+ t.getMessage());
             }
         });
+
         Utils.makeMyLog("state before return: ", ""+state[0]);
         return state[0];
     }
 
-    private boolean etValidation(EditText editText, String message){
-        editText.requestFocus();
-        Utils.makeMyToast(""+message, getApplicationContext());
-        return false;
-    }
+
 
 }
