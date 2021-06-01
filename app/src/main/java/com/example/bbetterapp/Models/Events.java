@@ -18,6 +18,8 @@ public class Events {
         this.eventCreatedAt = eventCreatedAt;
     }
 
+    public Events() { }
+
     public int get_id() {
         return _id;
     }

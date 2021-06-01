@@ -92,4 +92,24 @@ public class MyDbHelper extends SQLiteOpenHelper {
             return false;
         }
     }
+
+    public User getUser(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + TABLE_USER, null);
+        User user = new User();
+        while(res.moveToNext()){
+            user.setUserId(res.getString(0));
+            user.setUserName(res.getString(1));
+            user.setEmail(res.getString(2));
+            user.setEmail(res.getString(3));
+            user.setEmail(res.getString(4));
+            user.setEmail(res.getString(5));
+            user.setEmail(res.getString(6));
+            user.setEmail(res.getString(7));
+            user.setEmail(res.getString(8));
+            user.setEmail(res.getString(9));
+            user.setEmail(res.getString(10));
+        }
+        return user;
+    }
 }

@@ -53,8 +53,8 @@ public class FragmentHolderActivity extends AppCompatActivity {
                     }
                 }
             }
-        }
-        );
+        });
+
         tabLayoutMediator.attach();
     }
 }

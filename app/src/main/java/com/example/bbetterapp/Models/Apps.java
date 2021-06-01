@@ -2,21 +2,21 @@ package com.example.bbetterapp.Models;
 
 import android.graphics.drawable.Drawable;
 
-public class AppModel {
+public class Apps {
 
     String appname;
     Drawable appicon;
     int status; //if status is 0 app is unlocked, otherwise its locked
     String packagename;
 
-    public AppModel(String appname, Drawable appicon, int status, String packagename) {
+    public Apps(String appname, Drawable appicon, int status, String packagename) {
         this.appname = appname;
         this.appicon = appicon;
         this.status = status;
         this.packagename = packagename;
     }
 
-    public AppModel() {
+    public Apps() {
 
     }
 

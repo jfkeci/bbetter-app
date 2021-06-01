@@ -69,13 +69,13 @@ public class LoginActivity extends AppCompatActivity {
             fieldsFilled = true;
         }
 
-        if((etPassword.getText().toString().length()) < 8){
+        if((etPassword.getText().toString().length()) < 5){
             if(Utils.isEmpty(etPassword)){
                 fieldsFilled = Utils.etValidation(etPassword, "Password field required", getApplicationContext());
             }else{
                 fieldsFilled = Utils.etValidation(etPassword, "Password should have at least 8 characters", getApplicationContext());
             }
-        }else if((etPassword.getText().toString().length()) >= 8){
+        }else if((etPassword.getText().toString().length()) >= 5){
             password[0] = etPassword.getText().toString();
             fieldsFilled = true;
         }

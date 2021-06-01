@@ -115,6 +115,7 @@ public class RegisterActivity extends AppCompatActivity{
             fieldsFilled = true;
         }
 
+
         if(fieldsFilled){
             /*int validate = validateNewUser(user);
             if(validate == 1){

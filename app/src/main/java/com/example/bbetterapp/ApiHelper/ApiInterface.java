@@ -2,7 +2,7 @@ package com.example.bbetterapp.ApiHelper;
 
 import com.example.bbetterapp.Models.Events;
 import com.example.bbetterapp.Models.Notes;
-import com.example.bbetterapp.Models.Session;
+import com.example.bbetterapp.Models.Sessions;
 import com.example.bbetterapp.Models.User;
 
 import java.util.List;
@@ -15,7 +15,6 @@ import retrofit2.http.PATCH;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
-import retrofit2.http.Query;
 
 public interface ApiInterface {
 
@@ -52,7 +51,7 @@ public interface ApiInterface {
     /* ----------------------------------------SESSIONS----------------------------------------*/
     //SESSIONS: GET
     @GET("sessions/all")
-    Call<List<Session>> getSessions();
+    Call<List<Sessions>> getSessions();
 
     /* ----------------------------------------EVENTS----------------------------------------*/
     //EVENTS: GET

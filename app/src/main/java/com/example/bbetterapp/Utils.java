@@ -6,19 +6,6 @@ import android.util.Log;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.bbetterapp.ApiHelper.ApiClient;
-import com.example.bbetterapp.Models.Events;
-import com.example.bbetterapp.Models.Notes;
-import com.example.bbetterapp.Models.Session;
-import com.example.bbetterapp.Models.User;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
 public class Utils {
 
     public static void makeMyToast(String message, Context context){

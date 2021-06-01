@@ -14,6 +14,8 @@ public class Notes {
         this.noteArchived = noteArchived;
     }
 
+    public Notes() { }
+
     public String getNoteId() {
         return _id;
     }

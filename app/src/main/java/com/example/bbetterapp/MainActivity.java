@@ -26,6 +26,10 @@ public class MainActivity extends AppCompatActivity{
 
         boolean isUserSet = dbHelper.userIsSet();
 
+        if(isUserSet){
+            startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
+        }
+
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
