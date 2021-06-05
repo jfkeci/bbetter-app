@@ -1,13 +1,13 @@
 package com.example.bbetterapp.Models;
 
 public class Events {
-    int _id;
+    String _id;
     String userId, eventTitle, eventDetails, eventDate;
     int eventType;
     boolean eventChecked;
     String eventCreatedAt;
 
-    public Events(int _id, String userId, String eventTitle, String eventDetails, String eventDate, int eventType, boolean eventChecked, String eventCreatedAt) {
+    public Events(String _id, String userId, String eventTitle, String eventDetails, String eventDate, int eventType, boolean eventChecked, String eventCreatedAt) {
         this._id = _id;
         this.userId = userId;
         this.eventTitle = eventTitle;
@@ -20,11 +20,11 @@ public class Events {
 
     public Events() { }
 
-    public int get_id() {
+    public String get_id() {
         return _id;
     }
 
-    public void set_id(int _id) {
+    public void set_id(String _id) {
         this._id = _id;
     }
 

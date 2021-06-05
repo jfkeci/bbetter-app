@@ -16,6 +16,7 @@ import com.example.bbetterapp.Models.Notes;
 import com.example.bbetterapp.R;
 import com.example.bbetterapp.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,17 +36,17 @@ public class NotesFragment extends Fragment {
 
         recyclerView = v.findViewById(R.id.recyclerViewNotes);
 
-        Call<List<Notes>> call = ApiClient.getInstance().getApi().getNotes();
+        Call<ArrayList<Notes>> call = ApiClient.getInstance().getApi().getNotes();
 
-        call.enqueue(new Callback<List<Notes>>() {
+        call.enqueue(new Callback<ArrayList<Notes>>() {
             @Override
-            public void onResponse(Call<List<Notes>> call, Response<List<Notes>> response) {
+            public void onResponse(Call<ArrayList<Notes>> call, Response<ArrayList<Notes>> response) {
                 if(!response.isSuccessful()){
                     Utils.makeMyLog("List of user response was not successful: ", ""+response.code());
                     return;
                 }
 
-                List<Notes> notes = response.body();
+                ArrayList<Notes> notes = response.body();
                 notesAdapter = new NotesRecyclerAdapter(getActivity(), notes);
                 recyclerView.setAdapter(notesAdapter);
 
@@ -54,7 +55,7 @@ public class NotesFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<List<Notes>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Notes>> call, Throwable t) {
 
             }
         });

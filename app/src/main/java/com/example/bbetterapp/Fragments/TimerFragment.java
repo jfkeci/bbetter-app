@@ -26,6 +26,7 @@ import com.example.bbetterapp.Models.Sessions;
 import com.example.bbetterapp.R;
 import com.example.bbetterapp.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -98,7 +99,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
 
     public void getData()
     {
-        updateSessionsList();
+        /*updateSessionsList();*/
         sessionsAdapter.setData(sessionList);
     }
 
@@ -123,11 +124,11 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
 
         sessionList.clear();
 
-        Call<List<Sessions>> call = ApiClient.getInstance().getApi().getSessions();
+        Call<ArrayList<Sessions>> call = ApiClient.getInstance().getApi().getSessions();
 
-        call.enqueue(new Callback<List<Sessions>>() {
+        call.enqueue(new Callback<ArrayList<Sessions>>() {
             @Override
-            public void onResponse(Call<List<Sessions>> call, Response<List<Sessions>> response) {
+            public void onResponse(Call<ArrayList<Sessions>> call, Response<ArrayList<Sessions>> response) {
                 if(!response.isSuccessful()){
                     Utils.makeMyToast("code: "+ response.code(), getActivity().getBaseContext());
                     return;
@@ -137,11 +138,9 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
             }
 
             @Override
-            public void onFailure(Call<List<Sessions>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Sessions>> call, Throwable t) {
                 Utils.makeMyToast("message: "+t.getMessage(), getActivity().getBaseContext());
             }
         });
-
-
     }
 }

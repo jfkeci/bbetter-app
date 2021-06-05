@@ -48,7 +48,7 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return sessionsList.size();
+        return 0;/*return sessionsList.size();*/
     }
 
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{

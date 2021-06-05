@@ -5,6 +5,7 @@ import com.example.bbetterapp.Models.Notes;
 import com.example.bbetterapp.Models.Sessions;
 import com.example.bbetterapp.Models.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -46,15 +47,25 @@ public interface ApiInterface {
     /* ----------------------------------------NOTES----------------------------------------*/
     //NOTES: GET
     @GET("notes/all")
-    Call<List<Notes>> getNotes();
+    Call<ArrayList<Notes>> getNotes();
+    //NOTES: GET ALL USER NOTES
+    @GET("notes/all")
+    Call<ArrayList<Notes>> getAllUserNotes(@Path("userId") String userId);
 
     /* ----------------------------------------SESSIONS----------------------------------------*/
     //SESSIONS: GET
     @GET("sessions/all")
-    Call<List<Sessions>> getSessions();
+    Call<ArrayList<Sessions>> getSessions();
+
+    //SESSIONS: GET ALL USER SESSIONS
+    @GET("sessions/all/userId")
+    Call<ArrayList<Sessions>> getAllUserSessions(@Path("userId") String userId);
 
     /* ----------------------------------------EVENTS----------------------------------------*/
-    //EVENTS: GET
-    @GET("events/all")
-    Call<List<Events>> getEvents();
+    //EVENTS: GET CHECKED
+    @GET("events/all/{userId}/true")
+    Call<ArrayList<Events>> getEvents(@Path("userId") String userId);
+    //EVENTS: GET UNCHECKED
+    @GET("events/all/{userId}/false")
+    Call<ArrayList<Events>> getCheckedEvents(@Path("userId") String userId);
 }
