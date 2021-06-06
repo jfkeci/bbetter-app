@@ -5,7 +5,55 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.NotesFragment"
-    android:background="@color/myDarkBlue">
+    android:padding="8dp"
+    android:background="#211D44">
+
+    <TextView
+        android:id="@+id/tvSlogan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Quick note"
+        android:textSize="18sp"
+        android:layout_marginLeft="10dp"
+        android:textStyle="italic"
+        android:fontFamily="sans-serif-black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:textColor="@color/white"/>
+    <EditText
+        android:id="@+id/etNoteTitle"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="@string/note_title"
+        android:inputType="textEmailAddress"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tvSlogan"
+        android:background="@drawable/custom_edit_text"
+        android:padding="5dp"/>
+    <EditText
+        android:id="@+id/etNoteContent"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:ems="10"
+        android:hint="@string/note_content"
+        android:inputType="textMultiLine"
+        android:textSize="15sp"
+        android:textColor="@color/black"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etNoteTitle"
+        android:background="@drawable/custom_edit_text"
+        android:padding="10dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerViewNotes"
@@ -13,12 +61,33 @@
         android:layout_height="210dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etNoteContent"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="30dp"
-        android:layout_marginBottom="100dp"
         android:padding="5dp"
         android:scrollbars="horizontal" />
+    <Button
+        android:id="@+id/btnAddNote"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        app:layout_constraintTop_toTopOf="@id/etNoteTitle"
+        app:layout_constraintLeft_toRightOf="@id/etNoteTitle"
+        android:visibility="visible"
+        android:backgroundTint="@color/myTealGreen"
+        android:text="@string/add"
+        android:background="@drawable/button_green_square_bg"
+        android:layout_marginStart="5dp"
+        android:textSize="10sp"/>
+    <Button
+        android:id="@+id/btnOpenArchive"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewNotes"
+        android:text="@string/archive"
+        android:layout_margin="15dp"
+        android:backgroundTint="@color/myTealGreen"
+        android:background="@drawable/button_green_square_bg"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

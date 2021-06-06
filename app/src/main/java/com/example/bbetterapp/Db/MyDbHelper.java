@@ -269,15 +269,15 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }
     }
 
-    public Cursor getNoteById(int noteId){
+    public Cursor getNoteById(String noteId){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE+" WHERE _id='" + noteId + "'", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE+" WHERE _id='" + noteId + "';", null);
         return res;
     }
 
-    public Cursor getAlldNotesArchiveYN(int archived){
+    public Cursor getAllNotesArchiveYN(int archived){
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE +" WHERE noteArchived='" + archived + "'", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE +" WHERE noteArchived='" + archived + "';", null);
         return res;
     }
 

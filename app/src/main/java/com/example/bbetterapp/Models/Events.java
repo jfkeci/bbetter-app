@@ -5,9 +5,9 @@ public class Events {
     String userId, eventTitle, eventDetails, eventDate;
     int eventType;
     boolean eventChecked;
-    String eventCreatedAt;
+    String createdAt;
 
-    public Events(String _id, String userId, String eventTitle, String eventDetails, String eventDate, int eventType, boolean eventChecked, String eventCreatedAt) {
+    public Events(String _id, String userId, String eventTitle, String eventDetails, String eventDate, int eventType, boolean eventChecked, String createdAt) {
         this._id = _id;
         this.userId = userId;
         this.eventTitle = eventTitle;
@@ -15,7 +15,7 @@ public class Events {
         this.eventDate = eventDate;
         this.eventType = eventType;
         this.eventChecked = eventChecked;
-        this.eventCreatedAt = eventCreatedAt;
+        this.createdAt = createdAt;
     }
 
     public Events() { }
@@ -77,10 +77,10 @@ public class Events {
     }
 
     public String getEventCreatedAt() {
-        return eventCreatedAt;
+        return createdAt;
     }
 
-    public void setEventCreatedAt(String eventCreatedAt) {
-        this.eventCreatedAt = eventCreatedAt;
+    public void setEventCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }

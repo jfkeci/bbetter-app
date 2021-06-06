@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/cw"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="6dp"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="6dp"
+    app:cardBackgroundColor="#48B9AC">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="2dp">
+        <ImageView
+            android:id="@+id/ivLeftDelete"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_arrow_back_white"/>
+        <ImageView
+            android:id="@+id/ivUpEdit"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintRight_toLeftOf="@id/ivRightUnarchive"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_archive_white"/>
+        <ImageView
+            android:id="@+id/ivPress"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/ivPressArchive"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_touch_white"/>
+
+        <ImageView
+            android:id="@+id/ivPressArchive"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@id/ivPress"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_edit_white" />
+
+        <ImageView
+            android:id="@+id/ivDownDelete"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintLeft_toRightOf="@id/ivLeftDelete"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_delete_sweep_white"/>
+
+        <ImageView
+            android:id="@+id/ivRightUnarchive"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_margin="5dp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:src="@drawable/ic_arrow_forward_white"/>
+
+        <LinearLayout
+            app:layout_constraintTop_toBottomOf="@id/ivRightUnarchive"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="5dp"
+            android:layout_marginTop="2dp"
+            android:gravity="start">
+
+            <TextView
+                android:id="@+id/twNoteDateTimeArchive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="10sp"
+                android:layout_margin="3dp"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:id="@+id/twNoteTitleArchive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:layout_margin="3dp"
+                android:textColor="@color/white"/>
+            <TextView
+                android:id="@+id/twNoteContentArchive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="13sp"
+                android:layout_margin="3dp"
+                android:textColor="@color/white"/>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.cardview.widget.CardView>

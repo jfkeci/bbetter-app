@@ -5,15 +5,15 @@ public class Sessions {
     String _id, userId;
     int sessionLength, sessionPoints;
     boolean sessionFinished;
-    String sessionCreatedAt;
+    String createdAt;
 
-    public Sessions(String _id, String userId, int sessionLength, int sessionPoints, boolean sessionFinished, String sessionCreatedAt) {
+    public Sessions(String _id, String userId, int sessionLength, int sessionPoints, boolean sessionFinished, String createdAt) {
         this._id = _id;
         this.userId = userId;
         this.sessionLength = sessionLength;
         this.sessionPoints = sessionPoints;
         this.sessionFinished = sessionFinished;
-        this.sessionCreatedAt = sessionCreatedAt;
+        this.createdAt = createdAt;
     }
 
     public Sessions() { }
@@ -59,10 +59,10 @@ public class Sessions {
     }
 
     public String getSessionCreatedAt() {
-        return sessionCreatedAt;
+        return createdAt;
     }
 
-    public void setSessionCreatedAt(String sessionCreatedAt) {
-        this.sessionCreatedAt = sessionCreatedAt;
+    public void setSessionCreatedAt(String createdAt) {
+        this.createdAt = createdAt;
     }
 }
