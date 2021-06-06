@@ -19,18 +19,18 @@ import java.util.Date;
 
 public class NoteEditActivity extends AppCompatActivity {
 
-    Button btnSaveEdit;
-    EditText etTitle, etContent;
+    private Button btnSaveEdit;
+    private EditText etTitle, etContent;
 
-    MyDbHelper dbHelper;
+    private MyDbHelper dbHelper;
 
-    Intent intent;
+    private Intent intent;
 
-    ArrayList<Notes> dbNotes;
+    private ArrayList<Notes> dbNotes;
 
-    Notes selectedNote;
+    private Notes selectedNote;
 
-    Utils utils;
+    private Utils utils;
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
     @Override
@@ -49,35 +49,6 @@ public class NoteEditActivity extends AppCompatActivity {
         intent = getIntent();
         String noteId = intent.getStringExtra("note_id");
 
-        /*dbNotes = new ArrayList<>();
-
-        dbNotes.clear();
-
-        Cursor res = dbHelper.getNoteById(noteID);
-
-        StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
-            boolean archived = false;
-
-            if(res.getInt(6) == 0){
-                archived = false;
-            }else if(res.getInt(6) == 1){
-                archived = true;
-            }
-
-            Notes note = new Notes(res.getString(0),
-                    res.getString(1),
-                    res.getString(2),
-                    res.getString(3),
-                    res.getString(4),
-                    res.getString(5),
-                    archived);
-
-            dbNotes.add(0, note);
-        }*/
-
-        /*selectedNote = dbNotes.get(0);*/
-
         selectedNote = utils.getNoteById(noteId);
 
         etTitle.setText(selectedNote.getNoteTitle());
@@ -89,9 +60,8 @@ public class NoteEditActivity extends AppCompatActivity {
 
                 Date date = Calendar.getInstance().getTime();
                 selectedNote.setNoteUpdatedAt(sdf.format(date));
-                selectedNote.setNoteUpdatedAt(etContent.getText().toString());
-                selectedNote.setNoteUpdatedAt(etTitle.getText().toString());
-
+                selectedNote.setNoteContent(etContent.getText().toString());
+                selectedNote.setNoteTitle(etTitle.getText().toString());
 
                 dbHelper.updateNote(selectedNote);
                 onBackPressed();

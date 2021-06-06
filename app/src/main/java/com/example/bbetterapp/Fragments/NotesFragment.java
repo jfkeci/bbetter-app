@@ -86,6 +86,13 @@ public class NotesFragment extends Fragment {
         recyclerView.setLayoutManager(layoutManager);
         notesAdapter.notifyDataSetChanged();
 
+        notesAdapter.setOnLongItemClickListener(new NotesRecyclerAdapter.OnLongNoteClickedListener() {
+            @Override
+            public void onNoteClicked(int position) {
+                notesAdapter.notifyDataSetChanged();
+            }
+        });
+
         return v;
     }
 
@@ -95,7 +102,7 @@ public class NotesFragment extends Fragment {
         if(etNoteTitle.getText().toString().isEmpty() && etNoteContent.getText().toString().isEmpty()){
             Utils.makeMyToast("Write something!", getActivity());
         }else{
-            newNote.setNoteId("1");
+            newNote.setNoteId("2");
             newNote.setUserId(utils.getMyUserId());
             newNote.setNoteTitle(etNoteTitle.getText().toString());
             newNote.setNoteContent(etNoteContent.getText().toString());
@@ -130,8 +137,8 @@ public class NotesFragment extends Fragment {
 
     public void getData()
     {
-        /*myNotes = allNotesList();
-        notesAdapter.setData(myNotes);*/
+        notesList = utils.allNotesList(0);
+        notesAdapter.setData(notesList);
     }
 
 }

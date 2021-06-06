@@ -121,7 +121,7 @@ public class Utils {
     public Notes getNoteById(String id){
         MyDbHelper dbHelper;
         dbHelper = new MyDbHelper(context);
-        Notes selectedNote = new Notes();
+        Notes selectedNote;
 
         ArrayList<Notes> dbNotes = new ArrayList<>();
 

@@ -53,7 +53,6 @@
         android:background="@drawable/button_green_square_bg"
         android:text="@string/save"
         android:padding="5dp"
-        android:layout_margin="15dp"
-        />
+        android:layout_margin="15dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
