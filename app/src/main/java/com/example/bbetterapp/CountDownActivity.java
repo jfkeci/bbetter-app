@@ -43,7 +43,8 @@ public class CountDownActivity extends AppCompatActivity {
     RecyclerView recycleViewTimer;
 
     private MyDbHelper dbHelper;
-    Utils utils;
+    private Utils utils;
+    private Sessions sessionUtils;
 
     private String uid;
 
@@ -69,6 +70,7 @@ public class CountDownActivity extends AppCompatActivity {
 
         dbHelper = new MyDbHelper(this);
         utils = new Utils(this);
+        sessionUtils = new Sessions(this);
 
         final Intent intent = getIntent();
         final String length_string = intent.getStringExtra("session_length");
@@ -195,7 +197,7 @@ public class CountDownActivity extends AppCompatActivity {
         });
     }
     public void InitRecycleViewSessions(){
-        sessionsAdapter = new SessionsRecyclerAdapter(this, utils.allSessionsList());
+        sessionsAdapter = new SessionsRecyclerAdapter(this, sessionUtils.allSessionsList());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
         recycleViewTimer.setLayoutManager(gridLayoutManager);
         recycleViewTimer.setAdapter(sessionsAdapter);

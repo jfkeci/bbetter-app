@@ -50,6 +50,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
     private RecyclerView recycleViewTimer;
 
     private Utils utils;
+    private Sessions sessionUtils;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,6 +59,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
         View v = inflater.inflate(R.layout.fragment_timer, container, false);
 
         utils = new Utils(getActivity());
+        sessionUtils = new Sessions(getActivity());
 
         btnStartPause = v.findViewById(R.id.buttonStartPause);
         ivClock = v.findViewById(R.id.ivTimerCircle);
@@ -77,7 +79,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
             }
         });
 
-        sessionList = utils.allSessionsList();
+        sessionList = sessionUtils.allSessionsList();
 
         sessionsAdapter = new SessionsRecyclerAdapter(getActivity(), sessionList);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
@@ -97,7 +99,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
 
     public void getData()
     {
-        sessionList = utils.allSessionsList();
+        sessionList = sessionUtils.allSessionsList();
         sessionsAdapter.setData(sessionList);
     }
 

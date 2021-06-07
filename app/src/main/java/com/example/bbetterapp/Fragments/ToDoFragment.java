@@ -58,6 +58,7 @@ public class ToDoFragment extends Fragment {
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
 
     private MyDbHelper dbHelper;
+    private Events eventsUtils;
     private Utils utils;
 
     private EventsRecyclerAdapter todoAdapter;
@@ -76,6 +77,7 @@ public class ToDoFragment extends Fragment {
         View todoView = inflater.inflate(R.layout.fragment_to_do, container, false);
 
         dbHelper = new MyDbHelper(getActivity());
+        eventsUtils = new Events(getActivity());
         utils = new Utils(getActivity());
 
         eventsList = new ArrayList<>();
@@ -102,8 +104,8 @@ public class ToDoFragment extends Fragment {
             }
         });
 
-        eventsList = utils.allEventsList(0);
-        eventsCheckedList = utils.allEventsList(1);
+        eventsList = eventsUtils.allEventsList(0);
+        eventsCheckedList = eventsUtils.allEventsList(1);
 
 
         for(int i=0; i<5; i++){

@@ -1,10 +1,19 @@
 package com.example.bbetterapp.Models;
 
+import android.content.Context;
+import android.database.Cursor;
+
+import com.example.bbetterapp.Db.MyDbHelper;
+
+import java.util.ArrayList;
+
 public class Notes {
     String _id, userId, noteTitle, noteContent, createdAt, updatedAt;
     Boolean noteArchived;
 
     int synced;
+
+    Context context;
 
     public Notes(String _id, String userId, String noteTitle, String noteContent, String createdAt, String updatedAt, Boolean noteArchived) {
         this._id = _id;
@@ -14,6 +23,10 @@ public class Notes {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.noteArchived = noteArchived;
+    }
+
+    public Notes(Context context) {
+        this.context = context;
     }
 
     public int isSynced() {
@@ -80,5 +93,101 @@ public class Notes {
 
     public void setNoteArchived(Boolean noteArchived) {
         this.noteArchived = noteArchived;
+    }
+
+    public Notes getNoteById(String id){
+        MyDbHelper dbHelper;
+        dbHelper = new MyDbHelper(context);
+        Notes selectedNote;
+
+        ArrayList<Notes> dbNotes = new ArrayList<>();
+
+        Cursor res = dbHelper.getNoteById(id);
+
+        StringBuffer buffer = new StringBuffer();
+        while(res.moveToNext()){
+            boolean archived = false;
+
+            if(res.getInt(6) == 0){
+                archived = false;
+            }else if(res.getInt(6) == 1){
+                archived = true;
+            }
+
+            Notes note = new Notes(res.getString(0),
+                    res.getString(1),
+                    res.getString(2),
+                    res.getString(3),
+                    res.getString(4),
+                    res.getString(5),
+                    archived);
+
+            dbNotes.add(0, note);
+        }
+
+        selectedNote = dbNotes.get(0);
+
+        return selectedNote;
+    }
+
+    public ArrayList<Notes> allNotesList(int archived_yn){
+        MyDbHelper dbHelper;
+        dbHelper = new MyDbHelper(context);
+
+        ArrayList<Notes> dbNotes = new ArrayList<>();
+
+        if(archived_yn == 0 || archived_yn == 1){
+            Cursor res = dbHelper.getAllNotesArchiveYN(archived_yn);
+            StringBuffer buffer = new StringBuffer();
+            while(res.moveToNext()){
+                boolean archived = false;
+
+                if(archived_yn == 0){
+                    archived = false;
+                }else if(archived_yn == 1){
+                    archived = true;
+                }
+
+                Notes note = new Notes(res.getString(0),
+                        res.getString(1),
+                        res.getString(2),
+                        res.getString(3),
+                        res.getString(4),
+                        res.getString(5),
+                        archived
+                );
+
+                note.setSynced(res.getInt(7));
+
+                dbNotes.add(0, note);
+            }
+        }else if(archived_yn == 2){
+            Cursor res = dbHelper.getAllNotes();
+            StringBuffer buffer = new StringBuffer();
+            while(res.moveToNext()){
+                boolean archived = false;
+
+                if(res.getInt(6) == 0){
+                    archived = false;
+                }else if(res.getInt(6) == 1){
+                    archived = true;
+                }
+
+                Notes note = new Notes(res.getString(0),
+                        res.getString(1),
+                        res.getString(2),
+                        res.getString(3),
+                        res.getString(4),
+                        res.getString(5),
+                        archived
+                );
+
+                note.setSynced(res.getInt(7));
+
+                dbNotes.add(0, note);
+            }
+        }
+
+        return dbNotes;
     }
 }

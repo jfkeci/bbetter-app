@@ -23,6 +23,7 @@ public class NoteEditActivity extends AppCompatActivity {
     private EditText etTitle, etContent;
 
     private MyDbHelper dbHelper;
+    private Notes noteUtils;
 
     private Intent intent;
 
@@ -38,18 +39,18 @@ public class NoteEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_edit);
 
-        utils = new Utils(getApplicationContext());
+        dbHelper = new MyDbHelper(this);
+        noteUtils = new Notes(this);
+        utils = new Utils(this);
 
         btnSaveEdit = findViewById(R.id.btnSaveEdit);
         etContent = findViewById(R.id.etNoteContent);
         etTitle = findViewById(R.id.etNoteTitle);
 
-        dbHelper = new MyDbHelper(this);
-
         intent = getIntent();
         String noteId = intent.getStringExtra("note_id");
 
-        selectedNote = utils.getNoteById(noteId);
+        selectedNote = noteUtils.getNoteById(noteId);
 
         etTitle.setText(selectedNote.getNoteTitle());
         etContent.setText(selectedNote.getNoteContent());

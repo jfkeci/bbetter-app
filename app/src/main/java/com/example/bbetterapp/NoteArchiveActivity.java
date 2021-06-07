@@ -19,6 +19,7 @@ public class NoteArchiveActivity extends AppCompatActivity {
 
     private Utils utils;
     private MyDbHelper dbHelper;
+    private Notes noteUtils;
 
     private ImageButton btnBack;
     private RecyclerView recyclerViewArchive;
@@ -30,6 +31,8 @@ public class NoteArchiveActivity extends AppCompatActivity {
     private Notes deletedNote = new Notes();
     private Notes unarchivedNote = new Notes();
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,11 +40,12 @@ public class NoteArchiveActivity extends AppCompatActivity {
 
         utils = new Utils(this);
         dbHelper = new MyDbHelper(this);
+        noteUtils = new Notes(this);
 
         btnBack = findViewById(R.id.btnBack);
         recyclerViewArchive = findViewById(R.id.recycleViewArchive);
 
-        archivedNotesList = utils.allNotesList(1);
+        archivedNotesList = noteUtils.allNotesList(1);
 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,7 +72,7 @@ public class NoteArchiveActivity extends AppCompatActivity {
 
     public void getData()
     {
-        archivedNotesList = utils.allNotesList(1);
+        archivedNotesList = noteUtils.allNotesList(1);
         notesArchiveAdapter.setData(archivedNotesList);
     }
 

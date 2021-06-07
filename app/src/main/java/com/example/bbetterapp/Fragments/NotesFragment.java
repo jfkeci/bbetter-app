@@ -29,8 +29,9 @@ import java.util.ArrayList;
 
 public class NotesFragment extends Fragment {
 
-    Utils utils;
-    MyDbHelper dbHelper;
+    private Utils utils;
+    private MyDbHelper dbHelper;
+    private Notes noteUtils;
 
     private RecyclerView recyclerView;
     private NotesRecyclerAdapter notesAdapter;
@@ -48,6 +49,7 @@ public class NotesFragment extends Fragment {
 
         utils = new Utils(getActivity());
         dbHelper = new MyDbHelper(getActivity());
+        noteUtils = new Notes(getActivity());
 
         recyclerView = v.findViewById(R.id.recyclerViewNotes);
 
@@ -72,7 +74,7 @@ public class NotesFragment extends Fragment {
             }
         });
 
-        notesList = utils.allNotesList(0);
+        notesList = noteUtils.allNotesList(0);
 
         for(Notes mynote : notesList){
             Utils.makeMyLog("noteee title: ", ""+ mynote.getNoteTitle());
@@ -137,7 +139,7 @@ public class NotesFragment extends Fragment {
 
     public void getData()
     {
-        notesList = utils.allNotesList(0);
+        notesList = noteUtils.allNotesList(0);
         notesAdapter.setData(notesList);
     }
 

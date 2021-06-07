@@ -1,5 +1,12 @@
 package com.example.bbetterapp.Models;
 
+import android.content.Context;
+import android.database.Cursor;
+
+import com.example.bbetterapp.Db.MyDbHelper;
+
+import java.util.ArrayList;
+
 public class Sessions {
 
     String _id, userId;
@@ -9,6 +16,8 @@ public class Sessions {
 
     int synced;
 
+    Context context;
+
     public Sessions(String _id, String userId, int sessionLength, int sessionPoints, boolean sessionFinished, String createdAt) {
         this._id = _id;
         this.userId = userId;
@@ -16,6 +25,10 @@ public class Sessions {
         this.sessionPoints = sessionPoints;
         this.sessionFinished = sessionFinished;
         this.createdAt = createdAt;
+    }
+
+    public Sessions(Context context) {
+        this.context = context;
     }
 
     public int isSynced() {
@@ -74,5 +87,36 @@ public class Sessions {
 
     public void setSessionCreatedAt(String createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public ArrayList<Sessions> allSessionsList(){
+        ArrayList<Sessions> mySessions = new ArrayList<>();
+        MyDbHelper dbHelper = new MyDbHelper(context);
+
+        Cursor res = dbHelper.getAllSessions();
+
+        while(res.moveToNext()){
+
+            boolean finished = true;
+
+            if(Integer.parseInt(res.getString(4)) == 1){
+                finished = true;
+            }if(Integer.parseInt(res.getString(4)) == 0){
+                finished = false;
+            }
+
+            Sessions session = new Sessions(
+                    res.getString(0),
+                    res.getString(1),
+                    res.getInt(2),
+                    res.getInt(3),
+                    finished,
+                    res.getString(5)
+            );
+
+            mySessions.add(0, session);
+        }
+
+        return mySessions;
     }
 }
