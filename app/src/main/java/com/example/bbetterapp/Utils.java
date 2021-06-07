@@ -3,6 +3,8 @@ package com.example.bbetterapp;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -99,27 +101,56 @@ public class Utils {
 
         ArrayList<Notes> dbNotes = new ArrayList<>();
 
-        Cursor res = dbHelper.getAllNotesArchiveYN(archived_yn);
+        if(archived_yn == 0 || archived_yn == 1){
+            Cursor res = dbHelper.getAllNotesArchiveYN(archived_yn);
+            StringBuffer buffer = new StringBuffer();
+            while(res.moveToNext()){
+                boolean archived = false;
 
-        StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
-            boolean archived = false;
+                if(archived_yn == 0){
+                    archived = false;
+                }else if(archived_yn == 1){
+                    archived = true;
+                }
 
-            if(archived_yn == 0){
-                archived = false;
-            }else if(archived_yn == 1){
-                archived = true;
+                Notes note = new Notes(res.getString(0),
+                        res.getString(1),
+                        res.getString(2),
+                        res.getString(3),
+                        res.getString(4),
+                        res.getString(5),
+                        archived
+                );
+
+                note.setSynced(res.getInt(7));
+
+                dbNotes.add(0, note);
             }
+        }else if(archived_yn == 2){
+            Cursor res = dbHelper.getAllNotes();
+            StringBuffer buffer = new StringBuffer();
+            while(res.moveToNext()){
+                boolean archived = false;
 
-            Notes note = new Notes(res.getString(0),
-                    res.getString(1),
-                    res.getString(2),
-                    res.getString(3),
-                    res.getString(4),
-                    res.getString(5),
-                    archived);
+                if(res.getInt(6) == 0){
+                    archived = false;
+                }else if(res.getInt(6) == 1){
+                    archived = true;
+                }
 
-            dbNotes.add(0, note);
+                Notes note = new Notes(res.getString(0),
+                        res.getString(1),
+                        res.getString(2),
+                        res.getString(3),
+                        res.getString(4),
+                        res.getString(5),
+                        archived
+                );
+
+                note.setSynced(res.getInt(7));
+
+                dbNotes.add(0, note);
+            }
         }
 
         return dbNotes;
@@ -248,6 +279,10 @@ public class Utils {
 
         return myEvents;
     }
+
+    /*public void updateNoteSynced(Notes note){
+        Call<>
+    }*/
 
     /*        Call<ArrayList<Notes>> call = ApiClient.getInstance().getApi().getNotes();
 

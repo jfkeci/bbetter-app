@@ -7,6 +7,8 @@ public class Sessions {
     boolean sessionFinished;
     String createdAt;
 
+    int synced;
+
     public Sessions(String _id, String userId, int sessionLength, int sessionPoints, boolean sessionFinished, String createdAt) {
         this._id = _id;
         this.userId = userId;
@@ -14,6 +16,14 @@ public class Sessions {
         this.sessionPoints = sessionPoints;
         this.sessionFinished = sessionFinished;
         this.createdAt = createdAt;
+    }
+
+    public int isSynced() {
+        return synced;
+    }
+
+    public void setSynced(int synced) {
+        this.synced = synced;
     }
 
     public Sessions() { }

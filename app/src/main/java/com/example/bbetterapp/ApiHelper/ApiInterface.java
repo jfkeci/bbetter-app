@@ -49,8 +49,10 @@ public interface ApiInterface {
     @GET("notes/all")
     Call<ArrayList<Notes>> getNotes();
     //NOTES: GET ALL USER NOTES
-    @GET("notes/all")
+    @GET("notes/all/{userId}")
     Call<ArrayList<Notes>> getAllUserNotes(@Path("userId") String userId);
+    @POST("notes/new")
+    Call<Notes> createNote(@Body Notes note);
 
     /* ----------------------------------------SESSIONS----------------------------------------*/
     //SESSIONS: GET
@@ -58,7 +60,7 @@ public interface ApiInterface {
     Call<ArrayList<Sessions>> getSessions();
 
     //SESSIONS: GET ALL USER SESSIONS
-    @GET("sessions/all/userId")
+    @GET("sessions/all/{userId}")
     Call<ArrayList<Sessions>> getAllUserSessions(@Path("userId") String userId);
 
     /* ----------------------------------------EVENTS----------------------------------------*/

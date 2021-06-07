@@ -1,17 +1,27 @@
 package com.example.bbetterapp.Models;
 
 public class Notes {
-    String _id, userId, noteTitle, noteContent, createdAt, noteUpdatedAt;
+    String _id, userId, noteTitle, noteContent, createdAt, updatedAt;
     Boolean noteArchived;
 
-    public Notes(String _id, String userId, String noteTitle, String noteContent, String createdAt, String noteUpdatedAt, Boolean noteArchived) {
+    int synced;
+
+    public Notes(String _id, String userId, String noteTitle, String noteContent, String createdAt, String updatedAt, Boolean noteArchived) {
         this._id = _id;
         this.userId = userId;
         this.noteTitle = noteTitle;
         this.noteContent = noteContent;
         this.createdAt = createdAt;
-        this.noteUpdatedAt = noteUpdatedAt;
+        this.updatedAt = updatedAt;
         this.noteArchived = noteArchived;
+    }
+
+    public int isSynced() {
+        return synced;
+    }
+
+    public void setSynced(int synced) {
+        this.synced = synced;
     }
 
     public Notes() { }
@@ -57,11 +67,11 @@ public class Notes {
     }
 
     public String getNoteUpdatedAt() {
-        return noteUpdatedAt;
+        return updatedAt;
     }
 
-    public void setNoteUpdatedAt(String noteUpdatedAt) {
-        this.noteUpdatedAt = noteUpdatedAt;
+    public void setNoteUpdatedAt(String updatedAt) {
+        this.updatedAt = updatedAt;
     }
 
     public Boolean getNoteArchived() {

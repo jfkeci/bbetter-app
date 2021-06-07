@@ -30,13 +30,13 @@ public class MyDbHelper extends SQLiteOpenHelper {
     private static final String  COL18 = "userNotesUrl";
     private static final String  COL19 = "userEventsUrl";
     private static final String  COL110 = "userSessionsUrl";
-
     //table apps
     private static final String APPS_TABLE = "APPS_TABLE";
     private static final String  COL21 = "userId";
     private static final String  COL22 = "appName";
     private static final String  COL23 = "appStatus";
     private static final String  COL24 = "packageName";
+    private static final String  COL25 = "synced";
 
     //table events
     private static final String EVENTS_TABLE = "EVENTS_TABLE";
@@ -48,6 +48,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     private static final String  COL36 = "eventType";
     private static final String  COL37 = "eventChecked";
     private static final String  COL38 = "eventCreatedAt";
+    private static final String  COL39 = "synced";
 
     //table notes
     private static final String NOTES_TABLE = "NOTES_TABLE";
@@ -58,6 +59,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     private static final String  COL45 = "noteCreatedAt";
     private static final String  COL46 = "noteUpdatedAt";
     private static final String  COL47 = "noteArchived";
+    private static final String  COL48 = "synced";
 
     //table sessions
     private static final String SESSIONS_TABLE = "SESSIONS_TABLE";
@@ -67,6 +69,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     private static final String  COL54 = "sessionPoints";
     private static final String  COL55 = "sessionFinished";
     private static final String  COL56 = "sessionCreatedAt";
+    private static final String  COL57 = "synced";
 
     public MyDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -87,7 +90,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 COL19+" TEXT, " +
                 COL110+" TEXT);");
 
-        //create evetns table
+        //create events table
         db.execSQL("create table " + EVENTS_TABLE +
                 " ("+COL31+" TEXT PRIMARY KEY, " +
                 COL32+" TEXT, " +
@@ -96,7 +99,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 COL35+" TEXT, " +
                 COL36+" INTEGER, " +
                 COL37+" INTEGER DEFAULT 0, " +
-                COL38+" TEXT);");
+                COL38+" TEXT, " +
+                COL39+" INTEGER DEFAULT 0);");
 
         //create notes table
         db.execSQL("create table " + NOTES_TABLE +
@@ -106,7 +110,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 COL44+" TEXT, " +
                 COL45+" TEXT, " +
                 COL46+" TEXT, " +
-                COL47+" INTEGER DEFAULT 0);");
+                COL47+" INTEGER DEFAULT 0, " +
+                COL48+" INTEGER DEFAULT 0);");
 
         //create sessions table
         db.execSQL("create table " + SESSIONS_TABLE +
@@ -115,14 +120,16 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 COL53+" INTEGER, " +
                 COL54+" INTEGER, " +
                 COL55+" INTEGER DEFAULT 0, " +
-                COL56+" TEXT);");
+                COL56+" TEXT, " +
+                COL57+" INTEGER DEFAULT 0);");
 
         //create apps table
         db.execSQL("create table " + APPS_TABLE +
                 " ("+COL21+" TEXT PRIMARY KEY, " +
                 COL22+" TEXT, " +
                 COL23+" INTEGER DEFAULT 0, " +
-                COL24+" TEXT);");
+                COL24+" TEXT, " +
+                COL25+" INTEGER DEFAULT 0);");
 
     }
 
@@ -281,6 +288,18 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public Cursor getAllNotesSyncedYN(int synced){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE +" WHERE synced='" + synced + "';", null);
+        return res;
+    }
+
+    public Cursor getAllNotes(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE +";", null);
+        return res;
+    }
+
     public boolean updateNote(Notes note){
         String nid = note.getNoteId();
 
@@ -291,6 +310,17 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL46, note.getNoteUpdatedAt());
 
         db.update(NOTES_TABLE, contentValues, "_id = ?", new String[]{nid});
+
+        return true;
+    }
+
+    public boolean setNoteSynced(String noteId, int synced){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL48, synced);
+
+        db.update(NOTES_TABLE, contentValues, "_id = ?", new String[]{noteId});
 
         return true;
     }

@@ -8,6 +8,7 @@ public class Apps {
     Drawable appicon;
     int status; //if status is 0 app is unlocked, otherwise its locked
     String packagename;
+    int synced;
 
     public Apps(String appname, Drawable appicon, int status, String packagename) {
         this.appname = appname;
@@ -18,6 +19,14 @@ public class Apps {
 
     public Apps() {
 
+    }
+
+    public int isSynced() {
+        return synced;
+    }
+
+    public void setSynced(int synced) {
+        this.synced = synced;
     }
 
     public String getAppname() {

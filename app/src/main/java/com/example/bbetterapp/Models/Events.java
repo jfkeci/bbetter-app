@@ -6,6 +6,7 @@ public class Events {
     int eventType;
     boolean eventChecked;
     String createdAt;
+    int synced;
 
     public Events(String _id, String userId, String eventTitle, String eventDetails, String eventDate, int eventType, boolean eventChecked, String createdAt) {
         this._id = _id;
@@ -16,6 +17,14 @@ public class Events {
         this.eventType = eventType;
         this.eventChecked = eventChecked;
         this.createdAt = createdAt;
+    }
+
+    public int isSynced() {
+        return synced;
+    }
+
+    public void setSynced(int synced) {
+        this.synced = synced;
     }
 
     public Events() { }
