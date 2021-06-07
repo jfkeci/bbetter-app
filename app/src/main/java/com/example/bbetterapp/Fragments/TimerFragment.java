@@ -42,18 +42,14 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
     private ImageView ivClock, ivArrow;
     private Spinner sessionLengthSpinner;
 
-    List<Sessions> sessionList;
+    private List<Sessions> sessionList;
 
-    private CountDownTimer countDownTimer;
-    private boolean TimerRunning;
     private String sessionLengthSelected;
 
-    private ObjectAnimator anim;
-
     private SessionsRecyclerAdapter sessionsAdapter;
-    RecyclerView recycleViewTimer;
+    private RecyclerView recycleViewTimer;
 
-    private MyDbHelper dbHelper;
+    private Utils utils;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -61,7 +57,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
 
         View v = inflater.inflate(R.layout.fragment_timer, container, false);
 
-        dbHelper = new MyDbHelper(getActivity());
+        utils = new Utils(getActivity());
 
         btnStartPause = v.findViewById(R.id.buttonStartPause);
         ivClock = v.findViewById(R.id.ivTimerCircle);
@@ -81,6 +77,8 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
             }
         });
 
+        sessionList = utils.allSessionsList();
+
         sessionsAdapter = new SessionsRecyclerAdapter(getActivity(), sessionList);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3, GridLayoutManager.VERTICAL, false);
         recycleViewTimer.setLayoutManager(gridLayoutManager);
@@ -99,7 +97,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
 
     public void getData()
     {
-        /*updateSessionsList();*/
+        sessionList = utils.allSessionsList();
         sessionsAdapter.setData(sessionList);
     }
 
@@ -115,32 +113,11 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         sessionLengthSelected = parent.getItemAtPosition(position).toString();
     }
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
-    public void updateSessionsList(){
 
-        sessionList.clear();
-
-        Call<ArrayList<Sessions>> call = ApiClient.getInstance().getApi().getSessions();
-
-        call.enqueue(new Callback<ArrayList<Sessions>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Sessions>> call, Response<ArrayList<Sessions>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyToast("code: "+ response.code(), getActivity().getBaseContext());
-                    return;
-                }
-
-                sessionList = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Sessions>> call, Throwable t) {
-                Utils.makeMyToast("message: "+t.getMessage(), getActivity().getBaseContext());
-            }
-        });
-    }
 }

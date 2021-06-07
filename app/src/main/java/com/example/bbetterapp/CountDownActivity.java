@@ -43,6 +43,7 @@ public class CountDownActivity extends AppCompatActivity {
     RecyclerView recycleViewTimer;
 
     private MyDbHelper dbHelper;
+    Utils utils;
 
     private String uid;
 
@@ -67,6 +68,7 @@ public class CountDownActivity extends AppCompatActivity {
         recycleViewTimer = findViewById(R.id.rwTimer);
 
         dbHelper = new MyDbHelper(this);
+        utils = new Utils(this);
 
         final Intent intent = getIntent();
         final String length_string = intent.getStringExtra("session_length");
@@ -77,22 +79,14 @@ public class CountDownActivity extends AppCompatActivity {
         //int minutes = (int)START_TIME_IN_MILLIS / 1000 / 60;
         int seconds = (int)START_TIME_IN_MILLIS / 1000;
 
-        String sessionPoints = getSessionPoints(length_string);
-
-        Date date = new Date();
-
-        String sessionDate = sdfDate.format(date);
-        String sessionTime = sdfTime.format(date);
-
         User user = dbHelper.getUser();
         uid = user.getUserId();
 
         newSession = new Sessions();
-        /*newSession.getUserId(uid);
-        newSession.setSESSION_DATE(sessionDate);
-        newSession.setSESSION_TIME(sessionTime);
-        newSession.setSESSION_LENGTH(getSessionPoints(length_string));
-        newSession.setSESSION_POINTS(sessionPoints);*/
+        newSession.setUserId(utils.getMyUserId());
+        newSession.setSessionCreatedAt(utils.getDateNow(1));
+        newSession.setSessionLength(Integer.parseInt(getSessionPoints(length_string)));
+        newSession.setSessionPoints(Integer.parseInt(getSessionPoints(length_string)));
 
         anim = ObjectAnimator.ofFloat(ivArrow, "rotation", 0, 360);
         anim.setDuration(1000);
@@ -137,7 +131,7 @@ public class CountDownActivity extends AppCompatActivity {
                 updateCountDownText();
                 newSession.setSessionFinished(true);
 
-                /*dbHelper.addNewSession(newSession);*/
+                dbHelper.addNewSession(newSession);
 
                 CountDownActivity.super.onBackPressed();
             }
@@ -179,7 +173,7 @@ public class CountDownActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(TimerPaused){
                     newSession.setSessionFinished(false);
-                    /*dbHelper.addNewSession(newSession);*/
+                    dbHelper.addNewSession(newSession);
                     CountDownActivity.super.onBackPressed();
                     areYouSure.dismiss();
                 }else{
@@ -201,36 +195,13 @@ public class CountDownActivity extends AppCompatActivity {
         });
     }
     public void InitRecycleViewSessions(){
-        /*sessionsAdapter = new SessionsRecyclerAdapter(this, allSessionsList());
+        sessionsAdapter = new SessionsRecyclerAdapter(this, utils.allSessionsList());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
         recycleViewTimer.setLayoutManager(gridLayoutManager);
         recycleViewTimer.setAdapter(sessionsAdapter);
 
-        sessionsAdapter.notifyDataSetChanged();*/
+        sessionsAdapter.notifyDataSetChanged();
     }
-    /*public ArrayList<Session> allSessionsList(){
-        ArrayList<Session> mySessions = new ArrayList<>();
-
-        Cursor res = dbHelper.getAllSessions();
-
-        while(res.moveToNext()){
-            int id = Integer.parseInt(res.getString(0));
-
-            boolean finished = true;
-
-            if(Integer.parseInt(res.getString(6)) == 1){
-                finished = true;
-            }if(Integer.parseInt(res.getString(6)) == 0){
-                finished = false;
-            }
-            Session session = new Session(id, res.getString(1),
-                    res.getString(2), res.getString(3),
-                    res.getString(4), res.getString(5), finished );
-
-            mySessions.add(0, session);
-        }
-        return mySessions;
-    }*/
     public String CountCredits(){
         int credits = 0;
         String sCredits="";

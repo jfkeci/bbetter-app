@@ -48,7 +48,7 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return 0;/*return sessionsList.size();*/
+        return sessionsList.size();
     }
 
     private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -98,10 +98,8 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
             }
             String length = sessionsList.get(position).getSessionLength() + "min";
             String sDate = sessionsList.get(position).getSessionCreatedAt();
-            String sTime = sessionsList.get(position).getSessionCreatedAt();
             twContent1.setText(length);
             twDate1.setText(sDate);
-            twTime1.setText(sTime);
 
         }
         public void onClick(View view){

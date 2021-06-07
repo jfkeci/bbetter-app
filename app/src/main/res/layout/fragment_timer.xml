@@ -43,7 +43,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         android:layout_margin="20dp"
-        android:text="@string/lets_go"
+        android:text="Go"
         android:textColor="#FFF"
         android:textSize="20sp"
         android:textAllCaps="false"

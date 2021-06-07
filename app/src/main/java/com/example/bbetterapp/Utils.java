@@ -10,7 +10,9 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.bbetterapp.Db.MyDbHelper;
+import com.example.bbetterapp.Models.Events;
 import com.example.bbetterapp.Models.Notes;
+import com.example.bbetterapp.Models.Sessions;
 import com.example.bbetterapp.Models.User;
 
 import java.text.SimpleDateFormat;
@@ -80,7 +82,7 @@ public class Utils {
         return date;//"dd.MM.yyyy 'at' HH:mm"
     }
 
-    public static String convertDate(String date ){//"dd.MM.yyyy 'at' HH:mm"
+    public static String convertDate(String dbDate ){//"dd.MM.yyyy 'at' HH:mm"
         String convertedDate ="";
 
         return convertedDate;//2021-05-20T07:12:03.611Z
@@ -179,6 +181,69 @@ public class Utils {
         return dateTime;
     }
 
+    public ArrayList<Sessions> allSessionsList(){
+        ArrayList<Sessions> mySessions = new ArrayList<>();
+        MyDbHelper dbHelper = new MyDbHelper(context);
+
+        Cursor res = dbHelper.getAllSessions();
+
+        while(res.moveToNext()){
+
+            boolean finished = true;
+
+            if(Integer.parseInt(res.getString(4)) == 1){
+                finished = true;
+            }if(Integer.parseInt(res.getString(4)) == 0){
+                finished = false;
+            }
+
+            Sessions session = new Sessions(
+                    res.getString(0),
+                    res.getString(1),
+                    res.getInt(2),
+                    res.getInt(3),
+                    finished,
+                    res.getString(5)
+            );
+
+            mySessions.add(0, session);
+        }
+
+        return mySessions;
+    }
+
+    public ArrayList<Events> allEventsList(int checkedYN){
+        ArrayList<Events> myEvents = new ArrayList<>();
+        MyDbHelper dbHelper = new MyDbHelper(context);
+
+        Cursor res = dbHelper.getAllEventsByCheck(checkedYN);
+
+        while(res.moveToNext()){
+            boolean finished = false;
+
+            if(checkedYN == 1){
+                finished = true;
+            }if(checkedYN == 0){
+                finished = false;
+            }
+
+            Events event = new Events(
+                    res.getString(0),
+                    res.getString(1),
+                    res.getString(2),
+                    res.getString(3),
+                    res.getString(4),
+                    res.getInt(5),
+                    finished,
+                    res.getString(7)
+            );
+
+            myEvents.add(0, event);
+        }
+
+        return myEvents;
+    }
+
     /*        Call<ArrayList<Notes>> call = ApiClient.getInstance().getApi().getNotes();
 
         call.enqueue(new Callback<ArrayList<Notes>>() {
@@ -202,5 +267,29 @@ public class Utils {
 
             }
         });*/
+
+    /*    public void updateSessionsList(){
+
+        sessionList.clear();
+
+        Call<ArrayList<Sessions>> call = ApiClient.getInstance().getApi().getSessions();
+
+        call.enqueue(new Callback<ArrayList<Sessions>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Sessions>> call, Response<ArrayList<Sessions>> response) {
+                if(!response.isSuccessful()){
+                    Utils.makeMyToast("code: "+ response.code(), getActivity().getBaseContext());
+                    return;
+                }
+
+                sessionList = response.body();
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Sessions>> call, Throwable t) {
+                Utils.makeMyToast("message: "+t.getMessage(), getActivity().getBaseContext());
+            }
+        });
+    }*/
 
 }
