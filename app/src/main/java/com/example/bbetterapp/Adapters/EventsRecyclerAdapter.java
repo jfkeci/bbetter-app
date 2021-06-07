@@ -46,8 +46,7 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-        /*return eventsList.size();*/
-        return 0;
+        return eventsList.size();
     }
 
     public class listViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
@@ -88,10 +87,8 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter{
                     mainContent = content;
                 }
 
-
                 twContent.setText(mainContent);
                 twDate.setText(eventsList.get(position).getEventDate());
-
 
                 if(eventsList.get(position).getEventType() == 1){
                     ivType.setImageResource(R.drawable.ic_calendar_white);

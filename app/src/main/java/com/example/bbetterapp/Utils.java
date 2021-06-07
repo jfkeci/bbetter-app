@@ -9,6 +9,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
 import com.example.bbetterapp.Models.Events;
 import com.example.bbetterapp.Models.Notes;
@@ -19,6 +20,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Utils {
 
@@ -291,5 +296,34 @@ public class Utils {
             }
         });
     }*/
+
+    /*public void updateEventsList(){
+
+        Call<ArrayList<Events>> call = ApiClient.getInstance().getApi().getEvents(uid);
+
+        call.enqueue(new Callback<ArrayList<Events>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
+                if(!response.isSuccessful()){
+                    Utils.makeMyToast("code: "+ response.code(), getActivity());
+                    return;
+                }
+
+                eventsList = response.body();
+
+                for (Events event : eventsList){
+                    Utils.makeMyLog("event title: ", ""+event.getEventTitle());
+                    Utils.makeMyLog("event created at: ", ""+event.getEventCreatedAt());
+                    Utils.makeMyLog("event uid: ", ""+event.getUserId());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Events>> call, Throwable t) {
+                Utils.makeMyToast("message: "+t.getMessage(), getActivity());
+            }
+        });
+    }*/
+
 
 }

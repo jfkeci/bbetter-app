@@ -58,6 +58,8 @@ public class ToDoFragment extends Fragment {
     private SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
 
     private MyDbHelper dbHelper;
+    private Utils utils;
+
     private EventsRecyclerAdapter todoAdapter;
     private EventsRecyclerAdapter checkedAdapter;
 
@@ -74,6 +76,7 @@ public class ToDoFragment extends Fragment {
         View todoView = inflater.inflate(R.layout.fragment_to_do, container, false);
 
         dbHelper = new MyDbHelper(getActivity());
+        utils = new Utils(getActivity());
 
         eventsList = new ArrayList<>();
         eventsCheckedList = new ArrayList<>();
@@ -84,12 +87,6 @@ public class ToDoFragment extends Fragment {
         constraintLayoutChecked = todoView.findViewById(R.id.constraintLayoutChecked);
         btnPending = todoView.findViewById(R.id.btnPending);
         btnDone = todoView.findViewById(R.id.btnDone);
-
-        User user = dbHelper.getUser();
-
-        /*uid = user.getUserId();*/
-
-        uid = "60b627a3af4b11459077b6df";
 
         btnPending.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +102,38 @@ public class ToDoFragment extends Fragment {
             }
         });
 
-        updateEventsList();
+        eventsList = utils.allEventsList(0);
+        eventsCheckedList = utils.allEventsList(1);
+
+
+        for(int i=0; i<5; i++){
+            Events event = new Events(
+                    "res.getString("+i+")",
+                    utils.getMyUserId(),
+                    "res.getString(2)",
+                    "res.getString(3)",
+                    "res.getString(4)",
+                    5,
+                    false,
+                    utils.getDateNow(1)
+            );
+            eventsList.add(event);
+        }
+        for(int i=5; i<10; i++){
+            Events event = new Events(
+                    "res.getString("+i+")",
+                    utils.getMyUserId(),
+                    "res.getString(2)",
+                    "res.getString(3)",
+                    "res.getString(4)",
+                    5,
+                    true,
+                    utils.getDateNow(1)
+            );
+            eventsCheckedList.add(event);
+        }
+
+
 
         checkedAdapter = new EventsRecyclerAdapter(getActivity(), eventsCheckedList, 1);
         recyclerViewChecked.setAdapter(checkedAdapter);
@@ -120,56 +148,6 @@ public class ToDoFragment extends Fragment {
         return todoView;
     }
 
-    public void updateEventsList(){
-
-        Call<ArrayList<Events>> call = ApiClient.getInstance().getApi().getEvents(uid);
-
-        call.enqueue(new Callback<ArrayList<Events>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyToast("code: "+ response.code(), getActivity());
-                    return;
-                }
-
-                eventsList = response.body();
-
-                for (Events event : eventsList){
-                    Utils.makeMyLog("event title: ", ""+event.getEventTitle());
-                    Utils.makeMyLog("event created at: ", ""+event.getEventCreatedAt());
-                    Utils.makeMyLog("event uid: ", ""+event.getUserId());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Events>> call, Throwable t) {
-                Utils.makeMyToast("message: "+t.getMessage(), getActivity());
-            }
-        });
-    }
-
-    public void updateCheckedEventsList(){
-
-        Call<ArrayList<Events>> call = ApiClient.getInstance().getApi().getEvents(uid);
-
-        call.enqueue(new Callback<ArrayList<Events>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyToast("code: "+ response.code(), getActivity().getBaseContext());
-                    return;
-                }
-
-                eventsCheckedList = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Events>> call, Throwable t) {
-                Utils.makeMyToast("message: "+t.getMessage(), getActivity().getBaseContext());
-            }
-        });
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -179,7 +157,9 @@ public class ToDoFragment extends Fragment {
     public void getData()
     {
         todoAdapter.setData(eventsList);
+        todoAdapter.notifyDataSetChanged();
         checkedAdapter.setData(eventsCheckedList);
+        checkedAdapter.notifyDataSetChanged();
     }
 
     public void changeRecycleViewSize(int a, int b){
