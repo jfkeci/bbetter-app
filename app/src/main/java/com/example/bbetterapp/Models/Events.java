@@ -106,6 +106,34 @@ public class Events {
         this.createdAt = createdAt;
     }
 
+    public String getEventTypeString(int typeNum){
+        String type = "";
+
+        if(typeNum == 1){
+            type = "Event";
+        }else if(typeNum == 2){
+            type = "Reminder";
+        }else if(typeNum == 3){
+            type = "ToDo";
+        }
+
+        return type;
+    }
+
+    public int getEventTypeInt(String type){
+        int typeNum = 0;
+
+        if(type.equals("Event")){
+            typeNum = 1;
+        }else if(type.equals("Reminder")){
+            typeNum = 2;
+        }else if(type.equals("Todo")){
+            typeNum = 3;
+        }
+
+        return typeNum;
+    }
+
     public ArrayList<Events> allEventsList(int checkedYN){
         ArrayList<Events> myEvents = new ArrayList<>();
         MyDbHelper dbHelper = new MyDbHelper(context);
@@ -133,6 +161,52 @@ public class Events {
             );
 
             myEvents.add(0, event);
+        }
+
+        return myEvents;
+    }
+
+    public ArrayList<Events> allEventsByDateList(String dateSelected, int checkedYN){
+        ArrayList<Events> myEvents = new ArrayList<>();
+        MyDbHelper dbHelper = new MyDbHelper(context);
+
+        myEvents.clear();
+
+        Cursor res = dbHelper.getAllEventsByCheck(0);
+
+        StringBuffer buffer = new StringBuffer();
+        while(res.moveToNext()){
+            boolean finished = false;
+
+            if(Integer.parseInt(res.getString(6)) == 0){
+                finished = false;
+            }if(Integer.parseInt(res.getString(6)) == 1){
+                finished = true;
+            }
+
+            if(checkedYN == 0){
+                finished = false;
+            }if(checkedYN == 1){
+                finished = true;
+            }
+
+            if(!finished){
+                if(res.getString(4).contains(dateSelected)){
+                    Events event = new Events(
+                            res.getString(0),
+                            res.getString(1),
+                            res.getString(2),
+                            res.getString(3),
+                            res.getString(4),
+                            res.getInt(5),
+                            finished,
+                            res.getString(7)
+                    );
+
+                    myEvents.add(event);
+                }
+            }
+
         }
 
         return myEvents;

@@ -103,7 +103,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(users.get(0).getEmail().equals(email[0]) && users.get(0).getPassword().equals(password[0])){
                         myDbHelper.setCurrentUser(users.get(0));
-                        saveNonSyncedNotesAPI();
+                        //saveNonSyncedNotesAPI();
                         startActivity(new Intent(getApplicationContext(), FragmentHolderActivity.class));
                     }
                 }

@@ -81,9 +81,19 @@ public class Utils {
     }
 
     public static String parseDate(String dbDate){ //2021-05-20T07:12:03.611Z
-        String date ="";
 
-
+        String date =   dbDate.charAt(8) +
+                        dbDate.charAt(9) + "." +
+                        dbDate.charAt(5) +
+                        dbDate.charAt(6) + "." +
+                        dbDate.charAt(0) +
+                        dbDate.charAt(1) +
+                        dbDate.charAt(2) +
+                        dbDate.charAt(3) + ". at " +
+                        dbDate.charAt(11) +
+                        dbDate.charAt(12) + ":" +
+                        dbDate.charAt(14) +
+                        dbDate.charAt(15);
 
 
         return date;//"dd.MM.yyyy 'at' HH:mm"
@@ -91,6 +101,8 @@ public class Utils {
 
     public static String convertDate(String dbDate ){//"dd.MM.yyyy 'at' HH:mm"
         String convertedDate ="";
+
+
 
         return convertedDate;//2021-05-20T07:12:03.611Z
     }
@@ -104,7 +116,8 @@ public class Utils {
     public String getDateNow(int type){
         SimpleDateFormat sdf1 = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
         SimpleDateFormat sdf2 = new SimpleDateFormat("dd.MM.yyyy");
-        SimpleDateFormat sdf3 = new SimpleDateFormat("dd.MM.yyyy");
+        SimpleDateFormat sdf3 = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat sdf4 = new SimpleDateFormat("HH-mm-sss");
 
         Date date = Calendar.getInstance().getTime();
 
@@ -116,6 +129,8 @@ public class Utils {
             dateTime = sdf2.format(date);
         }else if(type == 3){
             dateTime = sdf3.format(date);
+        }else if(type == 4){
+            dateTime = sdf4.format(date);
         }
 
         return dateTime;

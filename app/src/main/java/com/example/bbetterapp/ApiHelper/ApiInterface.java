@@ -19,7 +19,9 @@ import retrofit2.http.Path;
 
 public interface ApiInterface {
 
+    /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------USERS----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     //USERS: GET
     @GET("users/all")
     Call<List<User>> getUsers();
@@ -44,7 +46,12 @@ public interface ApiInterface {
     @DELETE("users/{id}")
     Call<Void> deleteUser(@Path("id") String id);
 
+
+
+
+    /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------NOTES----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     //NOTES: GET
     @GET("notes/all")
     Call<ArrayList<Notes>> getNotes();
@@ -54,7 +61,12 @@ public interface ApiInterface {
     @POST("notes/new")
     Call<Notes> createNote(@Body Notes note);
 
+
+
+
+    /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------SESSIONS----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     //SESSIONS: GET
     @GET("sessions/all")
     Call<ArrayList<Sessions>> getSessions();
@@ -63,11 +75,17 @@ public interface ApiInterface {
     @GET("sessions/all/{userId}")
     Call<ArrayList<Sessions>> getAllUserSessions(@Path("userId") String userId);
 
+
+
+
+    /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------EVENTS----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     //EVENTS: GET CHECKED
     @GET("events/all/{userId}/true")
-    Call<ArrayList<Events>> getEvents(@Path("userId") String userId);
+    Call<ArrayList<Events>> getNonCheckedEvents(@Path("userId") String userId);
     //EVENTS: GET UNCHECKED
     @GET("events/all/{userId}/false")
     Call<ArrayList<Events>> getCheckedEvents(@Path("userId") String userId);
+
 }

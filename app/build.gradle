@@ -40,6 +40,11 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 
+    implementation 'androidx.recyclerview:recyclerview:1.2.1'
+    implementation 'androidx.recyclerview:recyclerview-selection:1.1.0'
+    implementation 'com.intellij:annotations:+@jar'
+
+
     compile 'com.github.sundeepk:compact-calendar-view:3.0.0'
     implementation 'it.xabaras.android:recyclerview-swipedecorator:1.2.3'
 

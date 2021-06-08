@@ -44,9 +44,9 @@ public class MainActivity extends AppCompatActivity{
         if(isUserSet){
             startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
 
-            if(isNetworkAvailable()){
+            /*if(isNetworkAvailable()){
                 saveNonSyncedNotesAPI();
-            }
+            }*/
         }
 
         startButton.setOnClickListener(new View.OnClickListener() {
@@ -54,9 +54,9 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 if(isUserSet){
 
-                    if(isNetworkAvailable()){
+                    /*if(isNetworkAvailable()){
                         saveNonSyncedNotesAPI();
-                    }
+                    }*/
 
                     startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
                 }else{

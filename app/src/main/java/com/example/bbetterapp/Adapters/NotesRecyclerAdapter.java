@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.bbetterapp.Models.Notes;
 import com.example.bbetterapp.NoteEditActivity;
 import com.example.bbetterapp.R;
+import com.example.bbetterapp.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
 
             holder.twTitle.setText(mainTitle);
             holder.twContent.setText(mainContent);
-            holder.twDate.setText(notesList.get(position).getNoteCreatedAt());
+            holder.twDate.setText(Utils.parseDate(notesList.get(position).getNoteCreatedAt()));
         }
 
     }

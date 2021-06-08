@@ -231,6 +231,43 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return res;
     }
 
+    public boolean eventSetChecked(String eventId, int checkYN){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL31, eventId);
+        contentValues.put(COL39, checkYN);
+        db.update(EVENTS_TABLE, contentValues, "EVENT_ID = ?", new String[]{eventId});
+
+        return true;
+    }
+
+    public boolean addNewEventWithId(Events event){
+        int check = 1;
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if(event.isEventChecked()){
+            check = 1;
+        }else{
+            check = 0;
+        }
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL31, event.get_id());
+        contentValues.put(COL32, event.getUserId());
+        contentValues.put(COL33, event.getEventTitle());
+        contentValues.put(COL34, event.getEventDetails());
+        contentValues.put(COL35, event.getEventDate());
+        contentValues.put(COL36, event.getEventType());
+        contentValues.put(COL38, event.getEventCreatedAt());
+
+        long result = db.insert(EVENTS_TABLE,null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public Cursor getAllEvents(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE, null);
