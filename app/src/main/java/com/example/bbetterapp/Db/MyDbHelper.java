@@ -268,6 +268,16 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }
     }
 
+    public boolean setEventSynced(String eventId, int sycned){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL39, sycned);
+
+        db.update(EVENTS_TABLE, contentValues, "_id = ?", new String[]{eventId});
+
+        return true;
+    }
+
     public Cursor getAllEvents(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE, null);

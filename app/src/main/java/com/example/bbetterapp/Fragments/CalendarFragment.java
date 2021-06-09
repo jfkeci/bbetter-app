@@ -4,6 +4,8 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AlertDialog;
@@ -27,6 +29,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.example.bbetterapp.Adapters.EventsRecyclerAdapter;
+import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
 import com.example.bbetterapp.Models.Events;
 import com.example.bbetterapp.R;
@@ -39,6 +42,10 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CalendarFragment extends Fragment implements AdapterView.OnItemSelectedListener{
 
@@ -148,28 +155,71 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
 
             Events newEvent = new Events();
 
-            newEvent.set_id(utils.getDateNow(4)+eventTypeSelected);
+
             newEvent.setUserId(utils.getMyUserId());
             newEvent.setEventTitle(etEvent.getText().toString());
-            newEvent.setEventDetails(eventTypeSelected);
+            newEvent.setEventDetails("type: "+eventTypeSelected);
             newEvent.setEventDate(utils.getDateNow(1));
             newEvent.setEventType(eventUtils.getEventTypeInt(eventTypeSelected));
             newEvent.setEventChecked(false);
-            newEvent.setEventCreatedAt(utils.getDateNow(1));
             newEvent.setSynced(0);
 
-            boolean isInserted = dbHelper.addNewEvent(newEvent);
+            if(utils.isNetworkAvailable()){
 
-            if(isInserted){
+                Call<Events> call = ApiClient.getInstance().getApi().saveNewEvent(newEvent);
 
-                getData();
+                newEvent.setSynced(1);
 
-                etEvent.setText("");
+                call.enqueue(new Callback<Events>() {
+                    @Override
+                    public void onResponse(Call<Events> call, Response<Events> response) {
+                        if(!response.isSuccessful()){
+                            Utils.makeMyToast("Something went wrong\ntry again...\n message: "+response.code(), getActivity());
+                        }else{
 
-                closeKeyboard();
+                            Events savedEvent = response.body();
+
+                            boolean isInserted = dbHelper.addNewEvent(savedEvent);
+
+                            if(isInserted){
+
+                                dbHelper.setEventSynced(savedEvent.get_id(), 1);
+
+                                getData();
+
+                                etEvent.setText("");
+
+                                closeKeyboard();
+                            }else{
+                                Utils.makeMyToast("Failed to add new " + eventTypeSelected, getActivity());
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Events> call, Throwable t) {
+                        Utils.makeMyToast("message: "+t.getMessage(), getActivity());
+                    }
+                });
 
             }else{
-                Utils.makeMyToast("Failed to add new " + eventTypeSelected, getActivity());
+
+                newEvent.set_id(utils.getDateNow(4)+eventTypeSelected);
+                newEvent.setEventCreatedAt(utils.getDateNow(1));
+
+                boolean isInserted = dbHelper.addNewEvent(newEvent);
+
+                if(isInserted){
+
+                    getData();
+
+                    etEvent.setText("");
+
+                    closeKeyboard();
+
+                }else{
+                    Utils.makeMyToast("Failed to add new " + eventTypeSelected, getActivity());
+                }
             }
         }
     }

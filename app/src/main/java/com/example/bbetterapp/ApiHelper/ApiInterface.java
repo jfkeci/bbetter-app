@@ -87,5 +87,8 @@ public interface ApiInterface {
     //EVENTS: GET UNCHECKED
     @GET("events/all/{userId}/false")
     Call<ArrayList<Events>> getCheckedEvents(@Path("userId") String userId);
+    //USERS: SAVE
+    @POST("events/new")
+    Call<Events> saveNewEvent(@Body Events event);
 
 }

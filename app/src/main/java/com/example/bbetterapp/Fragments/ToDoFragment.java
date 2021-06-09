@@ -119,92 +119,6 @@ public class ToDoFragment extends Fragment {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewToDo.setLayoutManager(layoutManager);
 
-        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull @org.jetbrains.annotations.NotNull RecyclerView recyclerView, @NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder viewHolder, @NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder viewHolder, int direction) {
-                int position = viewHolder.getAdapterPosition();
-
-                if (direction == ItemTouchHelper.LEFT) {
-                    deletedEvent = eventsList.get(position);
-
-                    String event_id = String.valueOf(deletedEvent.get_id());
-
-                    int deleted = dbHelper.deleteEvent(event_id);
-
-                    if (deleted == 1) {
-                        eventsList.remove(deletedEvent);
-                        todoAdapter.notifyItemRemoved(position);
-                    }
-
-                    Snackbar.make(recyclerViewToDo, deletedEvent.getEventTitle(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-
-                            boolean undone = dbHelper.addNewEventWithId(deletedEvent);
-
-                            if (undone) {
-                                eventsList.add(position, deletedEvent);
-                                todoAdapter.notifyItemInserted(position);
-                            } else {
-                                Utils.makeMyToast("Something went wrong!", getActivity());
-                            }
-                        }
-                    }).show();
-
-                }
-                if (direction == ItemTouchHelper.RIGHT) {
-                    checkedEvent = eventsList.get(position);
-
-                    eventsList.remove(checkedEvent);
-                    todoAdapter.notifyItemRemoved(position);
-
-                    boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(),1);
-
-                    if (checked) {
-                        Utils.makeMyToast("Awesome!", getActivity());
-                        eventsCheckedList.add(checkedEvent);
-                        checkedAdapter.notifyDataSetChanged();
-                    } else {
-                        Utils.makeMyToast("Something went wrong!", getActivity());
-                    }
-                    Snackbar.make(recyclerViewToDo, checkedEvent.getEventTitle(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(), 0);
-                            if (checked) {
-                                eventsList.add(position, checkedEvent);
-                                todoAdapter.notifyItemInserted(position);
-                                eventsCheckedList.remove(checkedEvent);
-                                checkedAdapter.notifyDataSetChanged();
-                            } else {
-                                Utils.makeMyToast("Something went wrong!", getActivity());
-                            }
-                        }
-                    }).show();
-                }
-            }
-
-            @Override
-            public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myPink))
-                        .addSwipeLeftActionIcon(R.drawable.ic_delete_sweep_white)
-                        .addSwipeRightBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myGoodGreen))
-                        .addSwipeRightActionIcon(R.drawable.ic_check_white)
-                        .create()
-                        .decorate();
-                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-            }
-        };
-
-        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerViewToDo);
-
         return todoView;
     }
 
@@ -233,3 +147,91 @@ public class ToDoFragment extends Fragment {
     }
 
 }
+
+/*
+    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        @Override
+        public boolean onMove(@NonNull @org.jetbrains.annotations.NotNull RecyclerView recyclerView, @NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder viewHolder, @NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder target) {
+            return false;
+        }
+
+        @Override
+        public void onSwiped(@NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+            int position = viewHolder.getAdapterPosition();
+
+            if (direction == ItemTouchHelper.LEFT) {
+                deletedEvent = eventsList.get(position);
+
+                String event_id = String.valueOf(deletedEvent.get_id());
+
+                int deleted = dbHelper.deleteEvent(event_id);
+
+                if (deleted == 1) {
+                    eventsList.remove(deletedEvent);
+                    todoAdapter.notifyItemRemoved(position);
+                }
+
+                Snackbar.make(recyclerViewToDo, deletedEvent.getEventTitle(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        boolean undone = dbHelper.addNewEventWithId(deletedEvent);
+
+                        if (undone) {
+                            eventsList.add(position, deletedEvent);
+                            todoAdapter.notifyItemInserted(position);
+                        } else {
+                            Utils.makeMyToast("Something went wrong!", getActivity());
+                        }
+                    }
+                }).show();
+
+            }
+            if (direction == ItemTouchHelper.RIGHT) {
+                checkedEvent = eventsList.get(position);
+
+                eventsList.remove(checkedEvent);
+                todoAdapter.notifyItemRemoved(position);
+
+                boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(),1);
+
+                if (checked) {
+                    Utils.makeMyToast("Awesome!", getActivity());
+                    eventsCheckedList.add(checkedEvent);
+                    checkedAdapter.notifyDataSetChanged();
+                } else {
+                    Utils.makeMyToast("Something went wrong!", getActivity());
+                }
+                Snackbar.make(recyclerViewToDo, checkedEvent.getEventTitle(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(), 0);
+                        if (checked) {
+                            eventsList.add(position, checkedEvent);
+                            todoAdapter.notifyItemInserted(position);
+                            eventsCheckedList.remove(checkedEvent);
+                            checkedAdapter.notifyDataSetChanged();
+                        } else {
+                            Utils.makeMyToast("Something went wrong!", getActivity());
+                        }
+                    }
+                }).show();
+            }
+        }
+
+        @Override
+        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myPink))
+                    .addSwipeLeftActionIcon(R.drawable.ic_delete_sweep_white)
+                    .addSwipeRightBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myGoodGreen))
+                    .addSwipeRightActionIcon(R.drawable.ic_check_white)
+                    .create()
+                    .decorate();
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
+    };
+
+    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerViewToDo);
+*/

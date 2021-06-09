@@ -136,6 +136,21 @@ public class Utils {
         return dateTime;
     }
 
+    public boolean isNetworkAvailable() {
+        boolean isAvalible;
+
+        ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            isAvalible = true;
+        } else {
+            isAvalible = false;
+        }
+
+        return isAvalible;
+    }
 
 
 
