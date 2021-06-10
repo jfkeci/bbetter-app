@@ -19,6 +19,7 @@ import android.widget.EditText;
 import com.example.bbetterapp.Adapters.NotesRecyclerAdapter;
 import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
+import com.example.bbetterapp.Models.Events;
 import com.example.bbetterapp.Models.Notes;
 import com.example.bbetterapp.Models.User;
 import com.example.bbetterapp.NoteArchiveActivity;
@@ -26,6 +27,10 @@ import com.example.bbetterapp.R;
 import com.example.bbetterapp.Utils;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NotesFragment extends Fragment {
 
@@ -104,22 +109,67 @@ public class NotesFragment extends Fragment {
         if(etNoteTitle.getText().toString().isEmpty() && etNoteContent.getText().toString().isEmpty()){
             Utils.makeMyToast("Write something!", getActivity());
         }else{
-            newNote.setNoteId("2");
+
             newNote.setUserId(utils.getMyUserId());
             newNote.setNoteTitle(etNoteTitle.getText().toString());
             newNote.setNoteContent(etNoteContent.getText().toString());
-            newNote.setNoteCreatedAt(utils.getDateNow(1));
-            newNote.setNoteUpdatedAt(utils.getDateNow(1));
+            newNote.setNoteArchived(false);
 
-            boolean isInserted = dbHelper.addNewNote(newNote);
-            if(isInserted){
-                etNoteTitle.setText("");
-                etNoteContent.setText("");
-                getData();
-                closeKeyboard();
+
+            if(utils.isNetworkAvailable()){
+
+                newNote.setSynced(1);
+
+                Call<Notes> call = ApiClient.getInstance().getApi().saveNewNote(newNote);
+
+                call.enqueue(new Callback<Notes>() {
+                    @Override
+                    public void onResponse(Call<Notes> call, Response<Notes> response) {
+                        if(!response.isSuccessful()){
+                            Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
+                        }else{
+
+                            Notes savedNote = response.body();
+
+                            boolean isInserted = dbHelper.addNewNote(savedNote);
+
+                            if(isInserted){
+                                dbHelper.setNoteSynced(savedNote.getNoteId(), 1);
+
+                                etNoteTitle.setText("");
+                                etNoteContent.setText("");
+                                getData();
+                                closeKeyboard();
+                            }
+
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Notes> call, Throwable t) {
+
+                    }
+                });
+
+
             }else{
-                Utils.makeMyToast("Try again!", getActivity());
+                newNote.setNoteId("nt"+utils.getDateNow(4));
+                newNote.setNoteCreatedAt(utils.getDateNow(1));
+                newNote.setNoteUpdatedAt(utils.getDateNow(1));
+                newNote.setSynced(0);
+
+                boolean isInserted = dbHelper.addNewNote(newNote);
+                if(isInserted){
+                    etNoteTitle.setText("");
+                    etNoteContent.setText("");
+                    getData();
+                    closeKeyboard();
+                }else{
+                    Utils.makeMyToast("Try again!", getActivity());
+                }
             }
+
+
         }
     }
 

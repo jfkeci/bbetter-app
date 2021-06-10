@@ -215,6 +215,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL35, event.getEventDate());
         contentValues.put(COL36, event.getEventType());
         contentValues.put(COL38, event.getEventCreatedAt());
+        contentValues.put(COL39, event.isSynced());
 
         long result = db.insert(EVENTS_TABLE, null, contentValues);
 
@@ -313,6 +314,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL44, note.getNoteContent());
         contentValues.put(COL45, note.getNoteCreatedAt());
         contentValues.put(COL46, note.getNoteUpdatedAt());
+        contentValues.put(COL48, note.isSynced());
 
         long result = db.insert(NOTES_TABLE, null, contentValues);
 
@@ -413,6 +415,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL54, points);
         contentValues.put(COL55, finished);
         contentValues.put(COL56, session.getSessionCreatedAt());
+        contentValues.put(COL57, session.isSynced());
 
 
         long result = db.insert(SESSIONS_TABLE, null, contentValues);

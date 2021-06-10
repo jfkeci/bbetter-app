@@ -97,7 +97,7 @@ public class MainActivity extends AppCompatActivity{
         ArrayList<Notes> dbNotes = allNotesListSync(0);
 
         for (Notes note : dbNotes) {
-            Call<Notes> call = ApiClient.getInstance().getApi().createNote(note);
+            Call<Notes> call = ApiClient.getInstance().getApi().saveNewNote(note);
             call.enqueue(new Callback<Notes>() {
                 @Override
                 public void onResponse(Call<Notes> call, Response<Notes> response) {

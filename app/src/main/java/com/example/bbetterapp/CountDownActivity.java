@@ -9,13 +9,16 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.se.omapi.Session;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.bbetterapp.Adapters.SessionsRecyclerAdapter;
+import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
+import com.example.bbetterapp.Models.Notes;
 import com.example.bbetterapp.Models.Sessions;
 import com.example.bbetterapp.Models.User;
 
@@ -23,6 +26,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class CountDownActivity extends AppCompatActivity {
 
@@ -86,7 +93,6 @@ public class CountDownActivity extends AppCompatActivity {
 
         newSession = new Sessions();
         newSession.setUserId(utils.getMyUserId());
-        newSession.setSessionCreatedAt(utils.getDateNow(1));
         newSession.setSessionLength(Integer.parseInt(getSessionPoints(length_string)));
         newSession.setSessionPoints(Integer.parseInt(getSessionPoints(length_string)));
 
@@ -117,6 +123,43 @@ public class CountDownActivity extends AppCompatActivity {
         });
         updateCountDownText();
     }
+
+    public void saveNewSession(Sessions session){
+        if(utils.isNetworkAvailable()){
+
+            Call<Sessions> call = ApiClient.getInstance().getApi().saveNewSession(newSession);
+
+            newSession.setSynced(1);
+
+            call.enqueue(new Callback<Sessions>() {
+                @Override
+                public void onResponse(Call<Sessions> call, Response<Sessions> response) {
+                    if(!response.isSuccessful()){
+                        Utils.makeMyToast("Something went wrong\nTry again...", getApplicationContext());
+                    }else{
+
+                        Sessions savedSession = response.body();
+
+                        savedSession.setSynced(1);
+
+                        dbHelper.addNewSession(savedSession);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<Sessions> call, Throwable t) {
+
+                }
+            });
+
+        }else{
+            newSession.setSessionId("ss"+utils.getDateNow(4));
+            newSession.setSynced(0);
+            newSession.setSessionCreatedAt(utils.getDateNow(1));
+            dbHelper.addNewSession(newSession);
+        }
+    }
+
     private void startTimer(){
         countDownTimer = new CountDownTimer(TimeLeftInMillis, 1000) {
             @Override
@@ -133,7 +176,7 @@ public class CountDownActivity extends AppCompatActivity {
                 updateCountDownText();
                 newSession.setSessionFinished(true);
 
-                dbHelper.addNewSession(newSession);
+                saveNewSession(newSession);
 
                 CountDownActivity.super.onBackPressed();
             }
@@ -145,12 +188,6 @@ public class CountDownActivity extends AppCompatActivity {
         countDownTimer.cancel();
         TimerRunning = false;
         ButtonStartPause.setText("Continue");
-        ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
-    }
-    private void resetTimer(){
-        TimeLeftInMillis = START_TIME_IN_MILLIS;
-        updateCountDownText();
-        ButtonStartPause.setText("Start");
         ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
     }
     private void updateCountDownText(){
@@ -175,7 +212,7 @@ public class CountDownActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if(TimerPaused){
                     newSession.setSessionFinished(false);
-                    dbHelper.addNewSession(newSession);
+                    saveNewSession(newSession);
                     CountDownActivity.super.onBackPressed();
                     areYouSure.dismiss();
                 }else{

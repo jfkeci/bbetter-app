@@ -25,23 +25,18 @@ public interface ApiInterface {
     //USERS: GET
     @GET("users/all")
     Call<List<User>> getUsers();
-
     //USERS: LOGIN
     @GET("users/login/{email}/{password}")
     Call<List<User>> loginUser(@Path("email") String email, @Path("password") String password);
-
     //USERS: SAVE
     @POST("users/new")
     Call<User> createUser(@Body User user);
-
     //USERS: PUT
     @PUT("users/{id}")
     Call<User> putUser(@Path("id") String id, @Body User user);
-
     //USERS: PATCH
     @PATCH("users/{id}")
     Call<User> patchUser(@Path("id") String id, @Body User user);
-
     //USERS: DELETE
     @DELETE("users/{id}")
     Call<Void> deleteUser(@Path("id") String id);
@@ -58,8 +53,9 @@ public interface ApiInterface {
     //NOTES: GET ALL USER NOTES
     @GET("notes/all/{userId}")
     Call<ArrayList<Notes>> getAllUserNotes(@Path("userId") String userId);
+    //SAVE NEW NOTE
     @POST("notes/new")
-    Call<Notes> createNote(@Body Notes note);
+    Call<Notes> saveNewNote(@Body Notes note);
 
 
 
@@ -74,6 +70,9 @@ public interface ApiInterface {
     //SESSIONS: GET ALL USER SESSIONS
     @GET("sessions/all/{userId}")
     Call<ArrayList<Sessions>> getAllUserSessions(@Path("userId") String userId);
+    //SAVE NEW SESSION
+    @POST("sessions/new")
+    Call<Sessions> saveNewSession(@Body Sessions session);
 
 
 
@@ -87,7 +86,7 @@ public interface ApiInterface {
     //EVENTS: GET UNCHECKED
     @GET("events/all/{userId}/false")
     Call<ArrayList<Events>> getCheckedEvents(@Path("userId") String userId);
-    //USERS: SAVE
+    //EVENTS: SAVE
     @POST("events/new")
     Call<Events> saveNewEvent(@Body Events event);
 

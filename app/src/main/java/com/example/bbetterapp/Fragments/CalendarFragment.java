@@ -159,7 +159,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
             newEvent.setUserId(utils.getMyUserId());
             newEvent.setEventTitle(etEvent.getText().toString());
             newEvent.setEventDetails("type: "+eventTypeSelected);
-            newEvent.setEventDate(utils.getDateNow(1));
+            newEvent.setEventDate(dateSelected + " at " + tvTime.getText().toString());
             newEvent.setEventType(eventUtils.getEventTypeInt(eventTypeSelected));
             newEvent.setEventChecked(false);
             newEvent.setSynced(0);
@@ -174,7 +174,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                     @Override
                     public void onResponse(Call<Events> call, Response<Events> response) {
                         if(!response.isSuccessful()){
-                            Utils.makeMyToast("Something went wrong\ntry again...\n message: "+response.code(), getActivity());
+                            Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
                         }else{
 
                             Events savedEvent = response.body();
@@ -203,7 +203,6 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                 });
 
             }else{
-
                 newEvent.set_id(utils.getDateNow(4)+eventTypeSelected);
                 newEvent.setEventCreatedAt(utils.getDateNow(1));
 
@@ -231,6 +230,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public void onDayClick(Date dateClicked) {
                 dateSelected = epochToDate(dateToEpoch(dateClicked));
+                Utils.makeMyToast(dateSelected, getActivity());
             }
 
             @Override

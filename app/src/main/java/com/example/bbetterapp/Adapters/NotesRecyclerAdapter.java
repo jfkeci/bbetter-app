@@ -84,7 +84,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
 
             holder.twTitle.setText(mainTitle);
             holder.twContent.setText(mainContent);
-            holder.twDate.setText(Utils.parseDate(notesList.get(position).getNoteCreatedAt()));
+            holder.twDate.setText(notesList.get(position).getNoteCreatedAt());
         }
 
     }
