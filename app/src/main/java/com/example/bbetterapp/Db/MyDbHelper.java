@@ -235,7 +235,6 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public boolean eventSetChecked(String eventId, int checkYN){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL31, eventId);
         contentValues.put(COL39, checkYN);
         db.update(EVENTS_TABLE, contentValues, "EVENT_ID = ?", new String[]{eventId});
 

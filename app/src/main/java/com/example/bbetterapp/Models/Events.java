@@ -106,6 +106,8 @@ public class Events {
         this.createdAt = createdAt;
     }
 
+
+
     public String getEventTypeString(int typeNum){
         String type = "";
 
@@ -172,41 +174,43 @@ public class Events {
 
         myEvents.clear();
 
-        Cursor res = dbHelper.getAllEventsByCheck(0);
+        Cursor res = dbHelper.getAllEventsByCheck(checkedYN);
 
         StringBuffer buffer = new StringBuffer();
         while(res.moveToNext()){
-            boolean finished = false;
 
-            if(Integer.parseInt(res.getString(6)) == 0){
-                finished = false;
-            }if(Integer.parseInt(res.getString(6)) == 1){
-                finished = true;
-            }
+            if(res.getString(4).contains(dateSelected)){
+                boolean finished = false;
 
-            if(checkedYN == 0){
-                finished = false;
-            }if(checkedYN == 1){
-                finished = true;
-            }
+                if(Integer.parseInt(res.getString(6)) == 0){
+                    finished = false;
+                }if(Integer.parseInt(res.getString(6)) == 1){
+                    finished = true;
+                }
 
-            if(!finished){
-                if(res.getString(4).contains(dateSelected)){
-                    Events event = new Events(
-                            res.getString(0),
-                            res.getString(1),
-                            res.getString(2),
-                            res.getString(3),
-                            res.getString(4),
-                            res.getInt(5),
-                            finished,
-                            res.getString(7)
-                    );
+                if(checkedYN == 0){
+                    finished = false;
+                }if(checkedYN == 1){
+                    finished = true;
+                }
 
-                    myEvents.add(event);
+                if(!finished){
+                    if(res.getString(4).contains(dateSelected)){
+                        Events event = new Events(
+                                res.getString(0),
+                                res.getString(1),
+                                res.getString(2),
+                                res.getString(3),
+                                res.getString(4),
+                                res.getInt(5),
+                                finished,
+                                res.getString(7)
+                        );
+
+                        myEvents.add(event);
+                    }
                 }
             }
-
         }
 
         return myEvents;

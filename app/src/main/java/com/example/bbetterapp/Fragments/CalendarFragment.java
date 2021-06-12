@@ -2,14 +2,18 @@ package com.example.bbetterapp.Fragments;
 
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,6 +39,9 @@ import com.example.bbetterapp.Models.Events;
 import com.example.bbetterapp.R;
 import com.example.bbetterapp.Utils;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.google.android.material.snackbar.Snackbar;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -43,6 +50,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
+import it.xabaras.android.recyclerview.swipedecorator.RecyclerViewSwipeDecorator;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -226,11 +234,13 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
     private void InitCalendar() {
         calendarView.removeAllEvents();
 
+
+
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
                 dateSelected = epochToDate(dateToEpoch(dateClicked));
-                Utils.makeMyToast(dateSelected, getActivity());
+                getData();
             }
 
             @Override
@@ -253,6 +263,86 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
         recyclerViewCalendar.setLayoutManager(layoutManager);
 
         calendarAdapter.notifyDataSetChanged();
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+
+                if (direction == ItemTouchHelper.LEFT) {
+                    deletedEvent = eventsList.get(position);
+
+                    String eventId = deletedEvent.get_id();
+
+                    int deleted = dbHelper.deleteEvent(eventId);
+
+                    if (deleted == 1) {
+                        eventsList.remove(deletedEvent);
+                        calendarAdapter.notifyItemRemoved(position);
+                    }
+
+                    Snackbar.make(recyclerViewCalendar, eventUtils.getEventTypeString(deletedEvent.getEventType()), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            boolean undone = dbHelper.addNewEvent(deletedEvent);
+
+                            if(undone) {
+                                eventsList.add(position, deletedEvent);
+                                calendarAdapter.notifyItemInserted(position);
+                            }else{
+                                Utils.makeMyToast("Something went wrong!", getActivity());
+                            }
+                        }
+                    }).show();
+
+                }
+                if (direction == ItemTouchHelper.RIGHT) {
+                    checkedEvent = eventsList.get(position);
+
+                    boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(),1);
+
+                    if (checked) {
+                        Utils.makeMyToast("Awesome!", getActivity());
+                        eventsList.remove(checkedEvent);
+                        calendarAdapter.notifyDataSetChanged();
+                    } else {
+                        Utils.makeMyToast("Something went wrong!", getActivity());
+                    }
+                    Snackbar.make(recyclerViewCalendar, eventUtils.getEventTypeString(checkedEvent.getEventType()), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(), 0);
+                            if (checked) {
+                                eventsList.add(position, checkedEvent);
+                                calendarAdapter.notifyItemInserted(position);
+                            } else {
+                                Utils.makeMyToast("Something went wrong!", getActivity());
+                            }
+                        }
+                    }).show();
+                }
+            }
+
+            @Override
+            public void onChildDraw(@NonNull @NotNull Canvas c, @NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myPink))
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete_sweep_white)
+                        .addSwipeRightBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myGoodGreen))
+                        .addSwipeRightActionIcon(R.drawable.ic_check_white)
+                        .create()
+                        .decorate();
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerViewCalendar);
     }
 
     private void InitButtonSetTime() {
@@ -289,6 +379,8 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
             }
         });
 
+
+
     }
 
     private void InitEventTypeSpinner(View v) {
@@ -314,7 +406,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
     }
     public void getData()
     {
-        eventsList = eventUtils.allEventsList(0);
+        eventsList = eventUtils.allEventsByDateList(dateSelected, 0);
         calendarAdapter.setData(eventsList);
     }
     private void closeKeyboard(){
