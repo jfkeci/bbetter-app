@@ -80,7 +80,7 @@ public class Utils {
         return main_string;
     }
 
-    public static String parseDate(String dbDate){ //2021-05-20T07:12:03.611Z
+    public String parseDateApiToDb(String dbDate){ //2021-05-20T07:12:03.611Z
 
         String date =   dbDate.charAt(8) +
                         dbDate.charAt(9) + "." +
@@ -99,7 +99,7 @@ public class Utils {
         return date;//"dd.MM.yyyy 'at' HH:mm"
     }
 
-    public static String convertDate(String dbDate ){//"dd.MM.yyyy 'at' HH:mm"
+    public static String parseDateDbToApi(String dbDate ){//"dd.MM.yyyy 'at' HH:mm"
         String convertedDate ="";
 
 

@@ -356,6 +356,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL43, note.getNoteTitle());
         contentValues.put(COL44, note.getNoteContent());
         contentValues.put(COL46, note.getNoteUpdatedAt());
+        contentValues.put(COL48, note.isSynced());
 
         db.update(NOTES_TABLE, contentValues, "_id = ?", new String[]{nid});
 
@@ -424,6 +425,16 @@ public class MyDbHelper extends SQLiteOpenHelper {
         }else{
             return true;
         }
+    }
+
+    public boolean setSessionSynced(String sessionId, int sycned){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL57, sycned);
+
+        db.update(SESSIONS_TABLE, contentValues, "_id = ?", new String[]{sessionId});
+
+        return true;
     }
 
     public Cursor getAllSessions(){

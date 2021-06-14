@@ -137,9 +137,7 @@ public class RegisterActivity extends AppCompatActivity{
                public void onResponse(Call<User> call, Response<User> response) {
                    if(!response.isSuccessful()){
                        Utils.makeMyLog("Save user call was not successful: ", ""+response.code());
-                       Utils.makeMyToast("Registered successfully", getApplicationContext());
-                       startActivity(new Intent(getApplicationContext(), LoginActivity.class));
-                       /*return;*/
+                       return;
                    }
                    Utils.makeMyToast("Registered successfully", getApplicationContext());
                    startActivity(new Intent(getApplicationContext(), LoginActivity.class));
@@ -176,7 +174,7 @@ public class RegisterActivity extends AppCompatActivity{
                     Utils.makeMyLog("user email: ", ""+user.getEmail());
                     if(user.getEmail().equals(newUser.getEmail())){
                         state[0] = 2;
-                        Utils.makeMyLog("state of email in tehe request: ", ""+state[0]);
+                        Utils.makeMyLog("state of email in the request: ", ""+state[0]);
 
                     }else if(user.getUserName().equals(newUser.getUserName())){
                         state[0] = 1;

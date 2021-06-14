@@ -56,6 +56,12 @@ public interface ApiInterface {
     //SAVE NEW NOTE
     @POST("notes/new")
     Call<Notes> saveNewNote(@Body Notes note);
+    //UPDATE NOTE
+    @PATCH("notes/patch/{noteId}")
+    Call<Notes> updateNote(@Path("noteId") String noteId, @Body Notes note);
+    //DELETE NOTE
+    @DELETE("notes/delete/noteId")
+    Call<Notes> deleteNote(@Path("noteId") String noteId);
 
 
 
@@ -66,7 +72,6 @@ public interface ApiInterface {
     //SESSIONS: GET
     @GET("sessions/all")
     Call<ArrayList<Sessions>> getSessions();
-
     //SESSIONS: GET ALL USER SESSIONS
     @GET("sessions/all/{userId}")
     Call<ArrayList<Sessions>> getAllUserSessions(@Path("userId") String userId);
@@ -86,6 +91,9 @@ public interface ApiInterface {
     //EVENTS: GET UNCHECKED
     @GET("events/all/{userId}/false")
     Call<ArrayList<Events>> getCheckedEvents(@Path("userId") String userId);
+    //GET ALL USER EVENTS
+    @GET("events/all/{userId}")
+    Call<ArrayList<Events>> getAllUserEvents(@Path("userId") String userId);
     //EVENTS: SAVE
     @POST("events/new")
     Call<Events> saveNewEvent(@Body Events event);

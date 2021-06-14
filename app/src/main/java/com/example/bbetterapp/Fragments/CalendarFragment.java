@@ -99,7 +99,6 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
         InitCalendar();
         InitButtonSetTime();
 
-
         return v;
     }
 
@@ -162,7 +161,6 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
         }else{
 
             Events newEvent = new Events();
-
 
             newEvent.setUserId(utils.getMyUserId());
             newEvent.setEventTitle(etEvent.getText().toString());
@@ -234,8 +232,6 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
     private void InitCalendar() {
         calendarView.removeAllEvents();
 
-
-
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
@@ -277,26 +273,37 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                 if (direction == ItemTouchHelper.LEFT) {
                     deletedEvent = eventsList.get(position);
 
-                    String eventId = deletedEvent.get_id();
+                    if(utils.isNetworkAvailable()){
 
-                    int deleted = dbHelper.deleteEvent(eventId);
+                    }else{
+                        String eventId = deletedEvent.get_id();
 
-                    if (deleted == 1) {
-                        eventsList.remove(deletedEvent);
-                        calendarAdapter.notifyItemRemoved(position);
+                        int deleted = dbHelper.deleteEvent(eventId);
+
+                        if (deleted == 1) {
+                            eventsList.remove(deletedEvent);
+                            calendarAdapter.notifyItemRemoved(position);
+                        }
                     }
 
                     Snackbar.make(recyclerViewCalendar, eventUtils.getEventTypeString(deletedEvent.getEventType()), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            boolean undone = dbHelper.addNewEvent(deletedEvent);
 
-                            if(undone) {
-                                eventsList.add(position, deletedEvent);
-                                calendarAdapter.notifyItemInserted(position);
+                            if(utils.isNetworkAvailable()){
+
                             }else{
-                                Utils.makeMyToast("Something went wrong!", getActivity());
+                                boolean undone = dbHelper.addNewEvent(deletedEvent);
+
+                                if(undone) {
+                                    eventsList.add(position, deletedEvent);
+                                    calendarAdapter.notifyItemInserted(position);
+                                }else{
+                                    Utils.makeMyToast("Something went wrong!", getActivity());
+                                }
                             }
+
+
                         }
                     }).show();
 
@@ -304,15 +311,21 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                 if (direction == ItemTouchHelper.RIGHT) {
                     checkedEvent = eventsList.get(position);
 
-                    boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(),1);
+                    if(utils.isNetworkAvailable()){
 
-                    if (checked) {
-                        Utils.makeMyToast("Awesome!", getActivity());
-                        eventsList.remove(checkedEvent);
-                        calendarAdapter.notifyDataSetChanged();
-                    } else {
-                        Utils.makeMyToast("Something went wrong!", getActivity());
+                    }else{
+                        boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(),1);
+
+                        if (checked) {
+                            dbHelper.setEventSynced(checkedEvent.get_id(), checkedEvent.isSynced());
+                            Utils.makeMyToast("Awesome!", getActivity());
+                            eventsList.remove(checkedEvent);
+                            calendarAdapter.notifyDataSetChanged();
+                        }else {
+                            Utils.makeMyToast("Something went wrong!", getActivity());
+                        }
                     }
+
                     Snackbar.make(recyclerViewCalendar, eventUtils.getEventTypeString(checkedEvent.getEventType()), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -379,8 +392,6 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
             }
         });
 
-
-
     }
 
     private void InitEventTypeSpinner(View v) {
@@ -438,5 +449,4 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
 
         return epoch;
     }
-
 }

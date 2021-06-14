@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +27,8 @@ import com.example.bbetterapp.Models.User;
 import com.example.bbetterapp.NoteArchiveActivity;
 import com.example.bbetterapp.R;
 import com.example.bbetterapp.Utils;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
@@ -46,6 +50,9 @@ public class NotesFragment extends Fragment {
 
     private String uid = "";
     private ArrayList<Notes> notesList;
+
+    Notes archivedNote;
+    Notes deletedNote;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -92,6 +99,114 @@ public class NotesFragment extends Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
         notesAdapter.notifyDataSetChanged();
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN) {
+            @Override
+            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+
+                if(direction == ItemTouchHelper.UP){
+                    archivedNote = notesList.get(position);
+                    archivedNote.setNoteArchived(true);
+
+                    if(utils.isNetworkAvailable()){
+                        archivedNote.setSynced(1);
+                        archivedNote.setNoteUpdatedAt(null);
+
+                        Call<Notes> call = ApiClient.getInstance().getApi().updateNote(archivedNote.getNoteId(), archivedNote);
+
+                        call.enqueue(new Callback<Notes>() {
+                            @Override
+                            public void onResponse(Call<Notes> call, Response<Notes> response) {
+                                if(!response.isSuccessful()){
+                                    Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
+                                }else{
+                                    Notes updatedNote = response.body();
+
+                                    updatedNote.setNoteUpdatedAt(utils.parseDateApiToDb(updatedNote.getNoteUpdatedAt()));
+                                    /*updatedNote.setNoteCreatedAt(utils.parseDateApiToDb(updatedNote.getNoteCreatedAt()));*/
+
+                                    boolean isUpdated = dbHelper.updateNote(updatedNote);
+
+                                    if(isUpdated){
+                                        removeData(position);
+                                    }else{
+                                        Utils.makeMyToast("Something went wrong!", getActivity());
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Notes> call, Throwable t) {
+                                Utils.makeMyToast("Something went wrong!", getActivity());
+                                Utils.makeMyLog("failed to update: NOTE, message: ", ""+t.getMessage());
+                            }
+                        });
+                    }else{
+                        archivedNote.setSynced(2);
+                        archivedNote.setNoteUpdatedAt(utils.getDateNow(1));
+                        archivedNote.setNoteArchived(true);
+
+                        boolean isArchived = dbHelper.updateNote(archivedNote);
+
+                        if(isArchived){
+                            removeData(position);
+                        }else{
+                            Utils.makeMyToast("Something went wrong!", getActivity());
+                        }
+                    }
+                }
+                if(direction == ItemTouchHelper.DOWN){
+                    deletedNote = notesList.get(position);
+
+                    if(deletedNote.isSynced() != 0){
+                        if(utils.isNetworkAvailable()){
+                            Call<Notes> call = ApiClient.getInstance().getApi().deleteNote(deletedNote.getNoteId());
+
+                            call.enqueue(new Callback<Notes>() {
+                                @Override
+                                public void onResponse(Call<Notes> call, Response<Notes> response) {
+                                    if(!response.isSuccessful()){
+                                        Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
+                                    }else{
+                                        boolean isDeleted = dbHelper.updateNote(deletedNote);
+
+                                        if(isDeleted){
+                                            removeData(position);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<Notes> call, Throwable t) {
+                                    Utils.makeMyToast("Something went wrong!", getActivity());
+                                    Utils.makeMyLog("failed to delete: NOTE, message: ", ""+t.getMessage());
+                                }
+                            });
+                        }else{
+                            deletedNote.setSynced(3);
+
+                            boolean isDeleted = dbHelper.updateNote(deletedNote);
+
+                            if(isDeleted){
+                                removeData(position);
+                            }
+                        }
+                    }else{
+                        int isDeleted = dbHelper.deleteNote(deletedNote.getNoteId());
+
+                        if(isDeleted == 1){
+                            removeData(position);
+                        }
+                    }
+                }
+            }
+        };
 
         notesAdapter.setOnLongItemClickListener(new NotesRecyclerAdapter.OnLongNoteClickedListener() {
             @Override
@@ -191,6 +306,11 @@ public class NotesFragment extends Fragment {
     {
         notesList = noteUtils.allNotesList(0);
         notesAdapter.setData(notesList);
+    }
+
+    private void removeData(int position){
+        notesList.remove(position);
+        notesAdapter.notifyItemRemoved(position);
     }
 
 }
