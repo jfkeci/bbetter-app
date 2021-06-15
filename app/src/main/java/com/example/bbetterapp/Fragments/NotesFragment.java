@@ -208,6 +208,9 @@ public class NotesFragment extends Fragment {
             }
         };
 
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerView);
+
         notesAdapter.setOnLongItemClickListener(new NotesRecyclerAdapter.OnLongNoteClickedListener() {
             @Override
             public void onNoteClicked(int position) {

@@ -349,6 +349,12 @@ public class MyDbHelper extends SQLiteOpenHelper {
     }
 
     public boolean updateNote(Notes note){
+        int archived = 0;
+
+        if(note.getNoteArchived()){
+            archived = 1;
+        }
+
         String nid = note.getNoteId();
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -356,6 +362,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL43, note.getNoteTitle());
         contentValues.put(COL44, note.getNoteContent());
         contentValues.put(COL46, note.getNoteUpdatedAt());
+        contentValues.put(COL47, archived);
         contentValues.put(COL48, note.isSynced());
 
         db.update(NOTES_TABLE, contentValues, "_id = ?", new String[]{nid});
