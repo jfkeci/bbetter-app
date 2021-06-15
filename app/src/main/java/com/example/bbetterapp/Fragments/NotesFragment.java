@@ -259,16 +259,14 @@ public class NotesFragment extends Fragment {
                                 getData();
                                 closeKeyboard();
                             }
-
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Notes> call, Throwable t) {
-
+                        Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
                     }
                 });
-
 
             }else{
                 newNote.setNoteId("nt"+utils.getDateNow(4));
@@ -286,8 +284,6 @@ public class NotesFragment extends Fragment {
                     Utils.makeMyToast("Try again!", getActivity());
                 }
             }
-
-
         }
     }
 

@@ -60,7 +60,7 @@ public interface ApiInterface {
     @PATCH("notes/patch/{noteId}")
     Call<Notes> updateNote(@Path("noteId") String noteId, @Body Notes note);
     //DELETE NOTE
-    @DELETE("notes/delete/noteId")
+    @DELETE("notes/delete/{noteId}")
     Call<Notes> deleteNote(@Path("noteId") String noteId);
 
 

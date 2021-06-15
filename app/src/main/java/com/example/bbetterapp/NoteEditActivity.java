@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
 import com.example.bbetterapp.Models.Notes;
 
@@ -16,6 +17,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NoteEditActivity extends AppCompatActivity {
 
@@ -64,7 +69,36 @@ public class NoteEditActivity extends AppCompatActivity {
                 selectedNote.setNoteContent(etContent.getText().toString());
                 selectedNote.setNoteTitle(etTitle.getText().toString());
 
-                dbHelper.updateNote(selectedNote);
+                if(utils.isNetworkAvailable()){
+                    selectedNote.setSynced(1);
+
+                    Call<Notes> call = ApiClient.getInstance().getApi().updateNote(selectedNote.getNoteId(), selectedNote);
+
+                    call.enqueue(new Callback<Notes>() {
+                        @Override
+                        public void onResponse(Call<Notes> call, Response<Notes> response) {
+                            if(!response.isSuccessful()){
+                                Utils.makeMyToast("Something went wrong\ntry again...", getApplicationContext());
+                                Utils.makeMyLog("Failed to save note to: ", "API");
+                            }else{
+                                Notes updatedNote = response.body();
+
+                                updatedNote.setSynced(1);
+                                dbHelper.updateNote(updatedNote);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Notes> call, Throwable t) {
+                            Utils.makeMyLog("Failed to update: NOTE, message: ", ""+t.getMessage());
+                        }
+                    });
+                }else{
+                    selectedNote.setNoteUpdatedAt(utils.getDateNow(1));
+                    selectedNote.setSynced(2);
+                    dbHelper.updateNote(selectedNote);
+                }
+
                 onBackPressed();
             }
         });

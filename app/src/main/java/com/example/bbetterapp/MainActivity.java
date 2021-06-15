@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity{
                         /*syncEventsApiDb(utils.getMyUserId());
                         syncNotesApiDb(utils.getMyUserId());*/
                     }else{
-                        Utils.makeMyToast("Couldn't sync, no network", this);
+                        Utils.makeMyToast("Couldn't sync, no network", getApplicationContext());
                     }
                     startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
                 }else{
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity{
 
                 @Override
                 public void onFailure(Call<Sessions> call, Throwable t) {
-
+                    Utils.makeMyLog("Failed to sync: SESSION, message: ", ""+t.getMessage());
                 }
             });
 
@@ -170,18 +170,16 @@ public class MainActivity extends AppCompatActivity{
                 ArrayList<Sessions> apiSessions = response.body();
 
                 for(Sessions session : apiSessions){
-
                     if(session.isSynced() == 0){
                         session.setSynced(1);
                         dbHelper.addNewSession(session);
                     }
-
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<Sessions>> call, Throwable t) {
-
+                Utils.makeMyLog("Failed to sync: SESSION, message: ", ""+t.getMessage());
             }
         });
     }

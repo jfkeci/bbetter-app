@@ -153,8 +153,6 @@ public class Utils {
     }
 
 
-
-
     /*public void updateNoteSynced(Notes note){
         Call<>
     }*/
