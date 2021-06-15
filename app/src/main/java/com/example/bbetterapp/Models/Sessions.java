@@ -114,7 +114,42 @@ public class Sessions {
                     res.getString(5)
             );
 
+            session.setSynced(res.getInt(6));
+
             mySessions.add(0, session);
+        }
+
+        return mySessions;
+    }
+    public ArrayList<Sessions> allNonSyncedSessions(){
+        ArrayList<Sessions> mySessions = new ArrayList<>();
+        MyDbHelper dbHelper = new MyDbHelper(context);
+
+        Cursor res = dbHelper.getAllSessions();
+
+        while(res.moveToNext()){
+            if(res.getInt(6) == 0){
+                boolean finished = true;
+
+                if(Integer.parseInt(res.getString(4)) == 1){
+                    finished = true;
+                }if(Integer.parseInt(res.getString(4)) == 0){
+                    finished = false;
+                }
+
+                Sessions session = new Sessions(
+                        res.getString(0),
+                        res.getString(1),
+                        res.getInt(2),
+                        res.getInt(3),
+                        finished,
+                        res.getString(5)
+                );
+
+                session.setSynced(res.getInt(6));
+
+                mySessions.add(0, session);
+            }
         }
 
         return mySessions;

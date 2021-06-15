@@ -190,4 +190,68 @@ public class Notes {
 
         return dbNotes;
     }
+
+    public ArrayList<Notes> allNotes(int archived_yn){
+        MyDbHelper dbHelper;
+        dbHelper = new MyDbHelper(context);
+
+        ArrayList<Notes> dbNotes = new ArrayList<>();
+
+        Cursor res = dbHelper.getAllNotesArchiveYN(archived_yn);
+        StringBuffer buffer = new StringBuffer();
+        while(res.moveToNext()){
+            boolean archived = false;
+
+            if(archived_yn == 0){
+                archived = false;
+            }else if(archived_yn == 1){
+                archived = true;
+            }
+
+            Notes note = new Notes(res.getString(0),
+                    res.getString(1),
+                    res.getString(2),
+                    res.getString(3),
+                    res.getString(4),
+                    res.getString(5),
+                    archived
+            );
+
+            note.setSynced(res.getInt(7));
+
+            dbNotes.add(0, note);
+        }
+
+        return dbNotes;
+    }
+
+    public ArrayList<Notes> allNotesListBySync(int syncNum){
+        MyDbHelper dbHelper;
+        dbHelper = new MyDbHelper(context);
+
+        ArrayList<Notes> dbNotes = new ArrayList<>();
+
+        Cursor res = dbHelper.getAllNotesSyncedYN(syncNum);
+        StringBuffer buffer = new StringBuffer();
+        while(res.moveToNext()){
+            boolean archived = false;
+            if(res.getInt(6) == 0){
+                archived = false;
+            }else if(res.getInt(6) == 1){
+                archived = true;
+            }
+            Notes note = new Notes(res.getString(0),
+                    res.getString(1),
+                    res.getString(2),
+                    res.getString(3),
+                    res.getString(4),
+                    res.getString(5),
+                    archived
+            );
+            note.setSynced(res.getInt(7));
+            dbNotes.add(0, note);
+        }
+
+        return dbNotes;
+    }
 }

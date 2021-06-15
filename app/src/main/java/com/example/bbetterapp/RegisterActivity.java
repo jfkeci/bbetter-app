@@ -14,9 +14,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.bbetterapp.ApiHelper.ApiClient;
+import com.example.bbetterapp.Db.MyDbHelper;
+import com.example.bbetterapp.Models.Events;
+import com.example.bbetterapp.Models.Notes;
+import com.example.bbetterapp.Models.Sessions;
 import com.example.bbetterapp.Models.User;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.internal.Util;
@@ -29,10 +34,16 @@ public class RegisterActivity extends AppCompatActivity{
     EditText etFirstName, etLastName, etGender, etAge, etUsername, etEmail, etPassword;
     Button btnRegister;
 
+    Utils utils;
+    MyDbHelper dbHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+
+        dbHelper = new MyDbHelper(this);
+        utils = new Utils(this);
 
         btnRegister = findViewById(R.id.btnRegister);
 
@@ -191,19 +202,4 @@ public class RegisterActivity extends AppCompatActivity{
         Utils.makeMyLog("state before return: ", ""+state[0]);
         return state[0];
     }
-
-    public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isAvalible = activeNetworkInfo != null && activeNetworkInfo.isConnected();
-
-        if(!isAvalible){
-            Utils.makeMyToast("Can't sync\nNo internet connection", getApplicationContext());
-        }
-
-        return isAvalible;
-    }
-
-
-
 }

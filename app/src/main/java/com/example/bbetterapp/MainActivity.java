@@ -13,7 +13,10 @@ import android.widget.Button;
 
 import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
+import com.example.bbetterapp.Models.Events;
 import com.example.bbetterapp.Models.Notes;
+import com.example.bbetterapp.Models.Sessions;
+import com.example.bbetterapp.Models.User;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -28,6 +31,9 @@ public class MainActivity extends AppCompatActivity{
 
     MyDbHelper dbHelper;
     Utils utils;
+    Notes noteUtils;
+    Events eventUtils;
+    Sessions sessionUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,28 +42,36 @@ public class MainActivity extends AppCompatActivity{
 
         dbHelper = new MyDbHelper(this);
         utils = new Utils(this);
+        noteUtils = new Notes(this);
+        eventUtils = new Events(this);
+        sessionUtils = new Sessions(this);
 
         startButton = findViewById(R.id.startButton);
 
-        boolean isUserSet = dbHelper.userIsSet();
+        if(dbHelper.userIsSet()){
 
-        if(isUserSet){
+            if(utils.isNetworkAvailable()){
+                syncSessionsApiDb(utils.getMyUserId());
+                /*syncEventsApiDb(utils.getMyUserId());
+                syncNotesApiDb(utils.getMyUserId());*/
+            }else{
+                Utils.makeMyToast("Couldn't sync, no network", this);
+            }
+
             startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
-
-            /*if(isNetworkAvailable()){
-                saveNonSyncedNotesAPI();
-            }*/
         }
 
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isUserSet){
-
-                    /*if(isNetworkAvailable()){
-                        saveNonSyncedNotesAPI();
-                    }*/
-
+                if(dbHelper.userIsSet()){
+                    if(utils.isNetworkAvailable()){
+                        syncSessionsApiDb(utils.getMyUserId());
+                        /*syncEventsApiDb(utils.getMyUserId());
+                        syncNotesApiDb(utils.getMyUserId());*/
+                    }else{
+                        Utils.makeMyToast("Couldn't sync, no network", this);
+                    }
                     startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
                 }else{
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
@@ -66,8 +80,8 @@ public class MainActivity extends AppCompatActivity{
         });
     }
 
-    private void saveNonSyncedNotesAPI(){
-        Call<ArrayList<Notes>> call = ApiClient.getInstance().getApi().getAllUserNotes(utils.getMyUserId());
+    private void syncNotesApiDb(String userId){
+        Call<ArrayList<Notes>> call = ApiClient.getInstance().getApi().getAllUserNotes(userId);
 
         call.enqueue(new Callback<ArrayList<Notes>>() {
             @Override
@@ -80,80 +94,95 @@ public class MainActivity extends AppCompatActivity{
                 ArrayList<Notes> apiNotes = response.body();
 
                 for(Notes note : apiNotes){
-
                     dbHelper.addNewNote(note);
                     dbHelper.setNoteSynced(note.getNoteId(), 1);
-
                 }
             }
 
             @Override
             public void onFailure(Call<ArrayList<Notes>> call, Throwable t) {
-                Utils.makeMyToast("Couldn't manage to sync notes ", getApplicationContext());
+                Utils.makeMyToast("Didn't manage to sync notes ", getApplicationContext());
             }
         });
     }
-    private void saveNonSyncedNotesDB(){
-        ArrayList<Notes> dbNotes = allNotesListSync(0);
+    private void syncEventsApiDb(String userId){
+        Call<ArrayList<Events>> call = ApiClient.getInstance().getApi().getAllUserEvents(userId);
 
-        for (Notes note : dbNotes) {
-            Call<Notes> call = ApiClient.getInstance().getApi().saveNewNote(note);
-            call.enqueue(new Callback<Notes>() {
+        call.enqueue(new Callback<ArrayList<Events>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
+                if(!response.isSuccessful()){
+                    Utils.makeMyLog("Couldn't manage to sync notes: ", ""+response.code());
+                    return;
+                }
+
+                ArrayList<Events> apiEvents = response.body();
+
+                for(Events event : apiEvents){
+                    dbHelper.addNewEvent(event);
+                    dbHelper.setEventSynced(event.get_id(), 1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Events>> call, Throwable t) {
+                Utils.makeMyToast("Didn't manage to sync events ", getApplicationContext());
+            }
+        });
+    }
+    private void syncSessionsApiDb(String userId){
+
+        ArrayList<Sessions> dbSessions = sessionUtils.allNonSyncedSessions();
+
+        for(Sessions session : dbSessions){
+
+            session.setSynced(1);
+
+            Call<Sessions> call = ApiClient.getInstance().getApi().saveNewSession(session);
+
+            call.enqueue(new Callback<Sessions>() {
                 @Override
-                public void onResponse(Call<Notes> call, Response<Notes> response) {
+                public void onResponse(Call<Sessions> call, Response<Sessions> response) {
                     if(!response.isSuccessful()){
-                        Utils.makeMyLog("Couldn't manage to sync notes: ", ""+response.code());
+                        Utils.makeMyLog("Couldn't manage to sync sessions: ", ""+response.code());
                         return;
                     }
-
-                    dbHelper.deleteNote(note.getNoteId());
                 }
 
                 @Override
-                public void onFailure(Call<Notes> call, Throwable t) {
-                    Utils.makeMyToast("Couldn't manage to sync notes ", getApplicationContext());
+                public void onFailure(Call<Sessions> call, Throwable t) {
+
                 }
             });
-        }
-    }
 
-    public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        boolean isAvalible = activeNetworkInfo != null && activeNetworkInfo.isConnected();
-
-        if(!isAvalible){
-            Utils.makeMyToast("Can't sync\nNo internet connection", getApplicationContext());
         }
 
-        return isAvalible;
-    }
+        Call<ArrayList<Sessions>> call = ApiClient.getInstance().getApi().getAllUserSessions(userId);
 
-    public ArrayList<Notes> allNotesListSync(int syncNum){
+        call.enqueue(new Callback<ArrayList<Sessions>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Sessions>> call, Response<ArrayList<Sessions>> response) {
+                if(!response.isSuccessful()){
+                    Utils.makeMyLog("Couldn't manage to sync sessions: ", ""+response.code());
+                    return;
+                }
 
-        ArrayList<Notes> dbNotes = new ArrayList<>();
+                ArrayList<Sessions> apiSessions = response.body();
 
-        Cursor res = dbHelper.getAllNotesSyncedYN(syncNum);
-        StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
-            boolean archived = false;
-            if(res.getInt(6) == 0){
-                archived = false;
-            }else if(res.getInt(6) == 1){
-                archived = true;
+                for(Sessions session : apiSessions){
+
+                    if(session.isSynced() == 0){
+                        session.setSynced(1);
+                        dbHelper.addNewSession(session);
+                    }
+
+                }
             }
-            Notes note = new Notes(res.getString(0),
-                    res.getString(1),
-                    res.getString(2),
-                    res.getString(3),
-                    res.getString(4),
-                    res.getString(5),
-                    archived
-            );
-            note.setSynced(res.getInt(7));
-            dbNotes.add(0, note);
-        }
 
-        return dbNotes;
+            @Override
+            public void onFailure(Call<ArrayList<Sessions>> call, Throwable t) {
+
+            }
+        });
     }
 }
