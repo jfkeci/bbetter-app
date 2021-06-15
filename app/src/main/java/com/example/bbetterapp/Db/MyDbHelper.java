@@ -284,12 +284,43 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return res;
     }
 
-    public boolean updateEventState(String eventId, int eventState){
+    public boolean updateEventCheckedState(String eventId, int eventState){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL31, eventId);
-        contentValues.put(COL36, eventState);
+        contentValues.put(COL37, eventState);
         db.update(EVENTS_TABLE, contentValues, "_id = ?", new String[]{eventId});
+
+        return true;
+    }
+
+    public boolean updateEventSyncedState(String eventId, int eventState){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL39, eventState);
+        db.update(EVENTS_TABLE, contentValues, "_id = ?", new String[]{eventId});
+
+        return true;
+    }
+
+    public boolean updateEvent(Events event){
+
+        int checked = 0;
+
+        if(event.isEventChecked()){
+            checked = 1;
+        }
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL33, event.getEventTitle());
+        contentValues.put(COL34, event.getEventDetails());
+        contentValues.put(COL35, event.getEventDate());
+        contentValues.put(COL36, event.getEventType());
+        contentValues.put(COL37, checked);
+        contentValues.put(COL38, event.getEventCreatedAt());
+        contentValues.put(COL39, event.isSynced());
+
+        db.update(EVENTS_TABLE, contentValues, "_id = ?", new String[]{event.get_id()});
 
         return true;
     }

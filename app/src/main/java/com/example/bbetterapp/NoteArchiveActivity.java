@@ -140,7 +140,6 @@ public class NoteArchiveActivity extends AppCompatActivity {
                                     notesArchiveAdapter.notifyItemRemoved(position);
                                 }
                             }
-
                             @Override
                             public void onFailure(Call<Notes> call, Throwable t) {
                                 Utils.makeMyToast("Something went wrong\n please try again", getApplicationContext());

@@ -4,6 +4,7 @@ import android.app.AlarmManager;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -34,6 +35,8 @@ import com.example.bbetterapp.Models.User;
 import com.example.bbetterapp.R;
 import com.example.bbetterapp.Utils;
 import com.google.android.material.snackbar.Snackbar;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -118,6 +121,108 @@ public class ToDoFragment extends Fragment {
         recyclerViewToDo.setAdapter(todoAdapter);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerViewToDo.setLayoutManager(layoutManager);
+
+        ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, @NonNull @NotNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAbsoluteAdapterPosition();
+
+                if(direction == ItemTouchHelper.RIGHT){
+                    checkedEvent = eventsList.get(position);
+
+                    if(utils.isNetworkAvailable()){
+                        if(checkedEvent.isSynced() != 2){
+                            checkedEvent.setSynced(1);
+                        }
+
+                        checkedEvent.setEventChecked(true);
+
+                        Call<Events> call = ApiClient.getInstance().getApi().updateEvent(checkedEvent.get_id(), checkedEvent);
+
+                        call.enqueue(new Callback<Events>() {
+                            @Override
+                            public void onResponse(Call<Events> call, Response<Events> response) {
+                                if(!response.isSuccessful()){
+                                    Utils.makeMyToast("Something went wrong\n please try again ", getActivity());
+                                }else{
+                                    Events updatedEvent = response.body();
+
+                                    boolean isUpdated = dbHelper.updateEvent(updatedEvent);
+
+                                    if(isUpdated){
+                                        eventsList.remove(position);
+                                        todoAdapter.notifyItemRemoved(position);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Events> call, Throwable t) {
+                                Utils.makeMyToast("Something went wrong\n please try again ", getActivity());
+                            }
+                        });
+                    }else{
+                        checkedEvent.setSynced(2);
+                        checkedEvent.setEventChecked(true);
+                        dbHelper.updateEventCheckedState(checkedEvent.get_id(), 1);
+                        dbHelper.updateEventSyncedState(checkedEvent.get_id(), 2);
+                        eventsList.remove(position);
+                        todoAdapter.notifyItemRemoved(position);
+                    }
+                }
+                if(direction == ItemTouchHelper.LEFT){
+                    deletedEvent = eventsList.get(position);
+
+                    if(utils.isNetworkAvailable()){
+                        Call<Events> call = ApiClient.getInstance().getApi().deleteEvent(deletedEvent.get_id());
+
+                        call.enqueue(new Callback<Events>() {
+                            @Override
+                            public void onResponse(Call<Events> call, Response<Events> response) {
+                                if(!response.isSuccessful()){
+                                    Utils.makeMyToast("Something went wrong\nplease try again", getActivity());
+                                }else{
+                                    dbHelper.deleteEvent(deletedEvent.get_id());
+                                    eventsList.remove(position);
+                                    todoAdapter.notifyItemRemoved(position);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Events> call, Throwable t) {
+                                Utils.makeMyToast("Something went wrong\nplease try again", getActivity());
+                            }
+                        });
+                    }else{
+                        deletedEvent.setSynced(3);
+                        dbHelper.updateEvent(deletedEvent);
+                        eventsList.remove(position);
+                        todoAdapter.notifyItemRemoved(position);
+                    }
+                }
+            }
+
+            @Override
+            public void onChildDraw(@NonNull @NotNull Canvas c, @NonNull @NotNull RecyclerView recyclerView, @NonNull @NotNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+                new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+                        .addSwipeLeftBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myPink))
+                        .addSwipeLeftActionIcon(R.drawable.ic_delete_sweep_white)
+                        .addSwipeRightBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myGoodGreen))
+                        .addSwipeRightActionIcon(R.drawable.ic_check_white)
+                        .create()
+                        .decorate();
+
+                super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+            }
+        };
+
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
+        itemTouchHelper.attachToRecyclerView(recyclerViewToDo);
 
         return todoView;
     }

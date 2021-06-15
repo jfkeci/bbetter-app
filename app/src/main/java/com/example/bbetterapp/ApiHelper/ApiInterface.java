@@ -97,5 +97,9 @@ public interface ApiInterface {
     //EVENTS: SAVE
     @POST("events/new")
     Call<Events> saveNewEvent(@Body Events event);
+    @PATCH("event/patch/{eventId}")
+    Call<Events> updateEvent(@Path("eventId") String eventId, @Body Events event);
+    @DELETE("events/delete/{eventId}")
+    Call<Events> deleteEvent(@Path("eventId") String eventId);
 
 }
