@@ -121,6 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                         syncEventsApiDb(users.get(0).getUserId());
                         syncSessionsApiDb(users.get(0).getUserId());
 
+
                         Utils.makeMyToast("Login successfull!", getApplicationContext());
 
                         startActivity(new Intent(getApplicationContext(), FragmentHolderActivity.class));
@@ -187,7 +188,6 @@ public class LoginActivity extends AppCompatActivity {
                                 Utils.makeMyLog("Failed to sync", "");
                             }
                         }
-
                         @Override
                         public void onFailure(Call<Events> call, Throwable t) {
                             Utils.makeMyLog("Failed to sync", "");

@@ -48,7 +48,7 @@ public class Utils {
     }
 
     public static void makeMyLog(String title, String message){
-        Log.d("" + title, "" + message);
+        Log.d("My message: " + title, "" + message);
     }
 
     public static boolean isEmpty(EditText etText) {

@@ -72,6 +72,15 @@ public class MyDbHelper extends SQLiteOpenHelper {
     private static final String  COL56 = "sessionCreatedAt";
     private static final String  COL57 = "synced";
 
+    //table affirmations
+    private static final String AFFIRMATIONS_TABLE = "AFFIRMATIONS_TABLE";
+    private static final String  COL61 = "_id";
+    private static final String  COL62 = "userId";
+    private static final String  COL63 = "promptId";
+    private static final String  COL64 = "content";
+    private static final String  COL65 = "createdAt";
+    private static final String  COL66 = "synced";
+
     public MyDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
     }
@@ -132,6 +141,15 @@ public class MyDbHelper extends SQLiteOpenHelper {
                 COL24+" TEXT, " +
                 COL25+" INTEGER DEFAULT 0);");
 
+        //create affirmations table
+        db.execSQL("create table " + AFFIRMATIONS_TABLE +
+                " ("+COL61+" TEXT PRIMARY KEY, " +
+                COL62+" TEXT, " +
+                COL63+" TEXT, " +
+                COL64+" TEXT, " +
+                COL65+" TEXT, " +
+                COL66+" INTEGER DEFAULT 0);");
+
     }
 
     @Override
@@ -141,6 +159,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + EVENTS_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + NOTES_TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + SESSIONS_TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + AFFIRMATIONS_TABLE);
         onCreate(db);
     }
 

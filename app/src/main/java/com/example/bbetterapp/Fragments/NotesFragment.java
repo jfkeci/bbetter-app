@@ -27,6 +27,7 @@ import com.example.bbetterapp.Models.User;
 import com.example.bbetterapp.NoteArchiveActivity;
 import com.example.bbetterapp.R;
 import com.example.bbetterapp.Utils;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -51,8 +52,10 @@ public class NotesFragment extends Fragment {
     private String uid = "";
     private ArrayList<Notes> notesList;
 
-    Notes archivedNote;
-    Notes deletedNote;
+    private Notes archivedNote;
+    private Notes deletedNote;
+
+    boolean deleted = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -158,8 +161,11 @@ public class NotesFragment extends Fragment {
                 if(direction == ItemTouchHelper.DOWN){
                     deletedNote = notesList.get(position);
 
+                    Notes undoNote = deletedNote;
+
                     if(deletedNote.isSynced() != 0){
                         if(utils.isNetworkAvailable()){
+                            deleted = true;
                             Call<Notes> call = ApiClient.getInstance().getApi().deleteNote(deletedNote.getNoteId());
 
                             call.enqueue(new Callback<Notes>() {
@@ -168,11 +174,9 @@ public class NotesFragment extends Fragment {
                                     if(!response.isSuccessful()){
                                         Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
                                     }else{
-                                        boolean isDeleted = dbHelper.updateNote(deletedNote);
+                                        dbHelper.deleteNote(deletedNote.getNoteId());
 
-                                        if(isDeleted){
-                                            removeData(position);
-                                        }
+                                        removeData(position);
                                     }
                                 }
 
@@ -183,6 +187,7 @@ public class NotesFragment extends Fragment {
                                 }
                             });
                         }else{
+                            deleted = false;
                             deletedNote.setSynced(3);
 
                             boolean isDeleted = dbHelper.updateNote(deletedNote);
@@ -192,12 +197,44 @@ public class NotesFragment extends Fragment {
                             }
                         }
                     }else{
+                        deleted = true;
                         int isDeleted = dbHelper.deleteNote(deletedNote.getNoteId());
 
                         if(isDeleted == 1){
                             removeData(position);
                         }
                     }
+
+                    Snackbar.make(recyclerView, Utils.cutString(deletedNote.getNoteTitle(), 8), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(deleted){
+                                undoNote.setSynced(1);
+                                Call<Notes> undoCall = ApiClient.getInstance().getApi().saveNewNote(undoNote);
+                                undoCall.enqueue(new Callback<Notes>() {
+                                    @Override
+                                    public void onResponse(Call<Notes> call, Response<Notes> response) {
+                                        if(!response.isSuccessful()){
+                                            Utils.makeMyLog("Failed to undo", "");
+                                        }else{
+                                            Notes note = response.body();
+
+                                            dbHelper.addNewNote(note);
+                                            notesList.add(0, note);
+                                            notesAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Notes> call, Throwable t) {
+                                        Utils.makeMyLog("Failed to undo", "");
+                                    }
+                                });
+                            }else{
+                                dbHelper.updateNote(undoNote);
+                            }
+                        }
+                    }).show();
                 }
             }
         };
