@@ -18,6 +18,7 @@ import com.example.bbetterapp.Adapters.ArchivedNotesRecyclerAdapter;
 import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
 import com.example.bbetterapp.Models.Notes;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -43,6 +44,8 @@ public class NoteArchiveActivity extends AppCompatActivity {
 
     private Notes deletedNote;
     private Notes unarchivedNote;
+
+    private boolean deleted = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,29 +132,76 @@ public class NoteArchiveActivity extends AppCompatActivity {
                 if(direction == ItemTouchHelper.LEFT){
                     deletedNote = archivedNotesList.get(position);
 
-                    if(utils.isNetworkAvailable()){
-                        Call<Notes> call = ApiClient.getInstance().getApi().deleteNote(deletedNote.getNoteId());
+                    Notes undoNote = deletedNote;
+                    if(deletedNote.isSynced() != 0){
+                        if(utils.isNetworkAvailable()){
+                            deleted = true;
+                            Call<Notes> call = ApiClient.getInstance().getApi().deleteNote(deletedNote.getNoteId());
 
-                        call.enqueue(new Callback<Notes>() {
-                            @Override
-                            public void onResponse(Call<Notes> call, Response<Notes> response) {
-                                if(!response.isSuccessful()){
-                                    Utils.makeMyToast("Something went wrong\n please try again", getApplicationContext());
-                                }else{
-                                    dbHelper.deleteNote(deletedNote.getNoteId());
-                                    archivedNotesList.remove(position);
-                                    notesArchiveAdapter.notifyItemRemoved(position);
+                            call.enqueue(new Callback<Notes>() {
+                                @Override
+                                public void onResponse(Call<Notes> call, Response<Notes> response) {
+                                    if(!response.isSuccessful()){
+                                        Utils.makeMyToast("Something went wrong\n please try again", getApplicationContext());
+                                    }else{
+                                        dbHelper.deleteNote(deletedNote.getNoteId());
+                                        archivedNotesList.remove(position);
+                                        notesArchiveAdapter.notifyItemRemoved(position);
+                                    }
                                 }
-                            }
-                            @Override
-                            public void onFailure(Call<Notes> call, Throwable t) {
-                                Utils.makeMyToast("Something went wrong\n please try again", getApplicationContext());
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<Notes> call, Throwable t) {
+                                    Utils.makeMyToast("Something went wrong\n please try again", getApplicationContext());
+                                }
+                            });
+                        }else{
+                            deleted = false;
+                            deletedNote.setSynced(3);
+                            dbHelper.updateNote(deletedNote);
+                            archivedNotesList.remove(position);
+                            notesArchiveAdapter.notifyItemRemoved(position);
+                        }
                     }else{
-                        deletedNote.setSynced(3);
-                        dbHelper.updateNote(deletedNote);
+                        deleted = true;
+                        int isDeleted = dbHelper.deleteNote(deletedNote.getNoteId());
+
+                        if(isDeleted == 1){
+                            archivedNotesList.remove(position);
+                            notesArchiveAdapter.notifyItemRemoved(position);
+                        }
                     }
+
+
+                    Snackbar.make(recyclerViewArchive, Utils.cutString(deletedNote.getNoteTitle(), 8), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(deleted){
+                                undoNote.setSynced(1);
+                                Call<Notes> undoCall = ApiClient.getInstance().getApi().saveNewNote(undoNote);
+                                undoCall.enqueue(new Callback<Notes>() {
+                                    @Override
+                                    public void onResponse(Call<Notes> call, Response<Notes> response) {
+                                        if(!response.isSuccessful()){
+                                            Utils.makeMyLog("Failed to undo", "");
+                                        }else{
+                                            Notes note = response.body();
+
+                                            dbHelper.addNewNote(note);
+                                            archivedNotesList.add(0, note);
+                                            notesArchiveAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Notes> call, Throwable t) {
+                                        Utils.makeMyLog("Failed to undo", "");
+                                    }
+                                });
+                            }else{
+                                dbHelper.updateNote(undoNote);
+                            }
+                        }
+                    }).show();
                 }
             }
 
