@@ -75,7 +75,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
     private ArrayList<Events> eventsList;
 
     private String eventTypeSelected;
-    private String dateSelected="";
+    private String dateSelected;
     private int nHour, nMinute;
 
     private long atTime;
@@ -91,6 +91,8 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
         View v = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         InitLayout(v);
+
+        dateSelected = utils.getDateNow(2);
 
         eventsList = eventUtils.allEventsList(0);
 

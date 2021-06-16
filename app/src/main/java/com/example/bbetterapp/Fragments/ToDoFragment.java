@@ -140,9 +140,13 @@ public class ToDoFragment extends Fragment {
                             checkedEvent.setSynced(1);
                         }
 
-                        checkedEvent.setEventChecked(true);
+                        String eventId = checkedEvent.get_id();
 
-                        Call<Events> call = ApiClient.getInstance().getApi().updateEvent(checkedEvent.get_id(), checkedEvent);
+                        checkedEvent.setEventChecked(true);
+                        checkedEvent.set_id(null);
+                        checkedEvent.setEventCreatedAt(null);
+
+                        Call<Events> call = ApiClient.getInstance().getApi().updateEvent(eventId, checkedEvent);
 
                         call.enqueue(new Callback<Events>() {
                             @Override
@@ -157,6 +161,8 @@ public class ToDoFragment extends Fragment {
                                     if(isUpdated){
                                         eventsList.remove(position);
                                         todoAdapter.notifyItemRemoved(position);
+                                        eventsCheckedList.add(0,updatedEvent);
+                                        checkedAdapter.notifyItemInserted(0);
                                     }
                                 }
                             }
@@ -235,8 +241,10 @@ public class ToDoFragment extends Fragment {
 
     public void getData()
     {
+        eventsList = eventsUtils.allEventsList(0);
         todoAdapter.setData(eventsList);
         todoAdapter.notifyDataSetChanged();
+        eventsCheckedList = eventsUtils.allEventsList(1);
         checkedAdapter.setData(eventsCheckedList);
         checkedAdapter.notifyDataSetChanged();
     }

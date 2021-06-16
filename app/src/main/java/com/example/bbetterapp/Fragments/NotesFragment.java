@@ -88,12 +88,6 @@ public class NotesFragment extends Fragment {
 
         notesList = noteUtils.allNotesList(0);
 
-        for(Notes mynote : notesList){
-            Utils.makeMyLog("noteee title: ", ""+ mynote.getNoteTitle());
-            Utils.makeMyLog("noteee content: ", ""+ mynote.getNoteContent());
-            Utils.makeMyLog("noteee datetime: ", ""+ mynote.getNoteCreatedAt());
-        }
-
         notesAdapter = new NotesRecyclerAdapter(getActivity(), notesList);
         recyclerView.setAdapter(notesAdapter);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext(), LinearLayoutManager.HORIZONTAL, false);

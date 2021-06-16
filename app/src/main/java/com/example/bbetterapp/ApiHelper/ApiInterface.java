@@ -103,7 +103,7 @@ public interface ApiInterface {
     @POST("events/new")
     Call<Events> saveNewEvent(@Body Events event);
     //UPDATE EVENT
-    @PATCH("event/patch/{eventId}")
+    @PATCH("events/patch/{eventId}")
     Call<Events> updateEvent(@Path("eventId") String eventId, @Body Events event);
     //DELETE EVENT
     @DELETE("events/delete/{eventId}")

@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.BBetterApp">
-        <activity android:name=".NoteArchiveActivity"></activity>
+        <activity android:name=".AppLockListActivity"></activity>
+        <activity android:name=".NoteArchiveActivity" />
         <activity android:name=".CountDownActivity" />
         <activity android:name=".NoteEditActivity" />
         <activity android:name=".FragmentHolderActivity" />

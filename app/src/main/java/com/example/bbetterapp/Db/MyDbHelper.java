@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import com.example.bbetterapp.Models.Apps;
 import com.example.bbetterapp.Models.Events;
 import com.example.bbetterapp.Models.Notes;
 import com.example.bbetterapp.Models.Sessions;
@@ -489,6 +490,33 @@ public class MyDbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + SESSIONS_TABLE, null);
         return res;
+    }
+
+    public Cursor getAllApps(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + APPS_TABLE, null);
+        return res;
+    }
+    public boolean addNewApp(Apps app){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(COL22, app.getAppname());
+        contentValues.put(COL23, app.getStatus());
+        contentValues.put(COL24, app.getPackagename());
+
+        long result = db.insert(APPS_TABLE, null, contentValues);
+
+        if(result == -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    public Integer deleteApp(String app_name){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        return db.delete(APPS_TABLE, "APP_NAME = ?", new String[]{app_name});
     }
 
 }
