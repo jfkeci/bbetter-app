@@ -3,9 +3,15 @@ package com.example.bbetterapp.Models;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
+import com.example.bbetterapp.Utils;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class Notes {
     String _id, userId, noteTitle, noteContent, createdAt, updatedAt;
@@ -15,6 +21,9 @@ public class Notes {
 
     Context context;
 
+    /* --------------------------------------------------------------------------------*/
+    /* ----------------------------------------CONSTRUCTORS----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     public Notes(String _id, String userId, String noteTitle, String noteContent, String createdAt, String updatedAt, Boolean noteArchived) {
         this._id = _id;
         this.userId = userId;
@@ -24,76 +33,66 @@ public class Notes {
         this.updatedAt = updatedAt;
         this.noteArchived = noteArchived;
     }
-
+    public Notes() { }
     public Notes(Context context) {
         this.context = context;
     }
 
+    /* --------------------------------------------------------------------------------*/
+    /* ----------------------------------------GETTERS/SETTERS----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     public int isSynced() {
         return synced;
     }
-
     public void setSynced(int synced) {
         this.synced = synced;
     }
-
-    public Notes() { }
-
     public String getNoteId() {
         return _id;
     }
-
     public void setNoteId(String _id) {
         this._id = _id;
     }
-
     public String getUserId() {
         return userId;
     }
-
     public void setUserId(String userId) {
         this.userId = userId;
     }
-
     public String getNoteTitle() {
         return noteTitle;
     }
-
     public void setNoteTitle(String noteTitle) {
         this.noteTitle = noteTitle;
     }
-
     public String getNoteContent() {
         return noteContent;
     }
-
     public void setNoteContent(String noteContent) {
         this.noteContent = noteContent;
     }
-
     public String getNoteCreatedAt() {
         return createdAt;
     }
-
     public void setNoteCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
-
     public String getNoteUpdatedAt() {
         return updatedAt;
     }
-
     public void setNoteUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
-
     public Boolean getNoteArchived() {
         return noteArchived;
     }
-
     public void setNoteArchived(Boolean noteArchived) {
         this.noteArchived = noteArchived;
     }
+
+    /* --------------------------------------------------------------------------------*/
+    /* ----------------------------------------DB ACTIONS AND UTILS----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
 
     public Notes getNoteById(String id){
         MyDbHelper dbHelper;
@@ -253,5 +252,41 @@ public class Notes {
         }
 
         return dbNotes;
+    }
+
+    public void syncNotesApiDb(String userId){
+
+        MyDbHelper dbHelper = new MyDbHelper(context);
+
+        //SAVING OFFLINE DATA WHERE SYNCED = 0
+        //UPDATING OFFLINE DATA WHERE SYNCED = 2
+        //DELETING OFFLINE DATA WHERE SYNCED = 3
+        //SAVING ONLINE DATA WHERE SYNCED = 0
+        //UPDATING ONLINE DATA WHERE SYNCED = 2
+        //DELETING ONLINE DATA WHERE SYNCED = 3
+
+        Call<ArrayList<Notes>> call = ApiClient.getInstance().getApi().getAllUserNotes(userId);
+
+        call.enqueue(new Callback<ArrayList<Notes>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Notes>> call, Response<ArrayList<Notes>> response) {
+                if(!response.isSuccessful()){
+                    Utils.makeMyLog("Couldn't manage to sync notes: ", ""+response.code());
+                    return;
+                }
+
+                ArrayList<Notes> apiNotes = response.body();
+
+                for(Notes note : apiNotes){
+                    dbHelper.addNewNote(note);
+                    dbHelper.setNoteSynced(note.getNoteId(), 1);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Notes>> call, Throwable t) {
+                Utils.makeMyToast("Didn't manage to sync notes ", context);
+            }
+        });
     }
 }

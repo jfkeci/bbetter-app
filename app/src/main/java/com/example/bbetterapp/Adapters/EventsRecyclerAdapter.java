@@ -69,45 +69,45 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter{
         }
 
         public void bindView(int position){
-
             if(eventsList.size()>=1){
-                String content = eventsList.get(position).getEventTitle();
-                String mainContent = "";
+                if(eventsList.get(position).isSynced() != 3){
+                    String content = eventsList.get(position).getEventTitle();
+                    String mainContent = "";
 
-                if(content.length() > 35){
-                    int n=35;
-                    for(int i=0;i<content.length();i++){
-                        mainContent = mainContent + content.charAt(i);
-                        if(i==n){
-                            mainContent = mainContent + " \n ";
-                            n+=35;
+                    if(content.length() > 35){
+                        int n=35;
+                        for(int i=0;i<content.length();i++){
+                            mainContent = mainContent + content.charAt(i);
+                            if(i==n){
+                                mainContent = mainContent + " \n ";
+                                n+=35;
+                            }
                         }
+                    }if(content.length() < 35){
+                        mainContent = content;
                     }
-                }if(content.length() < 35){
-                    mainContent = content;
-                }
 
-                twContent.setText(mainContent);
-                twDate.setText(eventsList.get(position).getEventDate());
+                    twContent.setText(mainContent);
+                    twDate.setText(eventsList.get(position).getEventDate());
 
-                if(eventsList.get(position).getEventType() == 1){
-                    ivType.setImageResource(R.drawable.ic_calendar_white);
-                    cvToDo.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myTealGreen));
-                }
-                if(eventsList.get(position).getEventType() == 2){
-                    ivType.setImageResource(R.drawable.ic_notify_white);
-                    cvToDo.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myMattePink));
-                }
-                if(eventsList.get(position).getEventType() == 3){
-                    ivType.setImageResource(R.drawable.ic_check_white);
-                    cvToDo.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myLightBlue));
-                }
+                    if(eventsList.get(position).getEventType() == 1){
+                        ivType.setImageResource(R.drawable.ic_calendar_white);
+                        cvToDo.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myTealGreen));
+                    }
+                    if(eventsList.get(position).getEventType() == 2){
+                        ivType.setImageResource(R.drawable.ic_notify_white);
+                        cvToDo.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myMattePink));
+                    }
+                    if(eventsList.get(position).getEventType() == 3){
+                        ivType.setImageResource(R.drawable.ic_check_white);
+                        cvToDo.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myLightBlue));
+                    }
 
-                if(eventsList.get(position).isEventChecked()){
-                    cvToDo.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myDarkGreen));
+                    if(eventsList.get(position).isEventChecked()){
+                        cvToDo.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myDarkGreen));
+                    }
                 }
             }
-
             if(listType == 1){
                 ivLeft.setVisibility(View.INVISIBLE);
                 ivRight.setVisibility(View.INVISIBLE);
@@ -116,7 +116,6 @@ public class EventsRecyclerAdapter extends RecyclerView.Adapter{
         public void onClick(View view){
 
         }
-
     }
 
     public void setData(ArrayList<Events> eventsList)

@@ -62,6 +62,9 @@ public interface ApiInterface {
     //DELETE NOTE
     @DELETE("notes/delete/{noteId}")
     Call<Notes> deleteNote(@Path("noteId") String noteId);
+    //GET USER NOTES BY SYNCED
+    @GET("notes/all/{userId}/{synced}")
+    Call<ArrayList<Notes>> getAllUserNotesBySync(@Path("userId") String userId, @Path("synced") int synced);
 
 
 
@@ -78,7 +81,9 @@ public interface ApiInterface {
     //SAVE NEW SESSION
     @POST("sessions/new")
     Call<Sessions> saveNewSession(@Body Sessions session);
-
+    //GET USER SESSIONS BY SYNCED
+    @GET("notes/all/{userId}/{synced}")
+    Call<ArrayList<Sessions>> getAllUserSessionsBySync(@Path("userId") String userId, @Path("synced") int synced);
 
 
 
@@ -94,12 +99,16 @@ public interface ApiInterface {
     //GET ALL USER EVENTS
     @GET("events/all/{userId}")
     Call<ArrayList<Events>> getAllUserEvents(@Path("userId") String userId);
-    //EVENTS: SAVE
+    //SAVE EVENT
     @POST("events/new")
     Call<Events> saveNewEvent(@Body Events event);
+    //UPDATE EVENT
     @PATCH("event/patch/{eventId}")
     Call<Events> updateEvent(@Path("eventId") String eventId, @Body Events event);
+    //DELETE EVENT
     @DELETE("events/delete/{eventId}")
     Call<Events> deleteEvent(@Path("eventId") String eventId);
-
+    //GET USER EVENTS BY SYNCED
+    @GET("events/all/{userId}/{synced}")
+    Call<ArrayList<Events>> getAllUserEventsBySync(@Path("userId") String userId, @Path("synced") int synced);
 }

@@ -36,6 +36,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnLogin;
 
     private static MyDbHelper dbHelper;
+    private Events eventUtils;
+    private Notes noteUtils;
+    private Sessions sessionUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,10 @@ public class LoginActivity extends AppCompatActivity {
 
         dbHelper = new MyDbHelper(getApplicationContext());
         utils = new Utils(this);
+
+        eventUtils = new Events(getApplicationContext());
+        noteUtils = new Notes(getApplicationContext());
+        sessionUtils = new Sessions(getApplicationContext());
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -144,6 +151,7 @@ public class LoginActivity extends AppCompatActivity {
                 for(Notes note : apiNotes){
                     dbHelper.addNewNote(note);
                     dbHelper.setNoteSynced(note.getNoteId(), 1);
+
                 }
             }
 
@@ -167,8 +175,24 @@ public class LoginActivity extends AppCompatActivity {
                 ArrayList<Events> apiEvents = response.body();
 
                 for(Events event : apiEvents){
+                    event.setSynced(1);
                     dbHelper.addNewEvent(event);
                     dbHelper.setEventSynced(event.get_id(), 1);
+
+                    Call<Events> call1 = ApiClient.getInstance().getApi().updateEvent(event.get_id(), event);
+                    call1.enqueue(new Callback<Events>() {
+                        @Override
+                        public void onResponse(Call<Events> call, Response<Events> response) {
+                            if(!response.isSuccessful()){
+                                Utils.makeMyLog("Failed to sync", "");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Events> call, Throwable t) {
+                            Utils.makeMyLog("Failed to sync", "");
+                        }
+                    });
                 }
             }
 
@@ -203,8 +227,6 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

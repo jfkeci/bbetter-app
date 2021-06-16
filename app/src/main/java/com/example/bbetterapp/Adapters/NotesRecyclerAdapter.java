@@ -58,35 +58,17 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
         if(notesList.size()>=1){
+            if(notesList.get(position).isSynced() != 3){
 
-            String content = notesList.get(position).getNoteContent();
-            String title = notesList.get(position).getNoteTitle();
-            String mainContent = "";
-            String mainTitle = "";
+                String mainContent = Utils.cutString(notesList.get(position).getNoteContent(), 45);
+                String mainTitle = Utils.cutString(notesList.get(position).getNoteTitle(), 14);
 
-            if(content.length() > 45){
-                for(int i=0;i<45;i++){
-                    mainContent = mainContent+content.charAt(i);
-                }
-                mainContent = mainContent+"...";
-            }if(content.length()<45){
-                mainContent = content;
+
+                holder.twTitle.setText(mainTitle);
+                holder.twContent.setText(mainContent);
+                holder.twDate.setText(notesList.get(position).getNoteCreatedAt());
             }
-
-            if(title.length() > 14){
-                for(int i=0;i<14;i++){
-                    mainTitle = mainTitle+title.charAt(i);
-                }
-                mainTitle = mainTitle+"...";
-            }if(title.length()<14){
-                mainTitle = title;
-            }
-
-            holder.twTitle.setText(mainTitle);
-            holder.twContent.setText(mainContent);
-            holder.twDate.setText(notesList.get(position).getNoteCreatedAt());
         }
-
     }
 
     @Override

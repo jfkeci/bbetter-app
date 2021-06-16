@@ -143,6 +143,10 @@ public class MyDbHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    /* --------------------------------------------------------------------------------*/
+    /* ----------------------------------------USER----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+
     public boolean setCurrentUser(User user){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("DELETE FROM "+USER_TABLE);
@@ -201,9 +205,9 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return user;
     }
 
-    /*------------------------------------------------------------------------------------------------------------*/
-    /* EVENTS CRUD */
-    /*------------------------------------------------------------------------------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+    /* ----------------------------------------EVENTS----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     public boolean addNewEvent(Events event){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -229,6 +233,12 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public Cursor getAllEventsByCheck(int check){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE+" WHERE eventChecked='" + check + "'", null);
+        return res;
+    }
+
+    public Cursor getAllEventsBySynced(int synced){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE+" WHERE synced='" + synced + "'", null);
         return res;
     }
 
@@ -331,9 +341,9 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return db.delete(EVENTS_TABLE, "_id = ?", new String[]{eventId});
     }
 
-    /*------------------------------------------------------------------------------------------------------------*/
-    /* NOTES CRUD */
-    /*------------------------------------------------------------------------------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+    /* ----------------------------------------NOTES----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     public boolean addNewNote(Notes note){
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -427,9 +437,9 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return db.delete(NOTES_TABLE, "_id = ?", new String[]{noteId});
     }
 
-    /*------------------------------------------------------------------------------------------------------------*/
-    /* SESSIONS CRUD */
-    /*------------------------------------------------------------------------------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
+    /* ----------------------------------------SESSIONS----------------------------------------*/
+    /* --------------------------------------------------------------------------------*/
     public boolean addNewSession(Sessions session){
 
         SQLiteDatabase db = this.getWritableDatabase();

@@ -137,101 +137,18 @@ public class Utils {
     }
 
     public boolean isNetworkAvailable() {
-        boolean isAvalible;
+        boolean isAvailable;
 
         ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
         if (networkInfo != null && networkInfo.isConnected()) {
-            isAvalible = true;
+            isAvailable = true;
         } else {
-            isAvalible = false;
+            isAvailable = false;
         }
 
-        return isAvalible;
+        return isAvailable;
     }
-
-
-    /*public void updateNoteSynced(Notes note){
-        Call<>
-    }*/
-
-    /*        Call<ArrayList<Notes>> call = ApiClient.getInstance().getApi().getNotes();
-
-        call.enqueue(new Callback<ArrayList<Notes>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Notes>> call, Response<ArrayList<Notes>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyLog("List of user response was not successful: ", ""+response.code());
-                    return;
-                }
-
-                ArrayList<Notes> notes = response.body();
-                notesAdapter = new NotesRecyclerAdapter(getActivity(), notes);
-                recyclerView.setAdapter(notesAdapter);
-
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getBaseContext(), LinearLayoutManager.HORIZONTAL, false);
-                recyclerView.setLayoutManager(layoutManager);
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Notes>> call, Throwable t) {
-
-            }
-        });*/
-
-    /*    public void updateSessionsList(){
-
-        sessionList.clear();
-
-        Call<ArrayList<Sessions>> call = ApiClient.getInstance().getApi().getSessions();
-
-        call.enqueue(new Callback<ArrayList<Sessions>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Sessions>> call, Response<ArrayList<Sessions>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyToast("code: "+ response.code(), getActivity().getBaseContext());
-                    return;
-                }
-
-                sessionList = response.body();
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Sessions>> call, Throwable t) {
-                Utils.makeMyToast("message: "+t.getMessage(), getActivity().getBaseContext());
-            }
-        });
-    }*/
-
-    /*public void updateEventsList(){
-
-        Call<ArrayList<Events>> call = ApiClient.getInstance().getApi().getEvents(uid);
-
-        call.enqueue(new Callback<ArrayList<Events>>() {
-            @Override
-            public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyToast("code: "+ response.code(), getActivity());
-                    return;
-                }
-
-                eventsList = response.body();
-
-                for (Events event : eventsList){
-                    Utils.makeMyLog("event title: ", ""+event.getEventTitle());
-                    Utils.makeMyLog("event created at: ", ""+event.getEventCreatedAt());
-                    Utils.makeMyLog("event uid: ", ""+event.getUserId());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<Events>> call, Throwable t) {
-                Utils.makeMyToast("message: "+t.getMessage(), getActivity());
-            }
-        });
-    }*/
-
-
 }

@@ -14,6 +14,7 @@ import com.example.bbetterapp.Db.MyDbHelper;
 import com.example.bbetterapp.Models.Notes;
 import com.example.bbetterapp.NoteEditActivity;
 import com.example.bbetterapp.R;
+import com.example.bbetterapp.Utils;
 
 import java.util.ArrayList;
 
@@ -59,35 +60,15 @@ public class ArchivedNotesRecyclerAdapter extends RecyclerView.Adapter<ArchivedN
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
         if(notesList.size()>=1){
+            if(notesList.get(position).isSynced() != 3){
+                String mainContent = Utils.cutString(notesList.get(position).getNoteContent(), 200);
+                String mainTitle = Utils.cutString(notesList.get(position).getNoteTitle(), 30);
 
-            String content = notesList.get(position).getNoteContent();
-            String title = notesList.get(position).getNoteTitle();
-            String mainContent = "";
-            String mainTitle = "";
-
-            if(content.length() > 200){
-                for(int i=0;i<200;i++){
-                    mainContent = mainContent+content.charAt(i);
-                }
-                mainContent = mainContent+"...";
-            }if(content.length()<200){
-                mainContent = content;
+                holder.twTitle.setText(mainTitle);
+                holder.twContent.setText(mainContent);
+                holder.twDate.setText(notesList.get(position).getNoteCreatedAt());
             }
-
-            if(title.length() > 30){
-                for(int i=0;i<30;i++){
-                    mainTitle = mainTitle+title.charAt(i);
-                }
-                mainTitle = mainTitle+"...";
-            }if(title.length()<30){
-                mainTitle = title;
-            }
-
-            holder.twTitle.setText(mainTitle);
-            holder.twContent.setText(mainContent);
-            holder.twDate.setText(notesList.get(position).getNoteCreatedAt());
         }
-
     }
 
     @Override
