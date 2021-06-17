@@ -125,7 +125,7 @@ public class Events {
             typeNum = 1;
         }else if(type.equals("Reminder")){
             typeNum = 2;
-        }else if(type.equals("Todo")){
+        }else if(type.equals("ToDo")){
             typeNum = 3;
         }
 

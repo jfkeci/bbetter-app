@@ -125,7 +125,7 @@ public class NotesFragment extends Fragment {
                                 }else{
                                     Notes updatedNote = response.body();
 
-                                    updatedNote.setNoteUpdatedAt(utils.parseDateApiToDb(updatedNote.getNoteUpdatedAt()));
+                                    /*updatedNote.setNoteUpdatedAt(utils.parseDateApiToDb(updatedNote.getNoteUpdatedAt()));*/
                                     /*updatedNote.setNoteCreatedAt(utils.parseDateApiToDb(updatedNote.getNoteCreatedAt()));*/
 
                                     boolean isUpdated = dbHelper.updateNote(updatedNote);
@@ -215,13 +215,13 @@ public class NotesFragment extends Fragment {
                                     @Override
                                     public void onResponse(Call<Notes> call, Response<Notes> response) {
                                         if(!response.isSuccessful()){
-                                            Utils.makeMyLog("Failed to undo", "");
+                                            Utils.makeMyLog("Failed to undo","");
                                         }else{
                                             Notes note = response.body();
 
                                             dbHelper.addNewNote(note);
-                                            notesList.add(0, note);
-                                            notesAdapter.notifyDataSetChanged();
+                                            notesList.add(position, note);
+                                            notesAdapter.notifyItemInserted(position);
                                         }
                                     }
 

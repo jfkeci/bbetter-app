@@ -51,8 +51,8 @@ public class MainActivity extends AppCompatActivity{
         if(dbHelper.userIsSet()){
 
             if(utils.isNetworkAvailable()){
-                sessionUtils.syncSessionsApiDb(utils.getMyUserId());
-                eventUtils.syncEventsApiDb();
+                /*sessionUtils.syncSessionsApiDb(utils.getMyUserId());
+                eventUtils.syncEventsApiDb();*/
                 /*noteUtils.syncNotesApiDb(utils.getMyUserId());*/
             }else{
                 Utils.makeMyToast("Couldn't sync, no network", this);
@@ -66,8 +66,8 @@ public class MainActivity extends AppCompatActivity{
             public void onClick(View v) {
                 if(dbHelper.userIsSet()){
                     if(utils.isNetworkAvailable()){
-                        sessionUtils.syncSessionsApiDb(utils.getMyUserId());
-                        eventUtils.syncEventsApiDb();
+                        /*sessionUtils.syncSessionsApiDb(utils.getMyUserId());
+                        eventUtils.syncEventsApiDb();*/
                         /*syncNotesApiDb(utils.getMyUserId());*/
                     }else{
                         Utils.makeMyToast("Couldn't sync, no network", getApplicationContext());

@@ -46,11 +46,11 @@ public class FragmentHolderActivity extends AppCompatActivity {
                         tab.setIcon(R.drawable.ic_notes_white);
                         break;
                     }
-                    case 4: {
+                    /*case 4: {
                         tab.setText("Habits");
                         tab.setIcon(R.drawable.ic_repeat_white);
                         break;
-                    }
+                    }*/
                 }
             }
         });

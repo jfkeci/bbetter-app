@@ -27,15 +27,15 @@ public class AppPagerAdapter extends FragmentStateAdapter {
                 return new CalendarFragment();
             case 2:
                 return new TimerFragment();
-            case 3:
-                return new NotesFragment();
             default:
-                return new HabitTrackerFragment();
+                return new NotesFragment();
+            /*default:
+                return new HabitTrackerFragment();*/
         }
     }
 
     @Override
     public int getItemCount() {
-        return 5;
+        return 4;
     }
 }

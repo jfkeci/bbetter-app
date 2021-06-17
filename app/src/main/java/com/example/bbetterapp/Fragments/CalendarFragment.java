@@ -85,6 +85,9 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
     private Events checkedEvent = new Events();
     private Events deletedEvent = new Events();
 
+    public boolean deleted = false;
+    public boolean checked = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -274,46 +277,117 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
 
                 if (direction == ItemTouchHelper.LEFT) {
                     deletedEvent = eventsList.get(position);
+                    Events undoEvent = deletedEvent;
 
-                    if(utils.isNetworkAvailable()){
+                    if(deletedEvent.isSynced() != 0){
+                        if(utils.isNetworkAvailable()){
+                            deleted = true;
+                            Call<Events> call = ApiClient.getInstance().getApi().deleteEvent(deletedEvent.get_id());
 
-                    }else{
-                        String eventId = deletedEvent.get_id();
+                            call.enqueue(new Callback<Events>() {
+                                @Override
+                                public void onResponse(Call<Events> call, Response<Events> response) {
+                                    if(!response.isSuccessful()){
+                                        Utils.makeMyToast("Something went wrong", getActivity());
+                                    }else{
+                                        dbHelper.deleteEvent(deletedEvent.get_id());
+                                        eventsList.remove(position);
+                                        calendarAdapter.notifyItemRemoved(position);
+                                    }
+                                }
 
-                        int deleted = dbHelper.deleteEvent(eventId);
-
-                        if (deleted == 1) {
-                            eventsList.remove(deletedEvent);
+                                @Override
+                                public void onFailure(Call<Events> call, Throwable t) {
+                                    Utils.makeMyToast("Something went wrong", getActivity());
+                                }
+                            });
+                        }else{
+                            deleted = false;
+                            deletedEvent.setSynced(3);
+                            boolean isUpdated = dbHelper.updateEvent(deletedEvent);
+                            eventsList.remove(position);
                             calendarAdapter.notifyItemRemoved(position);
                         }
+                    }else{
+                        deleted = true;
+                        dbHelper.deleteEvent(deletedEvent.get_id());
+                        eventsList.remove(position);
+                        calendarAdapter.notifyItemRemoved(position);
                     }
-
-                    Snackbar.make(recyclerViewCalendar, eventUtils.getEventTypeString(deletedEvent.getEventType()), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                    Snackbar.make(recyclerViewCalendar, Utils.cutString(deletedEvent.getEventTitle(), 8), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if(deleted){
+                                if(utils.isNetworkAvailable()){
+                                    undoEvent.setSynced(1);
+                                    Call<Events> undoCall = ApiClient.getInstance().getApi().saveNewEvent(undoEvent);
 
-                            if(utils.isNetworkAvailable()){
+                                    undoCall.enqueue(new Callback<Events>() {
+                                        @Override
+                                        public void onResponse(Call<Events> call, Response<Events> response) {
+                                            if(!response.isSuccessful()){
+                                                Utils.makeMyToast("Something went wrong", getActivity());
+                                            }else{
+                                                Events event = response.body();
 
-                            }else{
-                                boolean undone = dbHelper.addNewEvent(deletedEvent);
-
-                                if(undone) {
-                                    eventsList.add(position, deletedEvent);
-                                    calendarAdapter.notifyItemInserted(position);
+                                                dbHelper.addNewEvent(event);
+                                                eventsList.add(position, event);
+                                                calendarAdapter.notifyItemInserted(position);
+                                            }
+                                        }
+                                        @Override
+                                        public void onFailure(Call<Events> call, Throwable t) {
+                                            Utils.makeMyToast("Something went wrong", getActivity());
+                                        }
+                                    });
                                 }else{
-                                    Utils.makeMyToast("Something went wrong!", getActivity());
+                                    dbHelper.addNewEvent(undoEvent);
+                                    eventsList.add(position, undoEvent);
+                                    calendarAdapter.notifyItemInserted(position);
                                 }
+                            }else{
+                                dbHelper.updateEvent(undoEvent);
+                                eventsList.add(position, undoEvent);
+                                calendarAdapter.notifyItemInserted(position);
                             }
-
-
                         }
                     }).show();
-
                 }
                 if (direction == ItemTouchHelper.RIGHT) {
                     checkedEvent = eventsList.get(position);
+                    checkedEvent.setEventChecked(true);
 
                     if(utils.isNetworkAvailable()){
+                        checkedEvent.setSynced(1);
+
+                        String eventId = checkedEvent.get_id();
+
+                        Call<Events> call = ApiClient.getInstance().getApi().updateEvent(eventId, checkedEvent);
+
+                        call.enqueue(new Callback<Events>() {
+                            @Override
+                            public void onResponse(Call<Events> call, Response<Events> response) {
+                                if(!response.isSuccessful()){
+                                    Utils.makeMyToast("Something went wrong", getActivity());
+                                }else{
+                                    Events updatedEvent = response.body();
+
+                                    boolean isUpdated = dbHelper.updateEvent(updatedEvent);
+
+                                    if(isUpdated){
+                                        eventsList.remove(position);
+                                        calendarAdapter.notifyItemRemoved(position);
+                                    }else{
+                                        Utils.makeMyToast("Something went wrong", getActivity());
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<Events> call, Throwable t) {
+                                Utils.makeMyToast("Something went wrong", getActivity());
+                            }
+                        });
 
                     }else{
                         boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(),1);
@@ -327,19 +401,6 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                             Utils.makeMyToast("Something went wrong!", getActivity());
                         }
                     }
-
-                    Snackbar.make(recyclerViewCalendar, eventUtils.getEventTypeString(checkedEvent.getEventType()), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(), 0);
-                            if (checked) {
-                                eventsList.add(position, checkedEvent);
-                                calendarAdapter.notifyItemInserted(position);
-                            } else {
-                                Utils.makeMyToast("Something went wrong!", getActivity());
-                            }
-                        }
-                    }).show();
                 }
             }
 

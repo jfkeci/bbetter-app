@@ -31,6 +31,7 @@ import com.example.bbetterapp.Adapters.EventsRecyclerAdapter;
 import com.example.bbetterapp.ApiHelper.ApiClient;
 import com.example.bbetterapp.Db.MyDbHelper;
 import com.example.bbetterapp.Models.Events;
+import com.example.bbetterapp.Models.Notes;
 import com.example.bbetterapp.Models.User;
 import com.example.bbetterapp.R;
 import com.example.bbetterapp.Utils;
@@ -76,6 +77,9 @@ public class ToDoFragment extends Fragment {
     private Events checkedEvent = new Events();
 
     private String uid;
+
+    private boolean deleted = false;
+    private boolean archived = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -134,17 +138,13 @@ public class ToDoFragment extends Fragment {
 
                 if(direction == ItemTouchHelper.RIGHT){
                     checkedEvent = eventsList.get(position);
+                    checkedEvent.setEventChecked(true);
 
                     if(utils.isNetworkAvailable()){
-                        if(checkedEvent.isSynced() != 2){
-                            checkedEvent.setSynced(1);
-                        }
+
+                        checkedEvent.setSynced(1);
 
                         String eventId = checkedEvent.get_id();
-
-                        checkedEvent.setEventChecked(true);
-                        checkedEvent.set_id(null);
-                        checkedEvent.setEventCreatedAt(null);
 
                         Call<Events> call = ApiClient.getInstance().getApi().updateEvent(eventId, checkedEvent);
 
@@ -163,6 +163,8 @@ public class ToDoFragment extends Fragment {
                                         todoAdapter.notifyItemRemoved(position);
                                         eventsCheckedList.add(0,updatedEvent);
                                         checkedAdapter.notifyItemInserted(0);
+                                    }else{
+                                        Utils.makeMyToast("Something went wrong!", getActivity());
                                     }
                                 }
                             }
@@ -183,33 +185,86 @@ public class ToDoFragment extends Fragment {
                 }
                 if(direction == ItemTouchHelper.LEFT){
                     deletedEvent = eventsList.get(position);
+                    Events undoEvent = deletedEvent;
 
-                    if(utils.isNetworkAvailable()){
-                        Call<Events> call = ApiClient.getInstance().getApi().deleteEvent(deletedEvent.get_id());
+                    if(deletedEvent.isSynced() != 0){
+                        if(utils.isNetworkAvailable()){
+                            deleted = true;
+                            Call<Events> call = ApiClient.getInstance().getApi().deleteEvent(deletedEvent.get_id());
 
-                        call.enqueue(new Callback<Events>() {
-                            @Override
-                            public void onResponse(Call<Events> call, Response<Events> response) {
-                                if(!response.isSuccessful()){
-                                    Utils.makeMyToast("Something went wrong\nplease try again", getActivity());
-                                }else{
-                                    dbHelper.deleteEvent(deletedEvent.get_id());
-                                    eventsList.remove(position);
-                                    todoAdapter.notifyItemRemoved(position);
+                            call.enqueue(new Callback<Events>() {
+                                @Override
+                                public void onResponse(Call<Events> call, Response<Events> response) {
+                                    if(!response.isSuccessful()){
+                                        Utils.makeMyToast("Something went wrong\nplease try again", getActivity());
+                                    }else{
+                                        dbHelper.deleteEvent(deletedEvent.get_id());
+                                        eventsList.remove(position);
+                                        todoAdapter.notifyItemRemoved(position);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public void onFailure(Call<Events> call, Throwable t) {
-                                Utils.makeMyToast("Something went wrong\nplease try again", getActivity());
-                            }
-                        });
+                                @Override
+                                public void onFailure(Call<Events> call, Throwable t) {
+                                    Utils.makeMyToast("Something went wrong\nplease try again", getActivity());
+                                }
+                            });
+                        }else{
+                            deleted = false;
+                            deletedEvent.setSynced(3);
+                            dbHelper.updateEvent(deletedEvent);
+                            eventsList.remove(position);
+                            todoAdapter.notifyItemRemoved(position);
+                        }
                     }else{
-                        deletedEvent.setSynced(3);
-                        dbHelper.updateEvent(deletedEvent);
-                        eventsList.remove(position);
-                        todoAdapter.notifyItemRemoved(position);
+                        deleted = true;
+
+                        int isDeleted = dbHelper.deleteEvent(deletedEvent.get_id());
+
+                        if(isDeleted == 1){
+                            eventsList.remove(position);
+                            todoAdapter.notifyItemRemoved(position);
+                        }
                     }
+                    Snackbar.make(recyclerViewToDo, Utils.cutString(deletedEvent.getEventTitle(), 8), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(deleted){
+                                if(utils.isNetworkAvailable()){
+                                    undoEvent.setSynced(1);
+                                    Call<Events> undoCall = ApiClient.getInstance().getApi().saveNewEvent(undoEvent);
+
+                                    undoCall.enqueue(new Callback<Events>() {
+                                        @Override
+                                        public void onResponse(Call<Events> call, Response<Events> response) {
+                                            if(!response.isSuccessful()){
+                                                Utils.makeMyToast("Something went wrong", getActivity());
+                                            }else{
+                                                Events event = response.body();
+
+                                                dbHelper.addNewEvent(event);
+                                                eventsList.add(position, event);
+                                                todoAdapter.notifyItemInserted(position);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onFailure(Call<Events> call, Throwable t) {
+                                            Utils.makeMyToast("Something went wrong, message: "+t.getMessage(), getActivity());
+                                        }
+                                    });
+                                }else{
+                                    dbHelper.addNewEvent(undoEvent);
+                                    eventsList.add(position,undoEvent);
+                                    todoAdapter.notifyItemInserted(position);
+                                }
+                            }else{
+                                dbHelper.updateEvent(undoEvent);
+                                eventsList.add(position,undoEvent);
+                                todoAdapter.notifyItemInserted(position);
+                            }
+                        }
+                    }).show();
                 }
             }
 
@@ -258,93 +313,4 @@ public class ToDoFragment extends Fragment {
         constraintLayoutToDo.setLayoutParams(lpTodo);
         constraintLayoutChecked.setLayoutParams(lpChecked);
     }
-
 }
-
-/*
-    ItemTouchHelper.SimpleCallback simpleCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-        @Override
-        public boolean onMove(@NonNull @org.jetbrains.annotations.NotNull RecyclerView recyclerView, @NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder viewHolder, @NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder target) {
-            return false;
-        }
-
-        @Override
-        public void onSwiped(@NonNull @org.jetbrains.annotations.NotNull RecyclerView.ViewHolder viewHolder, int direction) {
-            int position = viewHolder.getAdapterPosition();
-
-            if (direction == ItemTouchHelper.LEFT) {
-                deletedEvent = eventsList.get(position);
-
-                String event_id = String.valueOf(deletedEvent.get_id());
-
-                int deleted = dbHelper.deleteEvent(event_id);
-
-                if (deleted == 1) {
-                    eventsList.remove(deletedEvent);
-                    todoAdapter.notifyItemRemoved(position);
-                }
-
-                Snackbar.make(recyclerViewToDo, deletedEvent.getEventTitle(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        boolean undone = dbHelper.addNewEventWithId(deletedEvent);
-
-                        if (undone) {
-                            eventsList.add(position, deletedEvent);
-                            todoAdapter.notifyItemInserted(position);
-                        } else {
-                            Utils.makeMyToast("Something went wrong!", getActivity());
-                        }
-                    }
-                }).show();
-
-            }
-            if (direction == ItemTouchHelper.RIGHT) {
-                checkedEvent = eventsList.get(position);
-
-                eventsList.remove(checkedEvent);
-                todoAdapter.notifyItemRemoved(position);
-
-                boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(),1);
-
-                if (checked) {
-                    Utils.makeMyToast("Awesome!", getActivity());
-                    eventsCheckedList.add(checkedEvent);
-                    checkedAdapter.notifyDataSetChanged();
-                } else {
-                    Utils.makeMyToast("Something went wrong!", getActivity());
-                }
-                Snackbar.make(recyclerViewToDo, checkedEvent.getEventTitle(), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(), 0);
-                        if (checked) {
-                            eventsList.add(position, checkedEvent);
-                            todoAdapter.notifyItemInserted(position);
-                            eventsCheckedList.remove(checkedEvent);
-                            checkedAdapter.notifyDataSetChanged();
-                        } else {
-                            Utils.makeMyToast("Something went wrong!", getActivity());
-                        }
-                    }
-                }).show();
-            }
-        }
-
-        @Override
-        public void onChildDraw(@NonNull Canvas c, @NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
-            new RecyclerViewSwipeDecorator.Builder(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
-                    .addSwipeLeftBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myPink))
-                    .addSwipeLeftActionIcon(R.drawable.ic_delete_sweep_white)
-                    .addSwipeRightBackgroundColor(ContextCompat.getColor(getActivity(), R.color.myGoodGreen))
-                    .addSwipeRightActionIcon(R.drawable.ic_check_white)
-                    .create()
-                    .decorate();
-            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
-        }
-    };
-
-    ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerViewToDo);
-*/
