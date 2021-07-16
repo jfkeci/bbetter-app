@@ -12,7 +12,7 @@ public class ApiClient {
     private static ApiClient apiClient;
     private static Retrofit retrofit;
 
-    private ApiClient(){
+    private ApiClient() {
         Gson gson = new GsonBuilder()
                 .setLenient()
                 .create();
@@ -21,15 +21,15 @@ public class ApiClient {
                 .addConverterFactory(GsonConverterFactory.create(gson)).build();
     }
 
-    public static synchronized ApiClient getInstance(){
-        if (apiClient == null){
+    public static synchronized ApiClient getInstance() {
+        if (apiClient == null) {
             apiClient = new ApiClient();
         }
         return apiClient;
     }
 
 
-    public ApiInterface getApi(){
+    public ApiInterface getApi() {
         return retrofit.create(ApiInterface.class);
     }
 

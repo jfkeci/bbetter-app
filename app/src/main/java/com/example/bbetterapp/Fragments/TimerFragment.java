@@ -97,8 +97,7 @@ public class TimerFragment extends Fragment implements AdapterView.OnItemSelecte
         getData();
     }
 
-    public void getData()
-    {
+    public void getData() {
         sessionList = sessionUtils.allSessionsList();
         sessionsAdapter.setData(sessionList);
     }

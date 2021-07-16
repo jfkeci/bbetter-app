@@ -35,7 +35,10 @@ public class Sessions {
         this.sessionFinished = sessionFinished;
         this.createdAt = createdAt;
     }
-    public Sessions() { }
+
+    public Sessions() {
+    }
+
     public Sessions(Context context) {
         this.context = context;
     }
@@ -46,42 +49,55 @@ public class Sessions {
     public int isSynced() {
         return synced;
     }
+
     public void setSynced(int synced) {
         this.synced = synced;
     }
+
     public String getSessionId() {
         return _id;
     }
+
     public void setSessionId(String _id) {
         this._id = _id;
     }
+
     public String getUserId() {
         return userId;
     }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
     public int getSessionLength() {
         return sessionLength;
     }
+
     public void setSessionLength(int sessionLength) {
         this.sessionLength = sessionLength;
     }
+
     public int getSessionPoints() {
         return sessionPoints;
     }
+
     public void setSessionPoints(int sessionPoints) {
         this.sessionPoints = sessionPoints;
     }
+
     public boolean isSessionFinished() {
         return sessionFinished;
     }
+
     public void setSessionFinished(boolean sessionFinished) {
         this.sessionFinished = sessionFinished;
     }
+
     public String getSessionCreatedAt() {
         return createdAt;
     }
+
     public void setSessionCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
@@ -90,19 +106,20 @@ public class Sessions {
     /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------DB ACTIONS AND UTILS----------------------------------------*/
     /* --------------------------------------------------------------------------------*/
-    public ArrayList<Sessions> allSessionsList(){
+    public ArrayList<Sessions> allSessionsList() {
         ArrayList<Sessions> mySessions = new ArrayList<>();
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         Cursor res = dbHelper.getAllSessions();
 
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
 
             boolean finished = true;
 
-            if(Integer.parseInt(res.getString(4)) == 1){
+            if (Integer.parseInt(res.getString(4)) == 1) {
                 finished = true;
-            }if(Integer.parseInt(res.getString(4)) == 0){
+            }
+            if (Integer.parseInt(res.getString(4)) == 0) {
                 finished = false;
             }
 
@@ -122,19 +139,21 @@ public class Sessions {
 
         return mySessions;
     }
-    public ArrayList<Sessions> allNonSyncedSessions(){
+
+    public ArrayList<Sessions> allNonSyncedSessions() {
         ArrayList<Sessions> mySessions = new ArrayList<>();
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         Cursor res = dbHelper.getAllSessions();
 
-        while(res.moveToNext()){
-            if(res.getInt(6) == 0){
+        while (res.moveToNext()) {
+            if (res.getInt(6) == 0) {
                 boolean finished = true;
 
-                if(Integer.parseInt(res.getString(4)) == 1){
+                if (Integer.parseInt(res.getString(4)) == 1) {
                     finished = true;
-                }if(Integer.parseInt(res.getString(4)) == 0){
+                }
+                if (Integer.parseInt(res.getString(4)) == 0) {
                     finished = false;
                 }
 
@@ -156,13 +175,13 @@ public class Sessions {
         return mySessions;
     }
 
-    public void syncSessionsApiDb(String userId){
+    public void syncSessionsApiDb(String userId) {
 
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         ArrayList<Sessions> dbSessions = allNonSyncedSessions();
 
-        for(Sessions session : dbSessions){
+        for (Sessions session : dbSessions) {
 
             session.setSynced(1);
 
@@ -171,15 +190,15 @@ public class Sessions {
             call.enqueue(new Callback<Sessions>() {
                 @Override
                 public void onResponse(Call<Sessions> call, Response<Sessions> response) {
-                    if(!response.isSuccessful()){
-                        Utils.makeMyLog("Failed, Couldn't manage to sync sessions: ", ""+response.code());
+                    if (!response.isSuccessful()) {
+                        Utils.makeMyLog("Failed, Couldn't manage to sync sessions: ", "" + response.code());
                         return;
                     }
                 }
 
                 @Override
                 public void onFailure(Call<Sessions> call, Throwable t) {
-                    Utils.makeMyLog("Failed to sync: SESSION, message: ", ""+t.getMessage());
+                    Utils.makeMyLog("Failed to sync: SESSION, message: ", "" + t.getMessage());
                 }
             });
         }
@@ -189,15 +208,15 @@ public class Sessions {
         call.enqueue(new Callback<ArrayList<Sessions>>() {
             @Override
             public void onResponse(Call<ArrayList<Sessions>> call, Response<ArrayList<Sessions>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyLog("Failed, Couldn't manage to sync sessions: ", ""+response.code());
+                if (!response.isSuccessful()) {
+                    Utils.makeMyLog("Failed, Couldn't manage to sync sessions: ", "" + response.code());
                     return;
                 }
 
                 ArrayList<Sessions> apiSessions = response.body();
 
-                for(Sessions session : apiSessions){
-                    if(session.isSynced() == 0){
+                for (Sessions session : apiSessions) {
+                    if (session.isSynced() == 0) {
                         session.setSynced(1);
                         dbHelper.addNewSession(session);
                     }
@@ -206,7 +225,7 @@ public class Sessions {
 
             @Override
             public void onFailure(Call<ArrayList<Sessions>> call, Throwable t) {
-                Utils.makeMyLog("Failed to sync: SESSION, message: ", ""+t.getMessage());
+                Utils.makeMyLog("Failed to sync: SESSION, message: ", "" + t.getMessage());
             }
         });
     }

@@ -72,10 +72,12 @@ public class AppLockListActivity extends AppCompatActivity {
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
+
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
 
             }
+
             @Override
             public void afterTextChanged(Editable s) {
                 filter(s.toString());
@@ -98,11 +100,11 @@ public class AppLockListActivity extends AppCompatActivity {
         progressDialog.show();
     }
 
-    private void filter(String appString){
+    private void filter(String appString) {
         List<Apps> filteredList = new ArrayList<>();
 
-        for(Apps app : appsList){
-            if(app.getAppname().toLowerCase().contains(appString.toLowerCase())){
+        for (Apps app : appsList) {
+            if (app.getAppname().toLowerCase().contains(appString.toLowerCase())) {
 
                 filteredList.add(app);
             }
@@ -111,10 +113,10 @@ public class AppLockListActivity extends AppCompatActivity {
         adapter.filterList(filteredList);
     }
 
-    public void getInstalledApps(){
+    public void getInstalledApps() {
         List<PackageInfo> packageInfos = getPackageManager().getInstalledPackages(0);
 
-        for (int i = 0; i<packageInfos.size(); i++){
+        for (int i = 0; i < packageInfos.size(); i++) {
             String name = packageInfos.get(i).applicationInfo.loadLabel(getPackageManager()).toString();
             Drawable icon = packageInfos.get(i).applicationInfo.loadIcon(getPackageManager());
             String packname = packageInfos.get(i).packageName;

@@ -36,7 +36,10 @@ public class Events {
         this.eventChecked = eventChecked;
         this.createdAt = createdAt;
     }
-    public Events() { }
+
+    public Events() {
+    }
+
     public Events(Context context) {
         this.context = context;
     }
@@ -48,54 +51,71 @@ public class Events {
     public int isSynced() {
         return synced;
     }
+
     public void setSynced(int synced) {
         this.synced = synced;
     }
+
     public String get_id() {
         return _id;
     }
+
     public void set_id(String _id) {
         this._id = _id;
     }
+
     public String getUserId() {
         return userId;
     }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
     public String getEventTitle() {
         return eventTitle;
     }
+
     public void setEventTitle(String eventTitle) {
         this.eventTitle = eventTitle;
     }
+
     public String getEventDetails() {
         return eventDetails;
     }
+
     public void setEventDetails(String eventDetails) {
         this.eventDetails = eventDetails;
     }
+
     public String getEventDate() {
         return eventDate;
     }
+
     public void setEventDate(String eventDate) {
         this.eventDate = eventDate;
     }
+
     public int getEventType() {
         return eventType;
     }
+
     public void setEventType(int eventType) {
         this.eventType = eventType;
     }
+
     public boolean isEventChecked() {
         return eventChecked;
     }
+
     public void setEventChecked(boolean eventChecked) {
         this.eventChecked = eventChecked;
     }
+
     public String getEventCreatedAt() {
         return createdAt;
     }
+
     public void setEventCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
@@ -104,79 +124,82 @@ public class Events {
     /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------DB ACTIONS AND UTILS----------------------------------------*/
     /* --------------------------------------------------------------------------------*/
-    public String getEventTypeString(int typeNum){
+    public String getEventTypeString(int typeNum) {
         String type = "";
 
-        if(typeNum == 1){
+        if (typeNum == 1) {
             type = "Event";
-        }else if(typeNum == 2){
+        } else if (typeNum == 2) {
             type = "Reminder";
-        }else if(typeNum == 3){
+        } else if (typeNum == 3) {
             type = "ToDo";
         }
 
         return type;
     }
 
-    public int getEventTypeInt(String type){
+    public int getEventTypeInt(String type) {
         int typeNum = 0;
 
-        if(type.equals("Event")){
+        if (type.equals("Event")) {
             typeNum = 1;
-        }else if(type.equals("Reminder")){
+        } else if (type.equals("Reminder")) {
             typeNum = 2;
-        }else if(type.equals("ToDo")){
+        } else if (type.equals("ToDo")) {
             typeNum = 3;
         }
 
         return typeNum;
     }
 
-    public ArrayList<Events> allEventsList(int checkedYN){
+    public ArrayList<Events> allEventsList(int checkedYN) {
         ArrayList<Events> myEvents = new ArrayList<>();
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         Cursor res = dbHelper.getAllEventsByCheck(checkedYN);
 
-        while(res.moveToNext()){
-            boolean finished = false;
+        while (res.moveToNext()) {
+            if (res.getInt(8) != 3) {
+                boolean finished = false;
 
-            if(checkedYN == 1){
-                finished = true;
-            }if(checkedYN == 0){
-                finished = false;
+                if (checkedYN == 1) {
+                    finished = true;
+                }
+                if (checkedYN == 0) {
+                    finished = false;
+                }
+
+                Events event = new Events(
+                        res.getString(0),
+                        res.getString(1),
+                        res.getString(2),
+                        res.getString(3),
+                        res.getString(4),
+                        res.getInt(5),
+                        finished,
+                        res.getString(7)
+                );
+
+                event.setSynced(res.getInt(8));
+
+                myEvents.add(0, event);
             }
-
-            Events event = new Events(
-                    res.getString(0),
-                    res.getString(1),
-                    res.getString(2),
-                    res.getString(3),
-                    res.getString(4),
-                    res.getInt(5),
-                    finished,
-                    res.getString(7)
-            );
-
-            event.setSynced(res.getInt(8));
-
-            myEvents.add(0, event);
         }
 
         return myEvents;
     }
 
-    public ArrayList<Events> allEventsBySyncedList(int synced){
+    public ArrayList<Events> allEventsBySyncedList(int synced) {
         ArrayList<Events> myEvents = new ArrayList<>();
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         Cursor res = dbHelper.getAllEventsBySynced(synced);
 
-        while(res.moveToNext()){
-            if(res.getInt(8) == synced){
+        while (res.moveToNext()) {
+            if (res.getInt(8) == synced) {
                 boolean finished = false;
 
-                if(res.getInt(6) == 1){
+                if (res.getInt(6) == 1) {
                     finished = true;
                 }
 
@@ -200,41 +223,43 @@ public class Events {
         return myEvents;
     }
 
-    public ArrayList<Events> allEventsByDateList(String dateSelected, int checkedYN){
+    public ArrayList<Events> allEventsByDateList(String dateSelected, int checkedYN) {
         ArrayList<Events> myEvents = new ArrayList<>();
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         Cursor res = dbHelper.getAllEventsByCheck(checkedYN);
 
         StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
-            if(res.getString(4).contains(dateSelected)){
-                boolean finished = false;
+        while (res.moveToNext()) {
+            if (res.getInt(8) != 3) {
+                if (res.getString(4).contains(dateSelected)) {
+                    boolean finished = false;
 
-                if(Integer.parseInt(res.getString(6)) == 1){
-                    finished = true;
-                }
+                    if (Integer.parseInt(res.getString(6)) == 1) {
+                        finished = true;
+                    }
 
-                if(checkedYN == 1){
-                    finished = true;
-                }
+                    if (checkedYN == 1) {
+                        finished = true;
+                    }
 
-                if(!finished){
-                    if(res.getString(4).contains(dateSelected)){
-                        Events event = new Events(
-                                res.getString(0),
-                                res.getString(1),
-                                res.getString(2),
-                                res.getString(3),
-                                res.getString(4),
-                                res.getInt(5),
-                                finished,
-                                res.getString(7)
-                        );
+                    if (!finished) {
+                        if (res.getString(4).contains(dateSelected)) {
+                            Events event = new Events(
+                                    res.getString(0),
+                                    res.getString(1),
+                                    res.getString(2),
+                                    res.getString(3),
+                                    res.getString(4),
+                                    res.getInt(5),
+                                    finished,
+                                    res.getString(7)
+                            );
 
-                        event.setSynced(res.getInt(8));
+                            event.setSynced(res.getInt(8));
 
-                        myEvents.add(event);
+                            myEvents.add(event);
+                        }
                     }
                 }
             }
@@ -243,7 +268,7 @@ public class Events {
         return myEvents;
     }
 
-    public void syncEventsApiDb(){
+    public void syncEventsApiDb() {
 
         ArrayList<Events> dbEvents0;
         ArrayList<Events> dbEvents2;
@@ -275,12 +300,12 @@ public class Events {
         call0.enqueue(new Callback<ArrayList<Events>>() {
             @Override
             public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Utils.makeMyLog("Sync failed", "");
-                }else{
+                } else {
                     ArrayList<Events> newEvents = response.body();
 
-                    for(Events event : newEvents){
+                    for (Events event : newEvents) {
                         dbHelper.addNewEvent(event);
                         updateEventSyncedStateApiAndDb(event, 1);
                     }
@@ -296,11 +321,11 @@ public class Events {
         call2.enqueue(new Callback<ArrayList<Events>>() {
             @Override
             public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Utils.makeMyLog("Sync failed", "");
-                }else{
+                } else {
                     ArrayList<Events> updatedEvents = response.body();
-                    for(Events event : updatedEvents){
+                    for (Events event : updatedEvents) {
                         dbHelper.updateEvent(event);
                         updateEventSyncedStateApiAndDb(event, 1);
                     }
@@ -316,11 +341,11 @@ public class Events {
         call3.enqueue(new Callback<ArrayList<Events>>() {
             @Override
             public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Utils.makeMyLog("Sync failed", "");
-                }else{
+                } else {
                     ArrayList<Events> deletedEvents = response.body();
-                    for(Events event : deletedEvents){
+                    for (Events event : deletedEvents) {
                         deleteSyncEvent(event);
                     }
                 }
@@ -333,7 +358,7 @@ public class Events {
         });
     }
 
-    private void saveSyncEvent(Events event){ //IF ON DB BUT NOT ON API
+    private void saveSyncEvent(Events event) { //IF ON DB BUT NOT ON API
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         event.setSynced(1);
@@ -342,9 +367,9 @@ public class Events {
         call.enqueue(new Callback<Events>() {
             @Override
             public void onResponse(Call<Events> call, Response<Events> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Utils.makeMyLog("Sync failed", "");
-                }else{
+                } else {
                     Events savedEvent = response.body();
 
                     dbHelper.updateEventSyncedState(savedEvent.get_id(), 1);
@@ -357,7 +382,8 @@ public class Events {
             }
         });
     }
-    private void updateSyncEvent(Events event){ //IF ON DB BUT NOT ON API
+
+    private void updateSyncEvent(Events event) { //IF ON DB BUT NOT ON API
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         event.setSynced(1);
@@ -368,9 +394,9 @@ public class Events {
         call.enqueue(new Callback<Events>() {
             @Override
             public void onResponse(Call<Events> call, Response<Events> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Utils.makeMyLog("Failed to sync", "");
-                }else{
+                } else {
                     Events updatedEvent = response.body();
 
                     dbHelper.updateEvent(updatedEvent);
@@ -383,7 +409,8 @@ public class Events {
             }
         });
     }
-    private void deleteSyncEvent(Events event){ //IF ON DB BUT NOT ON API
+
+    private void deleteSyncEvent(Events event) { //IF ON DB BUT NOT ON API
         MyDbHelper dbHelper = new MyDbHelper(context);
 
         Call<Events> call = ApiClient.getInstance().getApi().deleteEvent(event.get_id());
@@ -391,9 +418,9 @@ public class Events {
         call.enqueue(new Callback<Events>() {
             @Override
             public void onResponse(Call<Events> call, Response<Events> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Utils.makeMyLog("Failed to sync", "");
-                }else{
+                } else {
                     Events deletedEvent = response.body();
 
                     dbHelper.deleteEvent(deletedEvent.get_id());
@@ -407,16 +434,16 @@ public class Events {
         });
     }
 
-    public void updateEventSyncedStateApiAndDb(Events event, int state){
+    public void updateEventSyncedStateApiAndDb(Events event, int state) {
         event.setSynced(state);
         MyDbHelper dbHelper = new MyDbHelper(context);
         Call<Events> call = ApiClient.getInstance().getApi().updateEvent(event.get_id(), event);
         call.enqueue(new Callback<Events>() {
             @Override
             public void onResponse(Call<Events> call, Response<Events> response) {
-                if(!response.isSuccessful()){
+                if (!response.isSuccessful()) {
                     Utils.makeMyLog("Failed to sync", "");
-                }else{
+                } else {
                     Events updatedEvent = response.body();
                     dbHelper.updateEventSyncedState(event.get_id(), state);
                 }

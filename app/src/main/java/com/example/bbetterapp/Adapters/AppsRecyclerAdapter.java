@@ -31,11 +31,11 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
 
     MyDbHelper dbHelper;
 
-    public interface OnAppClickedListener{
+    public interface OnAppClickedListener {
         void onAppClick(int position);
     }
 
-    public void setOnItemClickListener(OnAppClickedListener listener){
+    public void setOnItemClickListener(OnAppClickedListener listener) {
         mListener = listener;
     }
 
@@ -63,9 +63,9 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
 
         app = checkTheApp(app);
 
-        if(app.getStatus() == 0){
+        if (app.getStatus() == 0) {
             holder.lockIcon.setImageResource(R.drawable.ic_lock_open_white);
-        }else{
+        } else {
             holder.lockIcon.setImageResource(R.drawable.ic_lock_white);
         }
 
@@ -76,7 +76,7 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
         return appsList.size();
     }
 
-    public class AppExampleViewHolder extends RecyclerView.ViewHolder{
+    public class AppExampleViewHolder extends RecyclerView.ViewHolder {
 
         TextView appName;
         ImageView appIcon, lockIcon;
@@ -91,9 +91,9 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(listener != null){
+                    if (listener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onAppClick(position);
                             setAppStatus(position);
                         }
@@ -102,32 +102,34 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
             });
         }
     }
-    public void filterList(List<Apps> filteredList){
+
+    public void filterList(List<Apps> filteredList) {
         appsList = filteredList;
         notifyDataSetChanged();
     }
 
-    public void setAppStatus(int position){
+    public void setAppStatus(int position) {
 
         Apps app = appsList.get(position);
 
         int status = app.getStatus();
 
-        if(status == 0){
+        if (status == 0) {
             appsList.get(position).setStatus(1);
             dbHelper.addNewApp(appsList.get(position));
-        }if(status == 1){
+        }
+        if (status == 1) {
             appsList.get(position).setStatus(0);
             dbHelper.deleteApp(appsList.get(position).getAppname());
         }
     }
 
-    public Apps checkTheApp(Apps app){
+    public Apps checkTheApp(Apps app) {
         blockedAppsList.clear();
         blockedAppsList = allBlockedAppsList();
 
         for (Apps blocked_app : blockedAppsList) {
-            if(blocked_app.getAppname().equals(app.getAppname())){
+            if (blocked_app.getAppname().equals(app.getAppname())) {
                 app.setStatus(blocked_app.getStatus());
             }
         }
@@ -135,7 +137,7 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
         return app;
     }
 
-    public List<Apps> allBlockedAppsList(){
+    public List<Apps> allBlockedAppsList() {
         List<Apps> myApps = new ArrayList<>();
 
         myApps.clear();
@@ -144,9 +146,9 @@ public class AppsRecyclerAdapter extends RecyclerView.Adapter<AppsRecyclerAdapte
 
         Drawable icon = null;
 
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
             Apps app = new Apps(res.getString(0), icon,
-                    Integer.parseInt(res.getString(1)), res.getString(2) );
+                    Integer.parseInt(res.getString(1)), res.getString(2));
             myApps.add(app);
         }
 

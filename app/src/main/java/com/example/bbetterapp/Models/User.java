@@ -27,7 +27,8 @@ public class User {
         this.userSessionsUrl = userSessionsUrl;
     }
 
-    public User(){}
+    public User() {
+    }
 
     public String getUserId() {
         return _id;

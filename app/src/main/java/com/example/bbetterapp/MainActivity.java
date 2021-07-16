@@ -25,7 +25,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity{
+public class MainActivity extends AppCompatActivity {
 
     Button startButton;
 
@@ -48,13 +48,13 @@ public class MainActivity extends AppCompatActivity{
 
         startButton = findViewById(R.id.startButton);
 
-        if(dbHelper.userIsSet()){
+        if (dbHelper.userIsSet()) {
 
-            if(utils.isNetworkAvailable()){
+            if (utils.isNetworkAvailable()) {
                 /*sessionUtils.syncSessionsApiDb(utils.getMyUserId());
                 eventUtils.syncEventsApiDb();*/
                 /*noteUtils.syncNotesApiDb(utils.getMyUserId());*/
-            }else{
+            } else {
                 Utils.makeMyToast("Couldn't sync, no network", this);
             }
 
@@ -64,16 +64,16 @@ public class MainActivity extends AppCompatActivity{
         startButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(dbHelper.userIsSet()){
-                    if(utils.isNetworkAvailable()){
+                if (dbHelper.userIsSet()) {
+                    if (utils.isNetworkAvailable()) {
                         /*sessionUtils.syncSessionsApiDb(utils.getMyUserId());
                         eventUtils.syncEventsApiDb();*/
                         /*syncNotesApiDb(utils.getMyUserId());*/
-                    }else{
+                    } else {
                         Utils.makeMyToast("Couldn't sync, no network", getApplicationContext());
                     }
                     startActivity(new Intent(MainActivity.this, FragmentHolderActivity.class));
-                }else{
+                } else {
                     startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 }
             }

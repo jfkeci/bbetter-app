@@ -26,15 +26,16 @@ public class ArchivedNotesRecyclerAdapter extends RecyclerView.Adapter<ArchivedN
 
     MyDbHelper dbHelper;
 
-    public interface OnLongNoteClickedListener{
+    public interface OnLongNoteClickedListener {
         void onNoteClicked(int position);
     }
 
-    public void setOnLongItemClickListener(OnLongNoteClickedListener listener){
+    public void setOnLongItemClickListener(OnLongNoteClickedListener listener) {
         mListener = listener;
     }
 
-    public ArchivedNotesRecyclerAdapter() {}
+    public ArchivedNotesRecyclerAdapter() {
+    }
 
     public ArchivedNotesRecyclerAdapter(Context context, ArrayList<Notes> notes) {
         this.context = context;
@@ -42,8 +43,7 @@ public class ArchivedNotesRecyclerAdapter extends RecyclerView.Adapter<ArchivedN
         dbHelper = new MyDbHelper(context);
     }
 
-    public void setData(ArrayList<Notes> notesList)
-    {
+    public void setData(ArrayList<Notes> notesList) {
         this.notesList = notesList;
         this.notifyDataSetChanged();
     }
@@ -59,8 +59,8 @@ public class ArchivedNotesRecyclerAdapter extends RecyclerView.Adapter<ArchivedN
 
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
-        if(notesList.size()>=1){
-            if(notesList.get(position).isSynced() != 3){
+        if (notesList.size() >= 1) {
+            if (notesList.get(position).isSynced() != 3) {
                 String mainContent = Utils.cutString(notesList.get(position).getNoteContent(), 200);
                 String mainTitle = Utils.cutString(notesList.get(position).getNoteTitle(), 30);
 
@@ -76,7 +76,7 @@ public class ArchivedNotesRecyclerAdapter extends RecyclerView.Adapter<ArchivedN
         return notesList.size();
     }
 
-    public class NotesViewHolder extends RecyclerView.ViewHolder{
+    public class NotesViewHolder extends RecyclerView.ViewHolder {
 
         private TextView twTitle, twContent, twDate;
 
@@ -90,9 +90,9 @@ public class ArchivedNotesRecyclerAdapter extends RecyclerView.Adapter<ArchivedN
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if(listener != null){
+                    if (listener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onNoteClicked(position);
                             openNoteEditor(position, v);
                         }
@@ -103,12 +103,13 @@ public class ArchivedNotesRecyclerAdapter extends RecyclerView.Adapter<ArchivedN
         }
     }
 
-    public void openNoteEditor(int position, View view){
+    public void openNoteEditor(int position, View view) {
         Intent intent = new Intent(context, NoteEditActivity.class);
         intent.putExtra("note_id", String.valueOf(notesList.get(position).getNoteId()));
         view.getContext().startActivity(intent);
     }
-    public void filterList(ArrayList<Notes> filteredList){
+
+    public void filterList(ArrayList<Notes> filteredList) {
         notesList = filteredList;
         notifyDataSetChanged();
     }

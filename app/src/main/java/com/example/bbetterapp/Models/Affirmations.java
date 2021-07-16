@@ -18,11 +18,12 @@ public class Affirmations {
         this.synced = synced;
     }
 
-    public Affirmations(Context context){
+    public Affirmations(Context context) {
         this.context = context;
     }
 
-    public Affirmations(){}
+    public Affirmations() {
+    }
 
     public String get_id() {
         return _id;

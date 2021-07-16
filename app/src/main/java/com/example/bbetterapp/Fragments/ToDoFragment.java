@@ -136,11 +136,11 @@ public class ToDoFragment extends Fragment {
             public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAbsoluteAdapterPosition();
 
-                if(direction == ItemTouchHelper.RIGHT){
+                if (direction == ItemTouchHelper.RIGHT) {
                     checkedEvent = eventsList.get(position);
                     checkedEvent.setEventChecked(true);
 
-                    if(utils.isNetworkAvailable()){
+                    if (utils.isNetworkAvailable()) {
 
                         checkedEvent.setSynced(1);
 
@@ -151,19 +151,19 @@ public class ToDoFragment extends Fragment {
                         call.enqueue(new Callback<Events>() {
                             @Override
                             public void onResponse(Call<Events> call, Response<Events> response) {
-                                if(!response.isSuccessful()){
+                                if (!response.isSuccessful()) {
                                     Utils.makeMyToast("Something went wrong\n please try again ", getActivity());
-                                }else{
+                                } else {
                                     Events updatedEvent = response.body();
 
                                     boolean isUpdated = dbHelper.updateEvent(updatedEvent);
 
-                                    if(isUpdated){
+                                    if (isUpdated) {
                                         eventsList.remove(position);
                                         todoAdapter.notifyItemRemoved(position);
-                                        eventsCheckedList.add(0,updatedEvent);
+                                        eventsCheckedList.add(0, updatedEvent);
                                         checkedAdapter.notifyItemInserted(0);
-                                    }else{
+                                    } else {
                                         Utils.makeMyToast("Something went wrong!", getActivity());
                                     }
                                 }
@@ -174,7 +174,7 @@ public class ToDoFragment extends Fragment {
                                 Utils.makeMyToast("Something went wrong\n please try again ", getActivity());
                             }
                         });
-                    }else{
+                    } else {
                         checkedEvent.setSynced(2);
                         checkedEvent.setEventChecked(true);
                         dbHelper.updateEventCheckedState(checkedEvent.get_id(), 1);
@@ -183,21 +183,21 @@ public class ToDoFragment extends Fragment {
                         todoAdapter.notifyItemRemoved(position);
                     }
                 }
-                if(direction == ItemTouchHelper.LEFT){
+                if (direction == ItemTouchHelper.LEFT) {
                     deletedEvent = eventsList.get(position);
                     Events undoEvent = deletedEvent;
 
-                    if(deletedEvent.isSynced() != 0){
-                        if(utils.isNetworkAvailable()){
+                    if (deletedEvent.isSynced() != 0) {
+                        if (utils.isNetworkAvailable()) {
                             deleted = true;
                             Call<Events> call = ApiClient.getInstance().getApi().deleteEvent(deletedEvent.get_id());
 
                             call.enqueue(new Callback<Events>() {
                                 @Override
                                 public void onResponse(Call<Events> call, Response<Events> response) {
-                                    if(!response.isSuccessful()){
+                                    if (!response.isSuccessful()) {
                                         Utils.makeMyToast("Something went wrong\nplease try again", getActivity());
-                                    }else{
+                                    } else {
                                         dbHelper.deleteEvent(deletedEvent.get_id());
                                         eventsList.remove(position);
                                         todoAdapter.notifyItemRemoved(position);
@@ -209,19 +209,19 @@ public class ToDoFragment extends Fragment {
                                     Utils.makeMyToast("Something went wrong\nplease try again", getActivity());
                                 }
                             });
-                        }else{
+                        } else {
                             deleted = false;
                             deletedEvent.setSynced(3);
                             dbHelper.updateEvent(deletedEvent);
                             eventsList.remove(position);
                             todoAdapter.notifyItemRemoved(position);
                         }
-                    }else{
+                    } else {
                         deleted = true;
 
                         int isDeleted = dbHelper.deleteEvent(deletedEvent.get_id());
 
-                        if(isDeleted == 1){
+                        if (isDeleted == 1) {
                             eventsList.remove(position);
                             todoAdapter.notifyItemRemoved(position);
                         }
@@ -229,17 +229,17 @@ public class ToDoFragment extends Fragment {
                     Snackbar.make(recyclerViewToDo, Utils.cutString(deletedEvent.getEventTitle(), 8), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(deleted){
-                                if(utils.isNetworkAvailable()){
+                            if (deleted) {
+                                if (utils.isNetworkAvailable()) {
                                     undoEvent.setSynced(1);
                                     Call<Events> undoCall = ApiClient.getInstance().getApi().saveNewEvent(undoEvent);
 
                                     undoCall.enqueue(new Callback<Events>() {
                                         @Override
                                         public void onResponse(Call<Events> call, Response<Events> response) {
-                                            if(!response.isSuccessful()){
+                                            if (!response.isSuccessful()) {
                                                 Utils.makeMyToast("Something went wrong", getActivity());
-                                            }else{
+                                            } else {
                                                 Events event = response.body();
 
                                                 dbHelper.addNewEvent(event);
@@ -250,17 +250,17 @@ public class ToDoFragment extends Fragment {
 
                                         @Override
                                         public void onFailure(Call<Events> call, Throwable t) {
-                                            Utils.makeMyToast("Something went wrong, message: "+t.getMessage(), getActivity());
+                                            Utils.makeMyToast("Something went wrong, message: " + t.getMessage(), getActivity());
                                         }
                                     });
-                                }else{
+                                } else {
                                     dbHelper.addNewEvent(undoEvent);
-                                    eventsList.add(position,undoEvent);
+                                    eventsList.add(position, undoEvent);
                                     todoAdapter.notifyItemInserted(position);
                                 }
-                            }else{
+                            } else {
                                 dbHelper.updateEvent(undoEvent);
-                                eventsList.add(position,undoEvent);
+                                eventsList.add(position, undoEvent);
                                 todoAdapter.notifyItemInserted(position);
                             }
                         }
@@ -294,8 +294,7 @@ public class ToDoFragment extends Fragment {
         getData();
     }
 
-    public void getData()
-    {
+    public void getData() {
         eventsList = eventsUtils.allEventsList(0);
         todoAdapter.setData(eventsList);
         todoAdapter.notifyDataSetChanged();
@@ -304,7 +303,7 @@ public class ToDoFragment extends Fragment {
         checkedAdapter.notifyDataSetChanged();
     }
 
-    public void changeRecycleViewSize(int a, int b){
+    public void changeRecycleViewSize(int a, int b) {
         ConstraintLayout.LayoutParams lpTodo = (ConstraintLayout.LayoutParams) constraintLayoutToDo.getLayoutParams();
         ConstraintLayout.LayoutParams lpChecked = (ConstraintLayout.LayoutParams) constraintLayoutChecked.getLayoutParams();
 

@@ -88,10 +88,10 @@ public class NoteArchiveActivity extends AppCompatActivity {
 
                 int position = viewHolder.getAdapterPosition();
 
-                if(direction == ItemTouchHelper.RIGHT){
+                if (direction == ItemTouchHelper.RIGHT) {
                     unarchivedNote = archivedNotesList.get(position);
 
-                    if(utils.isNetworkAvailable()){
+                    if (utils.isNetworkAvailable()) {
 
                         unarchivedNote.setSynced(1);
                         unarchivedNote.setNoteArchived(false);
@@ -102,9 +102,9 @@ public class NoteArchiveActivity extends AppCompatActivity {
                         call.enqueue(new Callback<Notes>() {
                             @Override
                             public void onResponse(Call<Notes> call, Response<Notes> response) {
-                                if(!response.isSuccessful()){
+                                if (!response.isSuccessful()) {
                                     Utils.makeMyToast("Something went wrong\nplease try again", getApplicationContext());
-                                }else{
+                                } else {
 
                                     Notes updatedNote = response.body();
 
@@ -121,7 +121,7 @@ public class NoteArchiveActivity extends AppCompatActivity {
                                 Utils.makeMyToast("Something went wrong\nplease try again", getApplicationContext());
                             }
                         });
-                    }else{
+                    } else {
                         archivedNotesList.remove(position);
                         notesArchiveAdapter.notifyItemRemoved(position);
                         unarchivedNote.setSynced(2);
@@ -129,43 +129,44 @@ public class NoteArchiveActivity extends AppCompatActivity {
                         dbHelper.updateNote(unarchivedNote);
                     }
                 }
-                if(direction == ItemTouchHelper.LEFT){
+                if (direction == ItemTouchHelper.LEFT) {
                     deletedNote = archivedNotesList.get(position);
 
                     Notes undoNote = deletedNote;
-                    if(deletedNote.isSynced() != 0){
-                        if(utils.isNetworkAvailable()){
+                    if (deletedNote.isSynced() != 0) {
+                        if (utils.isNetworkAvailable()) {
                             deleted = true;
                             Call<Notes> call = ApiClient.getInstance().getApi().deleteNote(deletedNote.getNoteId());
 
                             call.enqueue(new Callback<Notes>() {
                                 @Override
                                 public void onResponse(Call<Notes> call, Response<Notes> response) {
-                                    if(!response.isSuccessful()){
+                                    if (!response.isSuccessful()) {
                                         Utils.makeMyToast("Something went wrong\n please try again", getApplicationContext());
-                                    }else{
+                                    } else {
                                         dbHelper.deleteNote(deletedNote.getNoteId());
                                         archivedNotesList.remove(position);
                                         notesArchiveAdapter.notifyItemRemoved(position);
                                     }
                                 }
+
                                 @Override
                                 public void onFailure(Call<Notes> call, Throwable t) {
                                     Utils.makeMyToast("Something went wrong\n please try again", getApplicationContext());
                                 }
                             });
-                        }else{
+                        } else {
                             deleted = false;
                             deletedNote.setSynced(3);
                             dbHelper.updateNote(deletedNote);
                             archivedNotesList.remove(position);
                             notesArchiveAdapter.notifyItemRemoved(position);
                         }
-                    }else{
+                    } else {
                         deleted = true;
                         int isDeleted = dbHelper.deleteNote(deletedNote.getNoteId());
 
-                        if(isDeleted == 1){
+                        if (isDeleted == 1) {
                             archivedNotesList.remove(position);
                             notesArchiveAdapter.notifyItemRemoved(position);
                         }
@@ -175,15 +176,15 @@ public class NoteArchiveActivity extends AppCompatActivity {
                     Snackbar.make(recyclerViewArchive, Utils.cutString(deletedNote.getNoteTitle(), 8), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(deleted){
+                            if (deleted) {
                                 undoNote.setSynced(1);
                                 Call<Notes> undoCall = ApiClient.getInstance().getApi().saveNewNote(undoNote);
                                 undoCall.enqueue(new Callback<Notes>() {
                                     @Override
                                     public void onResponse(Call<Notes> call, Response<Notes> response) {
-                                        if(!response.isSuccessful()){
+                                        if (!response.isSuccessful()) {
                                             Utils.makeMyLog("Failed to undo", "");
-                                        }else{
+                                        } else {
                                             Notes note = response.body();
 
                                             dbHelper.addNewNote(note);
@@ -197,7 +198,7 @@ public class NoteArchiveActivity extends AppCompatActivity {
                                         Utils.makeMyLog("Failed to undo", "");
                                     }
                                 });
-                            }else{
+                            } else {
                                 dbHelper.updateNote(undoNote);
                             }
                         }
@@ -219,7 +220,6 @@ public class NoteArchiveActivity extends AppCompatActivity {
         };
 
 
-
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleCallback);
         itemTouchHelper.attachToRecyclerView(recyclerViewArchive);
     }
@@ -230,8 +230,7 @@ public class NoteArchiveActivity extends AppCompatActivity {
         getData();
     }
 
-    public void getData()
-    {
+    public void getData() {
         archivedNotesList = noteUtils.allNotesList(1);
         notesArchiveAdapter.setData(archivedNotesList);
     }

@@ -25,23 +25,23 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
     private OnLongNoteClickedListener mListener;
 
 
-    public interface OnLongNoteClickedListener{
+    public interface OnLongNoteClickedListener {
         void onNoteClicked(int position);
     }
 
-    public void setOnLongItemClickListener(OnLongNoteClickedListener listener){
+    public void setOnLongItemClickListener(OnLongNoteClickedListener listener) {
         mListener = listener;
     }
 
-    public NotesRecyclerAdapter() {}
+    public NotesRecyclerAdapter() {
+    }
 
     public NotesRecyclerAdapter(Context context, List<Notes> notes) {
         this.context = context;
         this.notesList = notes;
     }
 
-    public void setData(ArrayList<Notes> notesList)
-    {
+    public void setData(ArrayList<Notes> notesList) {
         this.notesList = notesList;
         this.notifyDataSetChanged();
     }
@@ -57,8 +57,8 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
 
     @Override
     public void onBindViewHolder(@NonNull NotesViewHolder holder, int position) {
-        if(notesList.size()>=1){
-            if(notesList.get(position).isSynced() != 3){
+        if (notesList.size() >= 1) {
+            if (notesList.get(position).isSynced() != 3) {
 
                 String mainContent = Utils.cutString(notesList.get(position).getNoteContent(), 45);
                 String mainTitle = Utils.cutString(notesList.get(position).getNoteTitle(), 14);
@@ -76,7 +76,7 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
         return notesList.size();
     }
 
-    public class NotesViewHolder extends RecyclerView.ViewHolder{
+    public class NotesViewHolder extends RecyclerView.ViewHolder {
 
         private TextView twTitle, twContent, twDate;
 
@@ -90,9 +90,9 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
             itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    if(listener != null){
+                    if (listener != null) {
                         int position = getAdapterPosition();
-                        if(position != RecyclerView.NO_POSITION){
+                        if (position != RecyclerView.NO_POSITION) {
                             listener.onNoteClicked(position);
                             openNoteEditor(position, v);
                         }
@@ -103,12 +103,13 @@ public class NotesRecyclerAdapter extends RecyclerView.Adapter<NotesRecyclerAdap
         }
     }
 
-    public void openNoteEditor(int position, View view){
+    public void openNoteEditor(int position, View view) {
         Intent intent = new Intent(context, NoteEditActivity.class);
         intent.putExtra("note_id", String.valueOf(notesList.get(position).getNoteId()));
         view.getContext().startActivity(intent);
     }
-    public void filterList(ArrayList<Notes> filteredList){
+
+    public void filterList(ArrayList<Notes> filteredList) {
         notesList = filteredList;
         notifyDataSetChanged();
     }

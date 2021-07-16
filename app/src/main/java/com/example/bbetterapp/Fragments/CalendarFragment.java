@@ -55,7 +55,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class CalendarFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+public class CalendarFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     private CompactCalendarView calendarView;
     private EditText etEvent;
@@ -107,7 +107,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
         return v;
     }
 
-    private void InitLayout(View v){
+    private void InitLayout(View v) {
         utils = new Utils(getActivity());
         eventUtils = new Events(getActivity());
         dbHelper = new MyDbHelper(getActivity());
@@ -151,31 +151,31 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
         etEvent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
-                if(hasFocus){
+                if (hasFocus) {
                     recyclerViewCalendar.setVisibility(View.INVISIBLE);
-                }else{
+                } else {
                     recyclerViewCalendar.setVisibility(View.VISIBLE);
                 }
             }
         });
     }
 
-    private void saveNewEvent(){
-        if(etEvent.getText().toString().length()<1){
-            Utils.makeMyToast("Please write a description for your "+eventTypeSelected, getActivity());
-        }else{
+    private void saveNewEvent() {
+        if (etEvent.getText().toString().length() < 1) {
+            Utils.makeMyToast("Please write a description for your " + eventTypeSelected, getActivity());
+        } else {
 
             Events newEvent = new Events();
 
             newEvent.setUserId(utils.getMyUserId());
             newEvent.setEventTitle(etEvent.getText().toString());
-            newEvent.setEventDetails("type: "+eventTypeSelected);
+            newEvent.setEventDetails("type: " + eventTypeSelected);
             newEvent.setEventDate(dateSelected + " at " + tvTime.getText().toString());
             newEvent.setEventType(eventUtils.getEventTypeInt(eventTypeSelected));
             newEvent.setEventChecked(false);
             newEvent.setSynced(0);
 
-            if(utils.isNetworkAvailable()){
+            if (utils.isNetworkAvailable()) {
 
                 Call<Events> call = ApiClient.getInstance().getApi().saveNewEvent(newEvent);
 
@@ -184,15 +184,15 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                 call.enqueue(new Callback<Events>() {
                     @Override
                     public void onResponse(Call<Events> call, Response<Events> response) {
-                        if(!response.isSuccessful()){
+                        if (!response.isSuccessful()) {
                             Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
-                        }else{
+                        } else {
 
                             Events savedEvent = response.body();
 
                             boolean isInserted = dbHelper.addNewEvent(savedEvent);
 
-                            if(isInserted){
+                            if (isInserted) {
 
                                 dbHelper.setEventSynced(savedEvent.get_id(), 1);
 
@@ -201,7 +201,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                                 etEvent.setText("");
 
                                 closeKeyboard();
-                            }else{
+                            } else {
                                 Utils.makeMyToast("Failed to add new " + eventTypeSelected, getActivity());
                             }
                         }
@@ -209,17 +209,17 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
 
                     @Override
                     public void onFailure(Call<Events> call, Throwable t) {
-                        Utils.makeMyToast("message: "+t.getMessage(), getActivity());
+                        Utils.makeMyToast("message: " + t.getMessage(), getActivity());
                     }
                 });
 
-            }else{
-                newEvent.set_id(utils.getDateNow(4)+eventTypeSelected);
+            } else {
+                newEvent.set_id(utils.getDateNow(4) + eventTypeSelected);
                 newEvent.setEventCreatedAt(utils.getDateNow(1));
 
                 boolean isInserted = dbHelper.addNewEvent(newEvent);
 
-                if(isInserted){
+                if (isInserted) {
 
                     getData();
 
@@ -227,7 +227,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
 
                     closeKeyboard();
 
-                }else{
+                } else {
                     Utils.makeMyToast("Failed to add new " + eventTypeSelected, getActivity());
                 }
             }
@@ -253,7 +253,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
 
     }
 
-    private void InitRecycleView(){
+    private void InitRecycleView() {
         eventsList.clear();
 
         eventsList = eventUtils.allEventsList(0);
@@ -279,17 +279,17 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                     deletedEvent = eventsList.get(position);
                     Events undoEvent = deletedEvent;
 
-                    if(deletedEvent.isSynced() != 0){
-                        if(utils.isNetworkAvailable()){
+                    if (deletedEvent.isSynced() != 0) {
+                        if (utils.isNetworkAvailable()) {
                             deleted = true;
                             Call<Events> call = ApiClient.getInstance().getApi().deleteEvent(deletedEvent.get_id());
 
                             call.enqueue(new Callback<Events>() {
                                 @Override
                                 public void onResponse(Call<Events> call, Response<Events> response) {
-                                    if(!response.isSuccessful()){
+                                    if (!response.isSuccessful()) {
                                         Utils.makeMyToast("Something went wrong", getActivity());
-                                    }else{
+                                    } else {
                                         dbHelper.deleteEvent(deletedEvent.get_id());
                                         eventsList.remove(position);
                                         calendarAdapter.notifyItemRemoved(position);
@@ -301,14 +301,14 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                                     Utils.makeMyToast("Something went wrong", getActivity());
                                 }
                             });
-                        }else{
+                        } else {
                             deleted = false;
                             deletedEvent.setSynced(3);
                             boolean isUpdated = dbHelper.updateEvent(deletedEvent);
                             eventsList.remove(position);
                             calendarAdapter.notifyItemRemoved(position);
                         }
-                    }else{
+                    } else {
                         deleted = true;
                         dbHelper.deleteEvent(deletedEvent.get_id());
                         eventsList.remove(position);
@@ -317,17 +317,17 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                     Snackbar.make(recyclerViewCalendar, Utils.cutString(deletedEvent.getEventTitle(), 8), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(deleted){
-                                if(utils.isNetworkAvailable()){
+                            if (deleted) {
+                                if (utils.isNetworkAvailable()) {
                                     undoEvent.setSynced(1);
                                     Call<Events> undoCall = ApiClient.getInstance().getApi().saveNewEvent(undoEvent);
 
                                     undoCall.enqueue(new Callback<Events>() {
                                         @Override
                                         public void onResponse(Call<Events> call, Response<Events> response) {
-                                            if(!response.isSuccessful()){
+                                            if (!response.isSuccessful()) {
                                                 Utils.makeMyToast("Something went wrong", getActivity());
-                                            }else{
+                                            } else {
                                                 Events event = response.body();
 
                                                 dbHelper.addNewEvent(event);
@@ -335,17 +335,18 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                                                 calendarAdapter.notifyItemInserted(position);
                                             }
                                         }
+
                                         @Override
                                         public void onFailure(Call<Events> call, Throwable t) {
                                             Utils.makeMyToast("Something went wrong", getActivity());
                                         }
                                     });
-                                }else{
+                                } else {
                                     dbHelper.addNewEvent(undoEvent);
                                     eventsList.add(position, undoEvent);
                                     calendarAdapter.notifyItemInserted(position);
                                 }
-                            }else{
+                            } else {
                                 dbHelper.updateEvent(undoEvent);
                                 eventsList.add(position, undoEvent);
                                 calendarAdapter.notifyItemInserted(position);
@@ -357,7 +358,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                     checkedEvent = eventsList.get(position);
                     checkedEvent.setEventChecked(true);
 
-                    if(utils.isNetworkAvailable()){
+                    if (utils.isNetworkAvailable()) {
                         checkedEvent.setSynced(1);
 
                         String eventId = checkedEvent.get_id();
@@ -367,17 +368,17 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                         call.enqueue(new Callback<Events>() {
                             @Override
                             public void onResponse(Call<Events> call, Response<Events> response) {
-                                if(!response.isSuccessful()){
+                                if (!response.isSuccessful()) {
                                     Utils.makeMyToast("Something went wrong", getActivity());
-                                }else{
+                                } else {
                                     Events updatedEvent = response.body();
 
                                     boolean isUpdated = dbHelper.updateEvent(updatedEvent);
 
-                                    if(isUpdated){
+                                    if (isUpdated) {
                                         eventsList.remove(position);
                                         calendarAdapter.notifyItemRemoved(position);
-                                    }else{
+                                    } else {
                                         Utils.makeMyToast("Something went wrong", getActivity());
                                     }
                                 }
@@ -389,15 +390,15 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                             }
                         });
 
-                    }else{
-                        boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(),1);
+                    } else {
+                        boolean checked = dbHelper.eventSetChecked(checkedEvent.get_id(), 1);
 
                         if (checked) {
-                            dbHelper.setEventSynced(checkedEvent.get_id(), checkedEvent.isSynced());
+                            dbHelper.setEventSynced(checkedEvent.get_id(), 2);
                             Utils.makeMyToast("Awesome!", getActivity());
                             eventsList.remove(checkedEvent);
                             calendarAdapter.notifyDataSetChanged();
-                        }else {
+                        } else {
                             Utils.makeMyToast("Something went wrong!", getActivity());
                         }
                     }
@@ -434,7 +435,7 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 nHour = hourOfDay;
                                 nMinute = minute;
-                                String time = nHour+":"+nMinute;
+                                String time = nHour + ":" + nMinute;
                                 SimpleDateFormat f24hours = new SimpleDateFormat(
                                         "HH:mm"
                                 );
@@ -447,10 +448,10 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
                                 }
 
                             }
-                        },24,0,true
+                        }, 24, 0, true
                 );
                 timePickerDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                timePickerDialog.updateTime(nHour,nMinute);
+                timePickerDialog.updateTime(nHour, nMinute);
                 timePickerDialog.show();
             }
         });
@@ -469,43 +470,47 @@ public class CalendarFragment extends Fragment implements AdapterView.OnItemSele
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         eventTypeSelected = parent.getItemAtPosition(position).toString();
     }
+
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
         getData();
     }
-    public void getData()
-    {
+
+    public void getData() {
         eventsList = eventUtils.allEventsByDateList(dateSelected, 0);
         calendarAdapter.setData(eventsList);
     }
-    private void closeKeyboard(){
+
+    private void closeKeyboard() {
         recyclerViewCalendar.setVisibility(View.VISIBLE);
         View view = getActivity().getCurrentFocus();
-        if(view != null){
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
-    public String makeDateAndTime(String date, String time){
+    public String makeDateAndTime(String date, String time) {
         String dateAndTime = date + " at " + time;
         return dateAndTime;
     }
 
     //Filters and converters
-    public String epochToDate(Long epoch){
+    public String epochToDate(Long epoch) {
         String sDate;
 
-        sDate = dateFormat.format(new Date(epoch*1000));
+        sDate = dateFormat.format(new Date(epoch * 1000));
 
         return sDate;
     }
-    public long dateToEpoch(Date date){
+
+    public long dateToEpoch(Date date) {
         long epoch;
 
         epoch = date.getTime() / 1000;

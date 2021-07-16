@@ -21,65 +21,65 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
     //table user
     private static final String USER_TABLE = "USER_TABLE";
-    private static final String  COL11 = "userId";
-    private static final String  COL12 = "firstName";
-    private static final String  COL13 = "lastName";
-    private static final String  COL14 = "userName";
-    private static final String  COL15 = "email";
-    private static final String  COL16 = "gender";
-    private static final String  COL17 = "age";
-    private static final String  COL18 = "userNotesUrl";
-    private static final String  COL19 = "userEventsUrl";
-    private static final String  COL110 = "userSessionsUrl";
+    private static final String COL11 = "userId";
+    private static final String COL12 = "firstName";
+    private static final String COL13 = "lastName";
+    private static final String COL14 = "userName";
+    private static final String COL15 = "email";
+    private static final String COL16 = "gender";
+    private static final String COL17 = "age";
+    private static final String COL18 = "userNotesUrl";
+    private static final String COL19 = "userEventsUrl";
+    private static final String COL110 = "userSessionsUrl";
     //table apps
     private static final String APPS_TABLE = "APPS_TABLE";
-    private static final String  COL21 = "userId";
-    private static final String  COL22 = "appName";
-    private static final String  COL23 = "appStatus";
-    private static final String  COL24 = "packageName";
-    private static final String  COL25 = "synced";
+    private static final String COL21 = "userId";
+    private static final String COL22 = "appName";
+    private static final String COL23 = "appStatus";
+    private static final String COL24 = "packageName";
+    private static final String COL25 = "synced";
 
     //table events
     private static final String EVENTS_TABLE = "EVENTS_TABLE";
-    private static final String  COL31 = "_id";
-    private static final String  COL32 = "userId";
-    private static final String  COL33 = "eventTitle";
-    private static final String  COL34 = "eventDetails";
-    private static final String  COL35 = "eventDate";
-    private static final String  COL36 = "eventType";
-    private static final String  COL37 = "eventChecked";
-    private static final String  COL38 = "eventCreatedAt";
-    private static final String  COL39 = "synced";
+    private static final String COL31 = "_id";
+    private static final String COL32 = "userId";
+    private static final String COL33 = "eventTitle";
+    private static final String COL34 = "eventDetails";
+    private static final String COL35 = "eventDate";
+    private static final String COL36 = "eventType";
+    private static final String COL37 = "eventChecked";
+    private static final String COL38 = "eventCreatedAt";
+    private static final String COL39 = "synced";
 
     //table notes
     private static final String NOTES_TABLE = "NOTES_TABLE";
-    private static final String  COL41 = "_id";
-    private static final String  COL42 = "userId";
-    private static final String  COL43 = "noteTitle";
-    private static final String  COL44 = "noteContent";
-    private static final String  COL45 = "noteCreatedAt";
-    private static final String  COL46 = "noteUpdatedAt";
-    private static final String  COL47 = "noteArchived";
-    private static final String  COL48 = "synced";
+    private static final String COL41 = "_id";
+    private static final String COL42 = "userId";
+    private static final String COL43 = "noteTitle";
+    private static final String COL44 = "noteContent";
+    private static final String COL45 = "noteCreatedAt";
+    private static final String COL46 = "noteUpdatedAt";
+    private static final String COL47 = "noteArchived";
+    private static final String COL48 = "synced";
 
     //table sessions
     private static final String SESSIONS_TABLE = "SESSIONS_TABLE";
-    private static final String  COL51 = "_id";
-    private static final String  COL52 = "userId";
-    private static final String  COL53 = "sessionLength";
-    private static final String  COL54 = "sessionPoints";
-    private static final String  COL55 = "sessionFinished";
-    private static final String  COL56 = "sessionCreatedAt";
-    private static final String  COL57 = "synced";
+    private static final String COL51 = "_id";
+    private static final String COL52 = "userId";
+    private static final String COL53 = "sessionLength";
+    private static final String COL54 = "sessionPoints";
+    private static final String COL55 = "sessionFinished";
+    private static final String COL56 = "sessionCreatedAt";
+    private static final String COL57 = "synced";
 
     //table affirmations
     private static final String AFFIRMATIONS_TABLE = "AFFIRMATIONS_TABLE";
-    private static final String  COL61 = "_id";
-    private static final String  COL62 = "userId";
-    private static final String  COL63 = "promptId";
-    private static final String  COL64 = "content";
-    private static final String  COL65 = "createdAt";
-    private static final String  COL66 = "synced";
+    private static final String COL61 = "_id";
+    private static final String COL62 = "userId";
+    private static final String COL63 = "promptId";
+    private static final String COL64 = "content";
+    private static final String COL65 = "createdAt";
+    private static final String COL66 = "synced";
 
     public MyDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -89,66 +89,66 @@ public class MyDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         //create users table
         db.execSQL("create table " + USER_TABLE +
-                " ("+COL11+" TEXT PRIMARY KEY, " +
-                COL12+" TEXT, " +
-                COL13+" TEXT, " +
-                COL14+" TEXT, " +
-                COL15+" TEXT, " +
-                COL16+" TEXT, " +
-                COL17+" INTEGER, " +
-                COL18+" TEXT, " +
-                COL19+" TEXT, " +
-                COL110+" TEXT);");
+                " (" + COL11 + " TEXT PRIMARY KEY, " +
+                COL12 + " TEXT, " +
+                COL13 + " TEXT, " +
+                COL14 + " TEXT, " +
+                COL15 + " TEXT, " +
+                COL16 + " TEXT, " +
+                COL17 + " INTEGER, " +
+                COL18 + " TEXT, " +
+                COL19 + " TEXT, " +
+                COL110 + " TEXT);");
 
         //create events table
         db.execSQL("create table " + EVENTS_TABLE +
-                " ("+COL31+" TEXT PRIMARY KEY, " +
-                COL32+" TEXT, " +
-                COL33+" TEXT, " +
-                COL34+" TEXT, " +
-                COL35+" TEXT, " +
-                COL36+" INTEGER, " +
-                COL37+" INTEGER DEFAULT 0, " +
-                COL38+" TEXT, " +
-                COL39+" INTEGER DEFAULT 0);");
+                " (" + COL31 + " TEXT PRIMARY KEY, " +
+                COL32 + " TEXT, " +
+                COL33 + " TEXT, " +
+                COL34 + " TEXT, " +
+                COL35 + " TEXT, " +
+                COL36 + " INTEGER, " +
+                COL37 + " INTEGER DEFAULT 0, " +
+                COL38 + " TEXT, " +
+                COL39 + " INTEGER DEFAULT 0);");
 
         //create notes table
         db.execSQL("create table " + NOTES_TABLE +
-                " ("+COL41+" TEXT PRIMARY KEY, " +
-                COL42+" TEXT, " +
-                COL43+" TEXT, " +
-                COL44+" TEXT, " +
-                COL45+" TEXT, " +
-                COL46+" TEXT, " +
-                COL47+" INTEGER DEFAULT 0, " +
-                COL48+" INTEGER DEFAULT 0);");
+                " (" + COL41 + " TEXT PRIMARY KEY, " +
+                COL42 + " TEXT, " +
+                COL43 + " TEXT, " +
+                COL44 + " TEXT, " +
+                COL45 + " TEXT, " +
+                COL46 + " TEXT, " +
+                COL47 + " INTEGER DEFAULT 0, " +
+                COL48 + " INTEGER DEFAULT 0);");
 
         //create sessions table
         db.execSQL("create table " + SESSIONS_TABLE +
-                " ("+COL51+" TEXT PRIMARY KEY, " +
-                COL52+" TEXT, " +
-                COL53+" INTEGER, " +
-                COL54+" INTEGER, " +
-                COL55+" INTEGER DEFAULT 0, " +
-                COL56+" TEXT, " +
-                COL57+" INTEGER DEFAULT 0);");
+                " (" + COL51 + " TEXT PRIMARY KEY, " +
+                COL52 + " TEXT, " +
+                COL53 + " INTEGER, " +
+                COL54 + " INTEGER, " +
+                COL55 + " INTEGER DEFAULT 0, " +
+                COL56 + " TEXT, " +
+                COL57 + " INTEGER DEFAULT 0);");
 
         //create apps table
         db.execSQL("create table " + APPS_TABLE +
-                " ("+COL21+" TEXT PRIMARY KEY, " +
-                COL22+" TEXT, " +
-                COL23+" INTEGER DEFAULT 0, " +
-                COL24+" TEXT, " +
-                COL25+" INTEGER DEFAULT 0);");
+                " (" + COL21 + " TEXT PRIMARY KEY, " +
+                COL22 + " TEXT, " +
+                COL23 + " INTEGER DEFAULT 0, " +
+                COL24 + " TEXT, " +
+                COL25 + " INTEGER DEFAULT 0);");
 
         //create affirmations table
         db.execSQL("create table " + AFFIRMATIONS_TABLE +
-                " ("+COL61+" TEXT PRIMARY KEY, " +
-                COL62+" TEXT, " +
-                COL63+" TEXT, " +
-                COL64+" TEXT, " +
-                COL65+" TEXT, " +
-                COL66+" INTEGER DEFAULT 0);");
+                " (" + COL61 + " TEXT PRIMARY KEY, " +
+                COL62 + " TEXT, " +
+                COL63 + " TEXT, " +
+                COL64 + " TEXT, " +
+                COL65 + " TEXT, " +
+                COL66 + " INTEGER DEFAULT 0);");
 
     }
 
@@ -167,9 +167,9 @@ public class MyDbHelper extends SQLiteOpenHelper {
     /* ----------------------------------------USER----------------------------------------*/
     /* --------------------------------------------------------------------------------*/
 
-    public boolean setCurrentUser(User user){
+    public boolean setCurrentUser(User user) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("DELETE FROM "+USER_TABLE);
+        db.execSQL("DELETE FROM " + USER_TABLE);
 
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL11, user.getUserId());
@@ -185,32 +185,32 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         long isSet = db.insert(USER_TABLE, null, contentValues);
 
-        if(isSet == -1){
+        if (isSet == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public boolean userIsSet(){
+    public boolean userIsSet() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + USER_TABLE, null);
         int count = 0;
-        while(res.moveToNext()){
-            count=1;
+        while (res.moveToNext()) {
+            count = 1;
         }
-        if(count==1){
+        if (count == 1) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
 
-    public User getUser(){
+    public User getUser() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + USER_TABLE, null);
         User user = new User();
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
             user.setUserId(res.getString(0));
             user.setFirstName(res.getString(1));
             user.setLastName(res.getString(2));
@@ -228,7 +228,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------EVENTS----------------------------------------*/
     /* --------------------------------------------------------------------------------*/
-    public boolean addNewEvent(Events event){
+    public boolean addNewEvent(Events event) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -243,41 +243,41 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         long result = db.insert(EVENTS_TABLE, null, contentValues);
 
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public Cursor getAllEventsByCheck(int check){
+    public Cursor getAllEventsByCheck(int check) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE+" WHERE eventChecked='" + check + "'", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE + " WHERE eventChecked='" + check + "'", null);
         return res;
     }
 
-    public Cursor getAllEventsBySynced(int synced){
+    public Cursor getAllEventsBySynced(int synced) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE+" WHERE synced='" + synced + "'", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE + " WHERE synced='" + synced + "'", null);
         return res;
     }
 
-    public boolean eventSetChecked(String eventId, int checkYN){
+    public boolean eventSetChecked(String eventId, int checkYN) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        contentValues.put(COL39, checkYN);
-        db.update(EVENTS_TABLE, contentValues, "EVENT_ID = ?", new String[]{eventId});
+        contentValues.put(COL37, checkYN);
+        db.update(EVENTS_TABLE, contentValues, "_id = ?", new String[]{eventId});
 
         return true;
     }
 
-    public boolean addNewEventWithId(Events event){
+    public boolean addNewEventWithId(Events event) {
         int check = 1;
         SQLiteDatabase db = this.getWritableDatabase();
 
-        if(event.isEventChecked()){
+        if (event.isEventChecked()) {
             check = 1;
-        }else{
+        } else {
             check = 0;
         }
         ContentValues contentValues = new ContentValues();
@@ -289,16 +289,16 @@ public class MyDbHelper extends SQLiteOpenHelper {
         contentValues.put(COL36, event.getEventType());
         contentValues.put(COL38, event.getEventCreatedAt());
 
-        long result = db.insert(EVENTS_TABLE,null, contentValues);
+        long result = db.insert(EVENTS_TABLE, null, contentValues);
 
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public boolean setEventSynced(String eventId, int sycned){
+    public boolean setEventSynced(String eventId, int sycned) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL39, sycned);
@@ -308,13 +308,13 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Cursor getAllEvents(){
+    public Cursor getAllEvents() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + EVENTS_TABLE, null);
         return res;
     }
 
-    public boolean updateEventCheckedState(String eventId, int eventState){
+    public boolean updateEventCheckedState(String eventId, int eventState) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL37, eventState);
@@ -323,7 +323,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updateEventSyncedState(String eventId, int eventState){
+    public boolean updateEventSyncedState(String eventId, int eventState) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL39, eventState);
@@ -332,11 +332,11 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean updateEvent(Events event){
+    public boolean updateEvent(Events event) {
 
         int checked = 0;
 
-        if(event.isEventChecked()){
+        if (event.isEventChecked()) {
             checked = 1;
         }
 
@@ -355,7 +355,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Integer deleteEvent(String eventId){
+    public Integer deleteEvent(String eventId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         return db.delete(EVENTS_TABLE, "_id = ?", new String[]{eventId});
@@ -364,7 +364,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------NOTES----------------------------------------*/
     /* --------------------------------------------------------------------------------*/
-    public boolean addNewNote(Notes note){
+    public boolean addNewNote(Notes note) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -378,41 +378,41 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         long result = db.insert(NOTES_TABLE, null, contentValues);
 
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public Cursor getNoteById(String noteId){
+    public Cursor getNoteById(String noteId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE+" WHERE _id='" + noteId + "';", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE _id='" + noteId + "';", null);
         return res;
     }
 
-    public Cursor getAllNotesArchiveYN(int archived){
+    public Cursor getAllNotesArchiveYN(int archived) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE +" WHERE noteArchived='" + archived + "';", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE noteArchived='" + archived + "';", null);
         return res;
     }
 
-    public Cursor getAllNotesSyncedYN(int synced){
+    public Cursor getAllNotesSyncedYN(int synced) {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE +" WHERE synced='" + synced + "';", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + " WHERE synced='" + synced + "';", null);
         return res;
     }
 
-    public Cursor getAllNotes(){
+    public Cursor getAllNotes() {
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE +";", null);
+        Cursor res = db.rawQuery("SELECT * FROM " + NOTES_TABLE + ";", null);
         return res;
     }
 
-    public boolean updateNote(Notes note){
+    public boolean updateNote(Notes note) {
         int archived = 0;
 
-        if(note.getNoteArchived()){
+        if (note.getNoteArchived()) {
             archived = 1;
         }
 
@@ -431,7 +431,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean setNoteSynced(String noteId, int synced){
+    public boolean setNoteSynced(String noteId, int synced) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -442,7 +442,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public boolean setNoteArchived(String noteId, int yn){
+    public boolean setNoteArchived(String noteId, int yn) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL47, yn);
@@ -451,7 +451,8 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         return true;
     }
-    public Integer deleteNote(String noteId){
+
+    public Integer deleteNote(String noteId) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         return db.delete(NOTES_TABLE, "_id = ?", new String[]{noteId});
@@ -460,7 +461,7 @@ public class MyDbHelper extends SQLiteOpenHelper {
     /* --------------------------------------------------------------------------------*/
     /* ----------------------------------------SESSIONS----------------------------------------*/
     /* --------------------------------------------------------------------------------*/
-    public boolean addNewSession(Sessions session){
+    public boolean addNewSession(Sessions session) {
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -468,12 +469,12 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         String points = "";
 
-        if(session.isSessionFinished()){
+        if (session.isSessionFinished()) {
             finished = 1;
             points = String.valueOf(session.getSessionPoints());
-        }else{
+        } else {
             finished = 0;
-            points = "-"+String.valueOf(session.getSessionPoints());
+            points = "-" + String.valueOf(session.getSessionPoints());
         }
 
         ContentValues contentValues = new ContentValues();
@@ -488,14 +489,14 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         long result = db.insert(SESSIONS_TABLE, null, contentValues);
 
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
 
-    public boolean setSessionSynced(String sessionId, int sycned){
+    public boolean setSessionSynced(String sessionId, int sycned) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COL57, sycned);
@@ -505,18 +506,19 @@ public class MyDbHelper extends SQLiteOpenHelper {
         return true;
     }
 
-    public Cursor getAllSessions(){
+    public Cursor getAllSessions() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + SESSIONS_TABLE, null);
         return res;
     }
 
-    public Cursor getAllApps(){
+    public Cursor getAllApps() {
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor res = db.rawQuery("SELECT * FROM " + APPS_TABLE, null);
         return res;
     }
-    public boolean addNewApp(Apps app){
+
+    public boolean addNewApp(Apps app) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues contentValues = new ContentValues();
@@ -526,13 +528,14 @@ public class MyDbHelper extends SQLiteOpenHelper {
 
         long result = db.insert(APPS_TABLE, null, contentValues);
 
-        if(result == -1){
+        if (result == -1) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
-    public Integer deleteApp(String app_name){
+
+    public Integer deleteApp(String app_name) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         return db.delete(APPS_TABLE, "APP_NAME = ?", new String[]{app_name});

@@ -27,8 +27,7 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
         this.sessionsList = sessions;
     }
 
-    public void setData(List<Sessions> sessionsList)
-    {
+    public void setData(List<Sessions> sessionsList) {
         this.sessionsList = sessionsList;
         this.notifyDataSetChanged();
     }
@@ -36,7 +35,7 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.session_row_layout,parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.session_row_layout, parent, false);
 
         return new SessionsRecyclerAdapter.ListViewHolder(view);
     }
@@ -51,14 +50,14 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
         return sessionsList.size();
     }
 
-    private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+    private class ListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView twContent1, twDate1, twTime1;
         private ImageView ivIcon1;
         private CardView cardView1;
 
-        public ListViewHolder(View itemView){
+        public ListViewHolder(View itemView) {
 
-            super (itemView);
+            super(itemView);
             twContent1 = itemView.findViewById(R.id.singleSessionlength);
             twDate1 = itemView.findViewById(R.id.singleSessionDate);
             twTime1 = itemView.findViewById(R.id.singleSessionTime);
@@ -68,11 +67,11 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
             itemView.setOnClickListener(this);
         }
 
-        public void bindView(int position){
+        public void bindView(int position) {
 
-            if(sessionsList.get(position).isSessionFinished()){
+            if (sessionsList.get(position).isSessionFinished()) {
                 cardView1.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myTealGreen));
-            }else{
+            } else {
                 cardView1.setCardBackgroundColor(ContextCompat.getColor(context, R.color.myMattePink));
             }
             if (sessionsList.get(position).getSessionLength() == 10) {
@@ -102,7 +101,8 @@ public class SessionsRecyclerAdapter extends RecyclerView.Adapter {
             twDate1.setText(sDate);
 
         }
-        public void onClick(View view){
+
+        public void onClick(View view) {
         }
     }
 }

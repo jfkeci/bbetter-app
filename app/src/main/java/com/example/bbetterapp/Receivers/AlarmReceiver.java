@@ -31,7 +31,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         String channelId = "channel_1";
         CharSequence channelName = "events_channel";
         String description = "Events_ToDos_Reminders";
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel = new NotificationChannel(channelId, channelName, NotificationManager.IMPORTANCE_HIGH);
             channel.setDescription(description);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);

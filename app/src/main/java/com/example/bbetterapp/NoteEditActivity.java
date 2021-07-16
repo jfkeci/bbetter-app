@@ -39,6 +39,7 @@ public class NoteEditActivity extends AppCompatActivity {
     private Utils utils;
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy 'at' HH:mm");
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,7 +70,7 @@ public class NoteEditActivity extends AppCompatActivity {
                 selectedNote.setNoteContent(etContent.getText().toString());
                 selectedNote.setNoteTitle(etTitle.getText().toString());
 
-                if(utils.isNetworkAvailable()){
+                if (utils.isNetworkAvailable()) {
                     selectedNote.setSynced(1);
 
                     Call<Notes> call = ApiClient.getInstance().getApi().updateNote(selectedNote.getNoteId(), selectedNote);
@@ -77,10 +78,10 @@ public class NoteEditActivity extends AppCompatActivity {
                     call.enqueue(new Callback<Notes>() {
                         @Override
                         public void onResponse(Call<Notes> call, Response<Notes> response) {
-                            if(!response.isSuccessful()){
+                            if (!response.isSuccessful()) {
                                 Utils.makeMyToast("Something went wrong\ntry again...", getApplicationContext());
                                 Utils.makeMyLog("Failed to save note to: ", "API");
-                            }else{
+                            } else {
                                 Notes updatedNote = response.body();
 
                                 updatedNote.setSynced(1);
@@ -90,10 +91,10 @@ public class NoteEditActivity extends AppCompatActivity {
 
                         @Override
                         public void onFailure(Call<Notes> call, Throwable t) {
-                            Utils.makeMyLog("Failed to update: NOTE, message: ", ""+t.getMessage());
+                            Utils.makeMyLog("Failed to update: NOTE, message: ", "" + t.getMessage());
                         }
                     });
-                }else{
+                } else {
                     selectedNote.setNoteUpdatedAt(utils.getDateNow(1));
                     selectedNote.setSynced(2);
                     dbHelper.updateNote(selectedNote);

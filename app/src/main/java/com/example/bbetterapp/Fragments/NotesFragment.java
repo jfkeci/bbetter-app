@@ -107,11 +107,11 @@ public class NotesFragment extends Fragment {
             public void onSwiped(@NonNull @NotNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
 
-                if(direction == ItemTouchHelper.UP){
+                if (direction == ItemTouchHelper.UP) {
                     archivedNote = notesList.get(position);
                     archivedNote.setNoteArchived(true);
 
-                    if(utils.isNetworkAvailable()){
+                    if (utils.isNetworkAvailable()) {
                         archivedNote.setSynced(1);
                         archivedNote.setNoteUpdatedAt(null);
 
@@ -120,9 +120,9 @@ public class NotesFragment extends Fragment {
                         call.enqueue(new Callback<Notes>() {
                             @Override
                             public void onResponse(Call<Notes> call, Response<Notes> response) {
-                                if(!response.isSuccessful()){
+                                if (!response.isSuccessful()) {
                                     Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
-                                }else{
+                                } else {
                                     Notes updatedNote = response.body();
 
                                     /*updatedNote.setNoteUpdatedAt(utils.parseDateApiToDb(updatedNote.getNoteUpdatedAt()));*/
@@ -130,9 +130,9 @@ public class NotesFragment extends Fragment {
 
                                     boolean isUpdated = dbHelper.updateNote(updatedNote);
 
-                                    if(isUpdated){
+                                    if (isUpdated) {
                                         removeData(position);
-                                    }else{
+                                    } else {
                                         Utils.makeMyToast("Something went wrong!", getActivity());
                                     }
                                 }
@@ -141,39 +141,39 @@ public class NotesFragment extends Fragment {
                             @Override
                             public void onFailure(Call<Notes> call, Throwable t) {
                                 Utils.makeMyToast("Something went wrong!", getActivity());
-                                Utils.makeMyLog("failed to update: NOTE, message: ", ""+t.getMessage());
+                                Utils.makeMyLog("failed to update: NOTE, message: ", "" + t.getMessage());
                             }
                         });
-                    }else{
+                    } else {
                         archivedNote.setSynced(2);
                         archivedNote.setNoteUpdatedAt(utils.getDateNow(1));
                         archivedNote.setNoteArchived(true);
 
                         boolean isArchived = dbHelper.updateNote(archivedNote);
 
-                        if(isArchived){
+                        if (isArchived) {
                             removeData(position);
-                        }else{
+                        } else {
                             Utils.makeMyToast("Something went wrong!", getActivity());
                         }
                     }
                 }
-                if(direction == ItemTouchHelper.DOWN){
+                if (direction == ItemTouchHelper.DOWN) {
                     deletedNote = notesList.get(position);
 
                     Notes undoNote = deletedNote;
 
-                    if(deletedNote.isSynced() != 0){
-                        if(utils.isNetworkAvailable()){
+                    if (deletedNote.isSynced() != 0) {
+                        if (utils.isNetworkAvailable()) {
                             deleted = true;
                             Call<Notes> call = ApiClient.getInstance().getApi().deleteNote(deletedNote.getNoteId());
 
                             call.enqueue(new Callback<Notes>() {
                                 @Override
                                 public void onResponse(Call<Notes> call, Response<Notes> response) {
-                                    if(!response.isSuccessful()){
+                                    if (!response.isSuccessful()) {
                                         Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
-                                    }else{
+                                    } else {
                                         dbHelper.deleteNote(deletedNote.getNoteId());
 
                                         removeData(position);
@@ -183,24 +183,24 @@ public class NotesFragment extends Fragment {
                                 @Override
                                 public void onFailure(Call<Notes> call, Throwable t) {
                                     Utils.makeMyToast("Something went wrong!", getActivity());
-                                    Utils.makeMyLog("failed to delete: NOTE, message: ", ""+t.getMessage());
+                                    Utils.makeMyLog("failed to delete: NOTE, message: ", "" + t.getMessage());
                                 }
                             });
-                        }else{
+                        } else {
                             deleted = false;
                             deletedNote.setSynced(3);
 
                             boolean isDeleted = dbHelper.updateNote(deletedNote);
 
-                            if(isDeleted){
+                            if (isDeleted) {
                                 removeData(position);
                             }
                         }
-                    }else{
+                    } else {
                         deleted = true;
                         int isDeleted = dbHelper.deleteNote(deletedNote.getNoteId());
 
-                        if(isDeleted == 1){
+                        if (isDeleted == 1) {
                             removeData(position);
                         }
                     }
@@ -208,15 +208,15 @@ public class NotesFragment extends Fragment {
                     Snackbar.make(recyclerView, Utils.cutString(deletedNote.getNoteTitle(), 8), Snackbar.LENGTH_LONG).setAction("Undo", new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(deleted){
+                            if (deleted) {
                                 undoNote.setSynced(1);
                                 Call<Notes> undoCall = ApiClient.getInstance().getApi().saveNewNote(undoNote);
                                 undoCall.enqueue(new Callback<Notes>() {
                                     @Override
                                     public void onResponse(Call<Notes> call, Response<Notes> response) {
-                                        if(!response.isSuccessful()){
-                                            Utils.makeMyLog("Failed to undo","");
-                                        }else{
+                                        if (!response.isSuccessful()) {
+                                            Utils.makeMyLog("Failed to undo", "");
+                                        } else {
                                             Notes note = response.body();
 
                                             dbHelper.addNewNote(note);
@@ -230,7 +230,7 @@ public class NotesFragment extends Fragment {
                                         Utils.makeMyLog("Failed to undo", "");
                                     }
                                 });
-                            }else{
+                            } else {
                                 dbHelper.updateNote(undoNote);
                             }
                         }
@@ -252,12 +252,12 @@ public class NotesFragment extends Fragment {
         return v;
     }
 
-    private void saveNote(){
+    private void saveNote() {
         Notes newNote = new Notes();
 
-        if(etNoteTitle.getText().toString().isEmpty() && etNoteContent.getText().toString().isEmpty()){
+        if (etNoteTitle.getText().toString().isEmpty() && etNoteContent.getText().toString().isEmpty()) {
             Utils.makeMyToast("Write something!", getActivity());
-        }else{
+        } else {
 
             newNote.setUserId(utils.getMyUserId());
             newNote.setNoteTitle(etNoteTitle.getText().toString());
@@ -265,7 +265,7 @@ public class NotesFragment extends Fragment {
             newNote.setNoteArchived(false);
 
 
-            if(utils.isNetworkAvailable()){
+            if (utils.isNetworkAvailable()) {
 
                 newNote.setSynced(1);
 
@@ -274,15 +274,15 @@ public class NotesFragment extends Fragment {
                 call.enqueue(new Callback<Notes>() {
                     @Override
                     public void onResponse(Call<Notes> call, Response<Notes> response) {
-                        if(!response.isSuccessful()){
+                        if (!response.isSuccessful()) {
                             Utils.makeMyToast("Something went wrong\ntry again...", getActivity());
-                        }else{
+                        } else {
 
                             Notes savedNote = response.body();
 
                             boolean isInserted = dbHelper.addNewNote(savedNote);
 
-                            if(isInserted){
+                            if (isInserted) {
                                 dbHelper.setNoteSynced(savedNote.getNoteId(), 1);
 
                                 etNoteTitle.setText("");
@@ -299,29 +299,29 @@ public class NotesFragment extends Fragment {
                     }
                 });
 
-            }else{
-                newNote.setNoteId("nt"+utils.getDateNow(4));
+            } else {
+                newNote.setNoteId("nt" + utils.getDateNow(4));
                 newNote.setNoteCreatedAt(utils.getDateNow(1));
                 newNote.setNoteUpdatedAt(utils.getDateNow(1));
                 newNote.setSynced(0);
 
                 boolean isInserted = dbHelper.addNewNote(newNote);
-                if(isInserted){
+                if (isInserted) {
                     etNoteTitle.setText("");
                     etNoteContent.setText("");
                     getData();
                     closeKeyboard();
-                }else{
+                } else {
                     Utils.makeMyToast("Try again!", getActivity());
                 }
             }
         }
     }
 
-    private void closeKeyboard(){
+    private void closeKeyboard() {
         View view = getActivity().getCurrentFocus();
-        if(view != null){
-            InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
@@ -332,13 +332,12 @@ public class NotesFragment extends Fragment {
         getData();
     }
 
-    public void getData()
-    {
+    public void getData() {
         notesList = noteUtils.allNotesList(0);
         notesAdapter.setData(notesList);
     }
 
-    private void removeData(int position){
+    private void removeData(int position) {
         notesList.remove(position);
         notesAdapter.notifyItemRemoved(position);
     }

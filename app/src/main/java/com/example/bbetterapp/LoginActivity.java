@@ -60,9 +60,9 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(utils.isNetworkAvailable()){
+                if (utils.isNetworkAvailable()) {
                     loginUser();
-                }else{
+                } else {
                     Utils.makeMyToast("Please turn on your network!", getApplicationContext());
                 }
             }
@@ -76,45 +76,45 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void loginUser(){
+    private void loginUser() {
 
         boolean fieldsFilled = true;
 
         final String password[] = new String[1];
         final String email[] = new String[1];
 
-        if(Utils.isEmpty(etEmail)){
+        if (Utils.isEmpty(etEmail)) {
             fieldsFilled = Utils.etValidation(etEmail, "Email field required", getApplicationContext());
-        }else{
+        } else {
             email[0] = etEmail.getText().toString();
             fieldsFilled = true;
         }
 
-        if((etPassword.getText().toString().length()) < 5){
-            if(Utils.isEmpty(etPassword)){
+        if ((etPassword.getText().toString().length()) < 5) {
+            if (Utils.isEmpty(etPassword)) {
                 fieldsFilled = Utils.etValidation(etPassword, "Password field required", getApplicationContext());
-            }else{
+            } else {
                 fieldsFilled = Utils.etValidation(etPassword, "Password should have at least 8 characters", getApplicationContext());
             }
-        }else if((etPassword.getText().toString().length()) >= 5){
+        } else if ((etPassword.getText().toString().length()) >= 5) {
             password[0] = etPassword.getText().toString();
             fieldsFilled = true;
         }
 
-        if(isNetworkAvailable()){
+        if (isNetworkAvailable()) {
             Call<List<User>> call = ApiClient.getInstance().getApi().loginUser(email[0], password[0]);
 
             call.enqueue(new Callback<List<User>>() {
                 @Override
                 public void onResponse(Call<List<User>> call, Response<List<User>> response) {
-                    if(!response.isSuccessful()){
-                        Utils.makeMyToast("code: " +response.code(), getApplicationContext());
+                    if (!response.isSuccessful()) {
+                        Utils.makeMyToast("code: " + response.code(), getApplicationContext());
                         return;
                     }
 
                     List<User> users = response.body();
 
-                    if(users.get(0).getEmail().equals(email[0]) && users.get(0).getPassword().equals(password[0])){
+                    if (users.get(0).getEmail().equals(email[0]) && users.get(0).getPassword().equals(password[0])) {
                         dbHelper.setCurrentUser(users.get(0));
 
                         syncNotesApiDb(users.get(0).getUserId());
@@ -130,26 +130,26 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 public void onFailure(Call<List<User>> call, Throwable t) {
-                    Utils.makeMyLog("message: ", ""+t.getMessage());
+                    Utils.makeMyLog("message: ", "" + t.getMessage());
                 }
             });
         }
     }
 
-    private void syncNotesApiDb(String userId){
+    private void syncNotesApiDb(String userId) {
         Call<ArrayList<Notes>> call = ApiClient.getInstance().getApi().getAllUserNotes(userId);
 
         call.enqueue(new Callback<ArrayList<Notes>>() {
             @Override
             public void onResponse(Call<ArrayList<Notes>> call, Response<ArrayList<Notes>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyLog("Couldn't manage to sync notes: ", ""+response.code());
+                if (!response.isSuccessful()) {
+                    Utils.makeMyLog("Couldn't manage to sync notes: ", "" + response.code());
                     return;
                 }
 
                 ArrayList<Notes> apiNotes = response.body();
 
-                for(Notes note : apiNotes){
+                for (Notes note : apiNotes) {
                     dbHelper.addNewNote(note);
                     dbHelper.setNoteSynced(note.getNoteId(), 1);
 
@@ -162,20 +162,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    private void syncEventsApiDb(String userId){
+
+    private void syncEventsApiDb(String userId) {
         Call<ArrayList<Events>> call = ApiClient.getInstance().getApi().getAllUserEvents(userId);
 
         call.enqueue(new Callback<ArrayList<Events>>() {
             @Override
             public void onResponse(Call<ArrayList<Events>> call, Response<ArrayList<Events>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyLog("Couldn't manage to sync notes: ", ""+response.code());
+                if (!response.isSuccessful()) {
+                    Utils.makeMyLog("Couldn't manage to sync notes: ", "" + response.code());
                     return;
                 }
 
                 ArrayList<Events> apiEvents = response.body();
 
-                for(Events event : apiEvents){
+                for (Events event : apiEvents) {
                     event.setSynced(1);
                     dbHelper.addNewEvent(event);
                     dbHelper.setEventSynced(event.get_id(), 1);
@@ -184,10 +185,11 @@ public class LoginActivity extends AppCompatActivity {
                     call1.enqueue(new Callback<Events>() {
                         @Override
                         public void onResponse(Call<Events> call, Response<Events> response) {
-                            if(!response.isSuccessful()){
+                            if (!response.isSuccessful()) {
                                 Utils.makeMyLog("Failed to sync", "");
                             }
                         }
+
                         @Override
                         public void onFailure(Call<Events> call, Throwable t) {
                             Utils.makeMyLog("Failed to sync", "");
@@ -202,20 +204,21 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
     }
-    private void syncSessionsApiDb(String userId){
+
+    private void syncSessionsApiDb(String userId) {
         Call<ArrayList<Sessions>> call = ApiClient.getInstance().getApi().getAllUserSessions(userId);
 
         call.enqueue(new Callback<ArrayList<Sessions>>() {
             @Override
             public void onResponse(Call<ArrayList<Sessions>> call, Response<ArrayList<Sessions>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyLog("Couldn't manage to sync notes: ", ""+response.code());
+                if (!response.isSuccessful()) {
+                    Utils.makeMyLog("Couldn't manage to sync notes: ", "" + response.code());
                     return;
                 }
 
                 ArrayList<Sessions> apiSessions = response.body();
 
-                for(Sessions session : apiSessions){
+                for (Sessions session : apiSessions) {
                     dbHelper.addNewSession(session);
                     dbHelper.setSessionSynced(session.getSessionId(), 1);
                 }
@@ -233,7 +236,7 @@ public class LoginActivity extends AppCompatActivity {
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         boolean isAvalible = activeNetworkInfo != null && activeNetworkInfo.isConnected();
 
-        if(!isAvalible){
+        if (!isAvalible) {
             Utils.makeMyToast("Can't login\nNo internet connection", getApplicationContext());
         }
 

@@ -33,7 +33,10 @@ public class Notes {
         this.updatedAt = updatedAt;
         this.noteArchived = noteArchived;
     }
-    public Notes() { }
+
+    public Notes() {
+    }
+
     public Notes(Context context) {
         this.context = context;
     }
@@ -44,48 +47,63 @@ public class Notes {
     public int isSynced() {
         return synced;
     }
+
     public void setSynced(int synced) {
         this.synced = synced;
     }
+
     public String getNoteId() {
         return _id;
     }
+
     public void setNoteId(String _id) {
         this._id = _id;
     }
+
     public String getUserId() {
         return userId;
     }
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
+
     public String getNoteTitle() {
         return noteTitle;
     }
+
     public void setNoteTitle(String noteTitle) {
         this.noteTitle = noteTitle;
     }
+
     public String getNoteContent() {
         return noteContent;
     }
+
     public void setNoteContent(String noteContent) {
         this.noteContent = noteContent;
     }
+
     public String getNoteCreatedAt() {
         return createdAt;
     }
+
     public void setNoteCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }
+
     public String getNoteUpdatedAt() {
         return updatedAt;
     }
+
     public void setNoteUpdatedAt(String updatedAt) {
         this.updatedAt = updatedAt;
     }
+
     public Boolean getNoteArchived() {
         return noteArchived;
     }
+
     public void setNoteArchived(Boolean noteArchived) {
         this.noteArchived = noteArchived;
     }
@@ -94,7 +112,7 @@ public class Notes {
     /* ----------------------------------------DB ACTIONS AND UTILS----------------------------------------*/
     /* --------------------------------------------------------------------------------*/
 
-    public Notes getNoteById(String id){
+    public Notes getNoteById(String id) {
         MyDbHelper dbHelper;
         dbHelper = new MyDbHelper(context);
         Notes selectedNote;
@@ -104,12 +122,12 @@ public class Notes {
         Cursor res = dbHelper.getNoteById(id);
 
         StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
+        while (res.moveToNext()) {
             boolean archived = false;
 
-            if(res.getInt(6) == 0){
+            if (res.getInt(6) == 0) {
                 archived = false;
-            }else if(res.getInt(6) == 1){
+            } else if (res.getInt(6) == 1) {
                 archived = true;
             }
 
@@ -129,68 +147,72 @@ public class Notes {
         return selectedNote;
     }
 
-    public ArrayList<Notes> allNotesList(int archived_yn){
+    public ArrayList<Notes> allNotesList(int archived_yn) {
         MyDbHelper dbHelper;
         dbHelper = new MyDbHelper(context);
 
         ArrayList<Notes> dbNotes = new ArrayList<>();
 
-        if(archived_yn == 0 || archived_yn == 1){
+        if (archived_yn == 0 || archived_yn == 1) {
             Cursor res = dbHelper.getAllNotesArchiveYN(archived_yn);
             StringBuffer buffer = new StringBuffer();
-            while(res.moveToNext()){
-                boolean archived = false;
+            while (res.moveToNext()) {
+                if (res.getInt(7) != 3) {
+                    boolean archived = false;
 
-                if(archived_yn == 0){
-                    archived = false;
-                }else if(archived_yn == 1){
-                    archived = true;
+                    if (archived_yn == 0) {
+                        archived = false;
+                    } else if (archived_yn == 1) {
+                        archived = true;
+                    }
+
+                    Notes note = new Notes(res.getString(0),
+                            res.getString(1),
+                            res.getString(2),
+                            res.getString(3),
+                            res.getString(4),
+                            res.getString(5),
+                            archived
+                    );
+
+                    note.setSynced(res.getInt(7));
+
+                    dbNotes.add(0, note);
                 }
-
-                Notes note = new Notes(res.getString(0),
-                        res.getString(1),
-                        res.getString(2),
-                        res.getString(3),
-                        res.getString(4),
-                        res.getString(5),
-                        archived
-                );
-
-                note.setSynced(res.getInt(7));
-
-                dbNotes.add(0, note);
             }
-        }else if(archived_yn == 2){
+        } else if (archived_yn == 2) {
             Cursor res = dbHelper.getAllNotes();
             StringBuffer buffer = new StringBuffer();
-            while(res.moveToNext()){
-                boolean archived = false;
+            while (res.moveToNext()) {
+                if (res.getInt(7) != 3) {
+                    boolean archived = false;
 
-                if(res.getInt(6) == 0){
-                    archived = false;
-                }else if(res.getInt(6) == 1){
-                    archived = true;
+                    if (res.getInt(6) == 0) {
+                        archived = false;
+                    } else if (res.getInt(6) == 1) {
+                        archived = true;
+                    }
+
+                    Notes note = new Notes(res.getString(0),
+                            res.getString(1),
+                            res.getString(2),
+                            res.getString(3),
+                            res.getString(4),
+                            res.getString(5),
+                            archived
+                    );
+
+                    note.setSynced(res.getInt(7));
+
+                    dbNotes.add(0, note);
                 }
-
-                Notes note = new Notes(res.getString(0),
-                        res.getString(1),
-                        res.getString(2),
-                        res.getString(3),
-                        res.getString(4),
-                        res.getString(5),
-                        archived
-                );
-
-                note.setSynced(res.getInt(7));
-
-                dbNotes.add(0, note);
             }
         }
 
         return dbNotes;
     }
 
-    public ArrayList<Notes> allNotes(int archived_yn){
+    public ArrayList<Notes> allNotes(int archived_yn) {
         MyDbHelper dbHelper;
         dbHelper = new MyDbHelper(context);
 
@@ -198,33 +220,34 @@ public class Notes {
 
         Cursor res = dbHelper.getAllNotesArchiveYN(archived_yn);
         StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
-            boolean archived = false;
+        while (res.moveToNext()) {
+            if (res.getInt(7) != 3) {
+                boolean archived = false;
 
-            if(archived_yn == 0){
-                archived = false;
-            }else if(archived_yn == 1){
-                archived = true;
+                if (archived_yn == 0) {
+                    archived = false;
+                } else if (archived_yn == 1) {
+                    archived = true;
+                }
+
+                Notes note = new Notes(res.getString(0),
+                        res.getString(1),
+                        res.getString(2),
+                        res.getString(3),
+                        res.getString(4),
+                        res.getString(5),
+                        archived
+                );
+
+                note.setSynced(res.getInt(7));
+
+                dbNotes.add(0, note);
             }
-
-            Notes note = new Notes(res.getString(0),
-                    res.getString(1),
-                    res.getString(2),
-                    res.getString(3),
-                    res.getString(4),
-                    res.getString(5),
-                    archived
-            );
-
-            note.setSynced(res.getInt(7));
-
-            dbNotes.add(0, note);
         }
-
         return dbNotes;
     }
 
-    public ArrayList<Notes> allNotesListBySync(int syncNum){
+    public ArrayList<Notes> allNotesListBySync(int syncNum) {
         MyDbHelper dbHelper;
         dbHelper = new MyDbHelper(context);
 
@@ -232,29 +255,31 @@ public class Notes {
 
         Cursor res = dbHelper.getAllNotesSyncedYN(syncNum);
         StringBuffer buffer = new StringBuffer();
-        while(res.moveToNext()){
-            boolean archived = false;
-            if(res.getInt(6) == 0){
-                archived = false;
-            }else if(res.getInt(6) == 1){
-                archived = true;
+        while (res.moveToNext()) {
+            if (res.getInt(7) != 3) {
+                boolean archived = false;
+                if (res.getInt(6) == 0) {
+                    archived = false;
+                } else if (res.getInt(6) == 1) {
+                    archived = true;
+                }
+                Notes note = new Notes(res.getString(0),
+                        res.getString(1),
+                        res.getString(2),
+                        res.getString(3),
+                        res.getString(4),
+                        res.getString(5),
+                        archived
+                );
+                note.setSynced(res.getInt(7));
+                dbNotes.add(0, note);
             }
-            Notes note = new Notes(res.getString(0),
-                    res.getString(1),
-                    res.getString(2),
-                    res.getString(3),
-                    res.getString(4),
-                    res.getString(5),
-                    archived
-            );
-            note.setSynced(res.getInt(7));
-            dbNotes.add(0, note);
         }
 
         return dbNotes;
     }
 
-    public void syncNotesApiDb(String userId){
+    public void syncNotesApiDb(String userId) {
 
         MyDbHelper dbHelper = new MyDbHelper(context);
 
@@ -270,14 +295,14 @@ public class Notes {
         call.enqueue(new Callback<ArrayList<Notes>>() {
             @Override
             public void onResponse(Call<ArrayList<Notes>> call, Response<ArrayList<Notes>> response) {
-                if(!response.isSuccessful()){
-                    Utils.makeMyLog("Couldn't manage to sync notes: ", ""+response.code());
+                if (!response.isSuccessful()) {
+                    Utils.makeMyLog("Couldn't manage to sync notes: ", "" + response.code());
                     return;
                 }
 
                 ArrayList<Notes> apiNotes = response.body();
 
-                for(Notes note : apiNotes){
+                for (Notes note : apiNotes) {
                     dbHelper.addNewNote(note);
                     dbHelper.setNoteSynced(note.getNoteId(), 1);
                 }

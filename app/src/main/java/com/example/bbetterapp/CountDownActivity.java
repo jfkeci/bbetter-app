@@ -36,7 +36,7 @@ public class CountDownActivity extends AppCompatActivity {
     public long START_TIME_IN_MILLIS;
     public long TimeLeftInMillis;
 
-    private TextView TextViewCountDown,TextViewCredits;
+    private TextView TextViewCountDown, TextViewCredits;
     private Button ButtonStartPause;
     ImageView ivClock, ivArrow;
 
@@ -86,7 +86,7 @@ public class CountDownActivity extends AppCompatActivity {
         //START_TIME_IN_MILLIS = 2000;
         TimeLeftInMillis = START_TIME_IN_MILLIS;
         //int minutes = (int)START_TIME_IN_MILLIS / 1000 / 60;
-        int seconds = (int)START_TIME_IN_MILLIS / 1000;
+        int seconds = (int) START_TIME_IN_MILLIS / 1000;
 
         User user = dbHelper.getUser();
         uid = user.getUserId();
@@ -109,11 +109,11 @@ public class CountDownActivity extends AppCompatActivity {
         ButtonStartPause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TimerRunning){
+                if (TimerRunning) {
                     pauseTimer();
                     anim.pause();
                     showMessage();
-                }else{
+                } else {
                     ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
                     ButtonStartPause.setText("Stop");
                     anim.start();
@@ -124,8 +124,8 @@ public class CountDownActivity extends AppCompatActivity {
         updateCountDownText();
     }
 
-    public void saveNewSession(Sessions session){
-        if(utils.isNetworkAvailable()){
+    public void saveNewSession(Sessions session) {
+        if (utils.isNetworkAvailable()) {
 
             Call<Sessions> call = ApiClient.getInstance().getApi().saveNewSession(newSession);
 
@@ -134,9 +134,9 @@ public class CountDownActivity extends AppCompatActivity {
             call.enqueue(new Callback<Sessions>() {
                 @Override
                 public void onResponse(Call<Sessions> call, Response<Sessions> response) {
-                    if(!response.isSuccessful()){
+                    if (!response.isSuccessful()) {
                         Utils.makeMyToast("Something went wrong\nTry again...", getApplicationContext());
-                    }else{
+                    } else {
 
                         Sessions savedSession = response.body();
 
@@ -152,24 +152,25 @@ public class CountDownActivity extends AppCompatActivity {
                 }
             });
 
-        }else{
-            newSession.setSessionId("ss"+utils.getDateNow(4));
+        } else {
+            newSession.setSessionId("ss" + utils.getDateNow(4));
             newSession.setSynced(0);
             newSession.setSessionCreatedAt(utils.getDateNow(1));
             dbHelper.addNewSession(newSession);
         }
     }
 
-    private void startTimer(){
+    private void startTimer() {
         countDownTimer = new CountDownTimer(TimeLeftInMillis, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 TimeLeftInMillis = millisUntilFinished;
                 updateCountDownText();
             }
+
             @Override
             public void onFinish() {
-                TimerRunning=false;
+                TimerRunning = false;
                 ButtonStartPause.setText("Start");
                 ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
                 TimeLeftInMillis = START_TIME_IN_MILLIS;
@@ -183,22 +184,25 @@ public class CountDownActivity extends AppCompatActivity {
         }.start();
         TimerRunning = true;
     }
-    private void pauseTimer(){
+
+    private void pauseTimer() {
         TimerPaused = true;
         countDownTimer.cancel();
         TimerRunning = false;
         ButtonStartPause.setText("Continue");
         ButtonStartPause.setBackgroundResource(R.drawable.button_green_square_bg);
     }
-    private void updateCountDownText(){
+
+    private void updateCountDownText() {
         int minutes = (int) (TimeLeftInMillis / 1000) / 60;
         int seconds = (int) (TimeLeftInMillis / 1000) % 60;
 
-        String TimeLeftFormatted = String.format(Locale.getDefault(),"%02d:%02d", minutes, seconds);
+        String TimeLeftFormatted = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
 
         TextViewCountDown.setText(TimeLeftFormatted);
     }
-    private void showMessage(){
+
+    private void showMessage() {
         final AlertDialog areYouSure = new AlertDialog.Builder(this)
                 .setTitle("Are you sure?")
                 .setMessage("You can do it, just continue")
@@ -210,12 +214,12 @@ public class CountDownActivity extends AppCompatActivity {
         buttonQuit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(TimerPaused){
+                if (TimerPaused) {
                     newSession.setSessionFinished(false);
                     saveNewSession(newSession);
                     CountDownActivity.super.onBackPressed();
                     areYouSure.dismiss();
-                }else{
+                } else {
                     CountDownActivity.super.onBackPressed();
                     areYouSure.dismiss();
                 }
@@ -233,7 +237,8 @@ public class CountDownActivity extends AppCompatActivity {
             }
         });
     }
-    public void InitRecycleViewSessions(){
+
+    public void InitRecycleViewSessions() {
         sessionsAdapter = new SessionsRecyclerAdapter(this, sessionUtils.allSessionsList());
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 3, GridLayoutManager.VERTICAL, false);
         recycleViewTimer.setLayoutManager(gridLayoutManager);
@@ -241,55 +246,69 @@ public class CountDownActivity extends AppCompatActivity {
 
         sessionsAdapter.notifyDataSetChanged();
     }
-    public String CountCredits(){
+
+    public String CountCredits() {
         int credits = 0;
-        String sCredits="";
+        String sCredits = "";
         ArrayList<Sessions> mySessions = new ArrayList<>();
 
-        for (Sessions session : mySessions){
+        for (Sessions session : mySessions) {
             int points = session.getSessionPoints();
-            credits+=points;
+            credits += points;
         }
-        if(credits > 0){
-            sCredits = "You have: " +String.valueOf(credits)+ " credits";
-        }else{
+        if (credits > 0) {
+            sCredits = "You have: " + String.valueOf(credits) + " credits";
+        } else {
             sCredits = "Try, you can do it";
         }
         return sCredits;
     }
 
-    public long getSessionLength(String sessionLength){
-        if(sessionLength.contains("10")){
+    public long getSessionLength(String sessionLength) {
+        if (sessionLength.contains("10")) {
             return 600000;
-        }if(sessionLength.contains("15")){
+        }
+        if (sessionLength.contains("15")) {
             return 900000;
-        }if(sessionLength.contains("20")){
+        }
+        if (sessionLength.contains("20")) {
             return 1200000;
-        }if(sessionLength.contains("25")){
+        }
+        if (sessionLength.contains("25")) {
             return 1500000;
-        }if(sessionLength.contains("30")){
+        }
+        if (sessionLength.contains("30")) {
             return 1800000;
-        }if(sessionLength.contains("35")){
+        }
+        if (sessionLength.contains("35")) {
             return 2100000;
-        }if(sessionLength.contains("40")){
+        }
+        if (sessionLength.contains("40")) {
             return 2400000;
         }
         return 0;
     }
-    public String getSessionPoints(String sessionLength){
-        if(sessionLength.contains("10")){
+
+    public String getSessionPoints(String sessionLength) {
+        if (sessionLength.contains("10")) {
             return "10";
-        }if(sessionLength.contains("15")){
+        }
+        if (sessionLength.contains("15")) {
             return "15";
-        }if(sessionLength.contains("20")){
+        }
+        if (sessionLength.contains("20")) {
             return "20";
-        }if(sessionLength.contains("25")){
+        }
+        if (sessionLength.contains("25")) {
             return "25";
-        }if(sessionLength.contains("30")){
+        }
+        if (sessionLength.contains("30")) {
             return "30";
-        }if(sessionLength.contains("35")){
+        }
+        if (sessionLength.contains("35")) {
             return "35";
-        }if(sessionLength.contains("40")){
+        }
+        if (sessionLength.contains("40")) {
             return "40";
         }
         return "0";
